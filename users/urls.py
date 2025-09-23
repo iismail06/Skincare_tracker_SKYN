@@ -3,6 +3,5 @@ from . import views
 
 app_name = 'users'
 urlpatterns = [
-    # Add your user-related URL patterns here
-    # Example: path('', views.index, name='index'),
+    path('', views.home, name='home'),
 ]
