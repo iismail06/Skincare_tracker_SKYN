@@ -23,9 +23,6 @@
             {% if user.is_authenticated %}
                 <div class="nav-links">
                     <a href="{% url 'home' %}">Dashboard</a>
-                    <!-- <a href="{% url 'routines:list' %}">My Routines</a>
-                    <a href="{% url 'routines:new' %}">Add Routine</a>
-                    <a href="{% url 'users:profile' %}">Profile</a> -->
                     <a href="{% url 'users:logout' %}">Logout</a>
                 </div>
             {% else %}
