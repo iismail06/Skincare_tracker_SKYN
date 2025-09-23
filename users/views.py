@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
+from .models import UserProfile
+
 
 # Create your views here.
 
@@ -25,3 +27,6 @@ def signup(request):
 def simple_logout(request):
     logout(request)          # Clear user session
     return redirect('home')  # Send back to homepage
+
+    if not request.user.is_authenticated:
+     return redirect('login')  # Send to login if not logged in
