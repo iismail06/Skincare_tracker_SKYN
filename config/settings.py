@@ -40,7 +40,7 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if 'DEBUG' in os.environ else False
 # Only enforce these security settings if DEBUG is False (i.e., in production)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
