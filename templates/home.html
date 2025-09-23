@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Home - SkinTrack{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    {% if user.is_authenticated %}
+        <h1>Welcome back, {{ user.username }}! 🌿</h1>
+        <p>Your SkinTrack dashboard is coming soon...</p>
+        <div class="nav-links" style="justify-content: center; margin-top: 2rem;">
+            <a href="/admin/" class="btn">Go to Admin</a>
+        </div>
+    {% else %}
+        <h1>Welcome to SkinTrack! 🌿</h1>
+        <p>Your skincare tracking app is working perfectly!</p>
+        <p>Sign up to start tracking your skincare routine and see your progress over time.</p>
+        <div class="nav-links" style="justify-content: center; margin-top: 2rem; gap: 1rem;">
+            <a href="{% url 'signup' %}" class="btn">Sign Up</a>
+            <a href="{% url 'login' %}" class="btn" style="background-color: #6c757d;">Login</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
