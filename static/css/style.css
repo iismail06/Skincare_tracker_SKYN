@@ -1,14 +1,35 @@
+
 /* ==========================================================================
-   THEME VARIABLES
+   1. RESET & GLOBAL STYLES
    ========================================================================== */
 
 * {
     box-sizing: border-box;
     scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
 }
 
+html, body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--bg);
+    transition: background-color 0.3s, color 0.3s;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* ==========================================================================
+   2. CSS VARIABLES & THEMES
+   ========================================================================== */
+
 :root {
-    /* New earthy color palette */
+    /* Light theme - earthy color palette */
     --background-color: #e9e9e9;
     --background-color-darker: #dddddd;
     --secondary-color: #3a2618;
@@ -47,18 +68,8 @@ body.dark-theme {
 }
 
 /* ==========================================================================
-   GLOBAL STYLES
+   3. TYPOGRAPHY & LINKS
    ========================================================================== */
-
-body {
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: var(--text);
-    background-color: var(--bg);
-    transition: background-color 0.3s, color 0.3s;
-    margin: 0;
-    padding: 0;
-}
 
 a {
     text-decoration: none;
@@ -71,27 +82,29 @@ a:hover {
     cursor: pointer;
 }
 
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
 h2 {
     font-size: 2rem;
     color: var(--text);
 }
 
 /* ==========================================================================
-   SCROLLBAR
+   4. SCROLLBAR STYLING
    ========================================================================== */
 
-/* width */
 ::-webkit-scrollbar {
     width: 12px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
     background: var(--background-color);
     border-radius: 6px;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
     background: #aaaaaa;
     border-radius: 6px;
@@ -99,7 +112,6 @@ h2 {
     background-clip: content-box;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color-lighter);
     border-radius: 6px;
@@ -108,22 +120,8 @@ h2 {
 }
 
 /* ==========================================================================
-   NAVIGATION
+   5. NAVIGATION
    ========================================================================== */
-.custom-wrapper {
-    background-color: var(--background-color);
-    -webkit-font-smoothing: antialiased;
-    height: 2.1em;
-    overflow: hidden;
-    -webkit-transition: height 0.5s;
-    -moz-transition: height 0.5s;
-    -ms-transition: height 0.5s;
-    transition: height 0.5s;
-}
-
-.custom-wrapper.open {
-    height: 9.5em;
-}
 
 .navbar {
     background-color: var(--background-color);
@@ -170,6 +168,19 @@ h2 {
     color: var(--accent-color);
 }
 
+/* Mobile Navigation */
+.custom-wrapper {
+    background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
+    height: 2.1em;
+    overflow: hidden;
+    transition: height 0.5s;
+}
+
+.custom-wrapper.open {
+    height: 9.5em;
+}
+
 .custom-menu-3 {
     text-align: right;
 }
@@ -192,44 +203,22 @@ h2 {
     position: absolute;
     top: 18px;
     right: 7px;
-    -webkit-transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -ms-transition: all 0.5s;
     transition: all 0.5s;
 }
 
 .custom-toggle .bar:first-child {
-    -webkit-transform: translateY(-6px);
-    -moz-transform: translateY(-6px);
-    -ms-transform: translateY(-6px);
     transform: translateY(-6px);
 }
 
 .custom-toggle.x .bar {
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
 
 .custom-toggle.x .bar:first-child {
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }
 
-@media (max-width: 47.999em) {
-    .custom-menu-3 {
-        text-align: left;
-    }
-
-    .custom-toggle {
-        display: block;
-    }
-}
-
-/* Theme toggle button */
+/* Theme Toggle Button */
 #theme-toggle {
     background: none;
     border: 2px solid var(--secondary-color-darker);
@@ -248,20 +237,26 @@ h2 {
 }
 
 /* ==========================================================================
-   HERO HEADER SECTION
+   6. HERO SECTION
    ========================================================================== */
+
 .hero-header {
     width: 100vw;
     height: 100vh;
     position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
     background-image: url(https://images.pexels.com/photos/7479915/pexels-photo-7479915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center 60%;
+    background-position: center center;
     filter: brightness(95%) saturate(110%) contrast(110%);
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
 }
 
 .hero-content {
@@ -304,31 +299,6 @@ h2 {
     content: "care";
     color: var(--accent-color);
     animation: blink 0.85s step-end infinite;
-}
-
-@keyframes period {
-    10% {
-        color: transparent;
-    }
-    49% {
-        color: transparent;
-    }
-    50% {
-        color: var(--background-color);
-    }
-    99% {
-        color: var(--background-color);
-    }
-}
-
-@keyframes blink {
-    from,
-    to {
-        border-color: transparent;
-    }
-    50% {
-        border-color: var(--background-color);
-    }
 }
 
 .brand-highlight {
@@ -378,51 +348,34 @@ h2 {
     flex-wrap: wrap;
 }
 
-.btn-primary {
-    background: var(--accent-color-lighter);
-    color: white !important;
-    border: 2px solid var(--accent-color-lighter);
-    padding: 0.8rem 2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    text-decoration: none;
+/* Hero Animations */
+@keyframes period {
+    10%, 49% {
+        color: transparent;
+    }
+    50%, 99% {
+        color: var(--background-color);
+    }
 }
 
-.btn-primary:hover {
-    background: transparent;
-    color: var(--accent-color-lighter) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--background-color) !important;
-    border: 2px solid var(--background-color);
-    padding: 0.8rem 2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: var(--background-color);
-    color: var(--secondary-color-darker) !important;
-    transform: translateY(-2px);
+@keyframes blink {
+    from, to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: var(--background-color);
+    }
 }
 
 /* ==========================================================================
-   FEATURES SECTION
+   7. FEATURES SECTION
    ========================================================================== */
+
 .features-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     min-height: 100vh;
-    margin-top: 4rem; /* Add spacing from hero section */
+    margin-top: 4rem;
 }
 
 .features-section .section-content {
@@ -437,18 +390,13 @@ h2 {
 
 .features-section .section-image {
     height: 100vh;
+    width: 100%;
     position: relative;
     background-image: url(https://images.pexels.com/photos/7479659/pexels-photo-7479659.jpeg);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center -20rem;
+    background-position: center center;
     filter: brightness(85%) saturate(110%) contrast(110%);
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
 }
 
 .section-content h2 {
@@ -493,57 +441,11 @@ h2 {
     line-height: 1.6;
 }
 
-
 /* ==========================================================================
-   MAIN CONTENT
+   8. FORMS & BUTTONS
    ========================================================================== */
-main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
 
-/* ==========================================================================
-   AUTHENTICATION PAGES
-   ========================================================================== */
-.auth-container {
-    max-width: 400px;
-    margin: 3rem auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-body.dark-theme .auth-container {
-    background: #2a3b34;
-}
-
-.auth-container h1 {
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-    text-align: center;
-}
-
-.auth-container p {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: var(--gray);
-}
-
-/* Forms */
-form p {
-    margin-bottom: 1rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text);
-}
-
-/* Form Controls - Consistent sizing for all input types */
+/* Form Controls */
 .form-control,
 input[type="text"],
 input[type="password"],
@@ -559,7 +461,7 @@ select {
     color: var(--text);
     transition: border-color 0.3s, background-color 0.3s;
     box-sizing: border-box;
-    min-height: 48px; /* Ensures consistent height across all form elements */
+    min-height: 48px;
 }
 
 .form-control:focus,
@@ -584,9 +486,15 @@ form p label {
     color: var(--text);
 }
 
-/* Django form.as_p paragraph styling */
 form p {
     margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text);
 }
 
 /* Buttons */
@@ -612,173 +520,133 @@ form p {
     transform: translateY(-1px);
 }
 
-.btn-secondary {
-    display: block;
-    background-color: transparent;
-    color: var(--gray);
-    padding: 12px 24px;
-    border-radius: 5px;
-    margin-top: 15px;
-    border: 2px solid var(--gray);
-    cursor: pointer;
-    text-align: center;
-    font-weight: 500;
-}
-
-.btn-secondary:hover {
-    background-color: var(--gray);
-    color: white;
-}
-
-/* Links */
-a {
-    color: var(--primary);
+.btn-primary {
+    background: var(--accent-color-lighter);
+    color: white !important;
+    border: 2px solid var(--accent-color-lighter);
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border-radius: 4px;
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: underline;
+.btn-primary:hover {
+    background: transparent;
+    color: var(--accent-color-lighter) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
-.auth-container a {
-    color: var(--primary);
-    font-weight: 500;
-}
-
-/* Messages */
-.messages {
-    max-width: 1200px;
-    margin: 1rem auto;
-    padding: 0 1rem;
-}
-
-.message {
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
+.btn-secondary {
+    background: transparent;
+    color: var(--background-color) !important;
+    border: 2px solid var(--background-color);
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
     border-radius: 4px;
-    font-weight: 500;
+    text-decoration: none;
 }
 
-.message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.message.info {
-    background-color: #cce7ff;
-    color: #004085;
-    border: 1px solid #b8daff;
+.btn-secondary:hover {
+    background: var(--background-color);
+    color: var(--secondary-color-darker) !important;
+    transform: translateY(-2px);
 }
 
 /* ==========================================================================
-   PROFILE QUESTIONNAIRE
+   9. AUTHENTICATION PAGES
    ========================================================================== */
 
-.welcome-text {
-    margin-bottom: 30px;
+.auth-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .auth-container {
+    background: #2a3b34;
+}
+
+.auth-container h1 {
     color: var(--primary);
-    font-size: 1.1em;
-}
-
-.form-group {
-    margin-bottom: 25px;
-}
-
-.checkbox-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.checkbox-group label {
-    display: flex;
-    align-items: center;
-    font-weight: normal;
-    margin-bottom: 5px;
-}
-
-.checkbox-group input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-.custom-goals-label {
-    margin-top: 15px;
-    display: block;
-}
-
-/* ==========================================================================
-   HOME PAGE
-   ========================================================================== */
-
-.home-actions {
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.home-actions.multiple-buttons {
-    gap: 1rem;
-}
-
-.btn-login {
-    background-color: var(--gray) !important;
-}
-
-.btn-login:hover {
-    background-color: #5a6268 !important;
-}
-
-/* ==========================================================================
-   UTILITIES
-   ========================================================================== */
-
-.text-center {
+    margin-bottom: 0.5rem;
     text-align: center;
 }
 
-.mt-1 { margin-top: 1rem; }
-.mt-2 { margin-top: 2rem; }
-.mb-1 { margin-bottom: 1rem; }
-.mb-2 { margin-bottom: 2rem; }
-
-/* ==========================================================================
-   RESPONSIVE DESIGN
-   ========================================================================== */
-
-@media (max-width: 768px) {
-    .nav-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .nav-links {
-        gap: 1rem;
-    }
-    
-    .auth-container {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
-    
-    .checkbox-group {
-        grid-template-columns: 1fr;
-    }
+.auth-container p {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--gray);
 }
 
 /* ==========================================================================
-   RESPONSIVE DESIGN
+   10. MAIN CONTENT LAYOUT
    ========================================================================== */
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Override main constraints for hero section */
+main .hero-header {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ==========================================================================
+   11. MESSAGES
+   ========================================================================== */
+
+.messages {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+}
+
+.message {
+    background: var(--accent-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* ==========================================================================
+   12. RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 47.999em) {
+    .custom-menu-3 {
+        text-align: left;
+    }
+    
+    .custom-toggle {
+        display: block;
+    }
+}
+
 @media screen and (max-width: 63em) {
     .features-section {
         grid-template-columns: 1fr;
-        margin-top: 2rem; /* Reduced spacing on smaller screens */
+        margin-top: 2rem;
     }
     
     .features-section .section-content,
@@ -789,7 +657,7 @@ a:hover {
 
 @media (max-width: 768px) {
     .features-section {
-        margin-top: 1rem; /* Even less spacing on mobile */
+        margin-top: 1rem;
     }
     
     .hero-content {
@@ -863,3 +731,4 @@ a:hover {
         font-size: 0.9rem;
     }
 }
+
