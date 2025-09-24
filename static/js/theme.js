@@ -8,18 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (currentTheme === 'dark') {
         body.classList.add('dark-theme');
-        themeToggle.textContent = '☀️ Light Mode';
+        themeToggle.textContent = '☀️';
     }
     
     themeToggle.addEventListener('click', function() {
         body.classList.toggle('dark-theme');
         
-        // Update button text and save preference
+        
         if (body.classList.contains('dark-theme')) {
-            themeToggle.textContent = '☀️ Light Mode';
+            themeToggle.textContent = '☀️';
             localStorage.setItem('theme', 'dark');
         } else {
-            themeToggle.textContent = '🌙 Dark Mode';
+            themeToggle.textContent = '🌙';
             localStorage.setItem('theme', 'light');
         }
     });
