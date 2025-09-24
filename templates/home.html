@@ -3,21 +3,47 @@
 {% block title %}Home - SKYN{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    {% if user.is_authenticated %}
-        <h1>Welcome back, {{ user.username }}! </h1>
-        <p>Your SKYN dashboard is coming soon...</p>
-        <div class="nav-links home-actions">
-            <a href="/admin/" class="btn">Go to Admin</a>
+<!-- Hero Header -->
+<header class="hero-header">
+    <div class="hero-content">
+        <h1 class="hero-title"><span class="brand-highlight">SKYN</span></h1>
+        <p class="hero-subtitle">Your personalized skincare journey starts here</p>
+        
+        {% if user.is_authenticated %}
+            <div class="hero-actions">
+                <h2>Welcome back, {{ user.username }}! </h2>
+                <p>Your SKYN dashboard is coming soon...</p>
+                <a href="/admin/" class="btn btn-primary">Go to Dashboard</a>
+            </div>
+        {% else %}
+            <div class="hero-actions">
+                <p class="hero-description">Track your skincare routine and see your progress over time with our intelligent skincare tracker.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'signup' %}" class="btn btn-primary">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary">Sign In</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</header>
+
+<div class="features-section">
+    <div class="section-content">
+        <div class="features-list">
+            <div class="feature-item">
+                <h3>Track Your Routine</h3>
+                <p>Log your daily skincare products and monitor your skin's response over time.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Get Personalized Insights</h3>
+                <p>Receive tailored recommendations based on your skin type and concerns.</p>
+            </div>
+            <div class="feature-item">
+                <h3>See Your Progress</h3>
+                <p>Visualize your skincare journey with detailed analytics and progress tracking.</p>
+            </div>
         </div>
-    {% else %}
-        <h1>Welcome to SKYN! </h1>
-        <p>Your skincare tracking app is working perfectly!</p>
-        <p>Sign up to start tracking your skincare routine and see your progress over time.</p>
-        <div class="nav-links home-actions multiple-buttons">
-            <a href="{% url 'signup' %}" class="btn">Sign Up</a>
-            <a href="{% url 'login' %}" class="btn btn-login">Login</a>
-        </div>
-    {% endif %}
+    </div>
+    <div class="section-image"></div>
 </div>
 {% endblock %}
