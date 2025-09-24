@@ -1,36 +1,41 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SkinTrack{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7">
 </head>
+
 <body>
     {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <nav class="navbar">
         <div class="nav-container">
             <a href="{% url 'home' %}" class="nav-brand">SkinTrack</a>
-            
+
             {% if user.is_authenticated %}
-                <div class="nav-links">
-                    <a href="{% url 'home' %}">Dashboard</a>
-                    <a href="{% url 'users:logout' %}">Logout</a>
-                </div>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Dashboard</a>
+                <a href="{% url 'users:logout' %}">Logout</a>
+            </div>
             {% else %}
-                <div class="nav-links">
-                    <a href="{% url 'login' %}">Login</a>
-                    <a href="{% url 'signup' %}">Sign Up</a>
-                </div>
+            <div class="nav-links">
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            </div>
             {% endif %}
+
+            <!-- Theme toggle button -->
+            <button id="theme-toggle">🌙 Dark Mode</button>
         </div>
     </nav>
 
@@ -41,5 +46,9 @@
 
     {% block extra_js %}
     {% endblock %}
+    
+    <!-- Theme Toggle JavaScript -->
+    <script src="{% static 'js/theme.js' %}?v=1"></script>
 </body>
+
 </html>

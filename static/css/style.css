@@ -1,3 +1,26 @@
+/* ==========================================================================
+   THEME VARIABLES
+   ========================================================================== */
+
+:root {
+    /* Light theme (default) */
+    --bg: #fdfcf9;
+    --text: #333333;
+    --primary: #0be968;
+    --secondary: #f7c948;
+    --accent: #e07a5f;
+    --gray: #6c757d;
+}
+
+body.dark-theme {
+    /* Dark theme overrides */
+    --bg: #1c2b24;
+    --text: #fdfcf9;
+    --primary: #88a97b;
+    --secondary: #e0b646;
+    --accent: #d96a54;
+    --gray: #a0a5a8;
+}
 
 /* ==========================================================================
    GLOBAL STYLES
@@ -10,17 +33,18 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: #f8f9fa;
+    color: var(--text);
+    background-color: var(--bg);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* ==========================================================================
    NAVIGATION
    ========================================================================== */
 .navbar {
-    background-color: #2c5f41;
+    background-color: var(--primary);
     padding: 1rem 0;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -42,7 +66,7 @@ body {
 }
 
 .nav-brand:hover {
-    color: #a8d5ba;
+    color: var(--secondary);
 }
 
 .nav-links {
@@ -62,7 +86,25 @@ body {
     background-color: #1e4532;
 }
 
-/* Main Content */
+/* Theme toggle button (simple) */
+#theme-toggle {
+    background: none;
+    border: 2px solid white;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+#theme-toggle:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ==========================================================================
+   MAIN CONTENT
+   ========================================================================== */
 main {
     max-width: 1200px;
     margin: 2rem auto;
@@ -81,8 +123,12 @@ main {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+body.dark-theme .auth-container {
+    background: #2a3b34;
+}
+
 .auth-container h1 {
-    color: #2c5f41;
+    color: var(--primary);
     margin-bottom: 0.5rem;
     text-align: center;
 }
@@ -90,7 +136,7 @@ main {
 .auth-container p {
     text-align: center;
     margin-bottom: 1.5rem;
-    color: #666;
+    color: var(--gray);
 }
 
 /* Forms */
@@ -102,7 +148,7 @@ label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #333;
+    color: var(--text);
 }
 
 input[type="text"],
@@ -120,18 +166,14 @@ input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus {
     outline: none;
-    border-color: #2c5f41;
+    border-color: var(--primary);
 }
 
-/* Buttons - Force white text with maximum specificity */
-.btn,
-button.btn,
-input[type="submit"].btn,
-form button.btn,
-.auth-container button.btn {
+/* Buttons */
+.btn {
     width: 100%;
     padding: 0.75rem;
-    background-color: #2c5f41 !important;
+    background-color: var(--primary);
     color: #ffffff !important;
     border: none;
     border-radius: 4px;
@@ -140,33 +182,34 @@ form button.btn,
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 1rem;
-    text-decoration: none;
-    display: inline-block;
     text-align: center;
-    font-family: inherit;
 }
 
-.btn:hover,
-button.btn:hover,
-input[type="submit"].btn:hover,
-form button.btn:hover,
-.auth-container button.btn:hover {
-    background-color: #1e4532 !important;
-    color: #ffffff !important;
+.btn:hover {
+    background-color: #1e4532;
 }
 
-/* Extra specificity for button text */
-button[type="submit"] {
-    color: #ffffff !important;
+.btn-secondary {
+    display: block;
+    background-color: transparent;
+    color: var(--gray);
+    padding: 12px 24px;
+    border-radius: 5px;
+    margin-top: 15px;
+    border: 2px solid var(--gray);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
 }
 
-form button {
-    color: #ffffff !important;
+.btn-secondary:hover {
+    background-color: var(--gray);
+    color: white;
 }
 
 /* Links */
 a {
-    color: #2c5f41;
+    color: var(--primary);
     text-decoration: none;
 }
 
@@ -175,19 +218,8 @@ a:hover {
 }
 
 .auth-container a {
-    color: #2c5f41;
+    color: var(--primary);
     font-weight: 500;
-}
-
-/* Button links - ensure white text on green buttons */
-a.btn {
-    color: white !important;
-    text-decoration: none !important;
-}
-
-a.btn:hover {
-    color: white !important;
-    text-decoration: none !important;
 }
 
 /* Messages */
@@ -222,53 +254,13 @@ a.btn:hover {
     border: 1px solid #b8daff;
 }
 
-/* Form Error Styling */
-.errorlist {
-    list-style: none;
-    margin: 0.5rem 0;
-    padding: 0;
-}
-
-.errorlist li {
-    color: #721c24;
-    background-color: #f8d7da;
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-
-/* Utility Classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-1 { margin-top: 1rem; }
-.mt-2 { margin-top: 2rem; }
-.mb-1 { margin-bottom: 1rem; }
-.mb-2 { margin-bottom: 2rem; }
-
-/* ==========================================================================
-   BUTTON FIXES & OVERRIDES
-   ========================================================================== */
-
-/* FORCE WHITE TEXT ON ALL BUTTONS - Last rule wins */
-button, 
-input[type="submit"],
-.btn,
-button.btn,
-form button,
-.auth-container button {
-    color: #ffffff !important;
-}
-
 /* ==========================================================================
    PROFILE QUESTIONNAIRE
    ========================================================================== */
 
 .welcome-text {
     margin-bottom: 30px;
-    color: #2c5f41;
+    color: var(--primary);
     font-size: 1.1em;
 }
 
@@ -299,26 +291,6 @@ form button,
     display: block;
 }
 
-.btn-secondary {
-    display: block;
-    background-color: transparent;
-    color: #6c757d;
-    padding: 12px 24px;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 15px;
-    margin-left: 0;
-    border: 2px solid #6c757d;
-    cursor: pointer;
-    text-align: center;
-    font-weight: 500;
-}
-
-.btn-secondary:hover {
-    background-color: #6c757d;
-    color: white;
-}
-
 /* ==========================================================================
    HOME PAGE
    ========================================================================== */
@@ -333,7 +305,7 @@ form button,
 }
 
 .btn-login {
-    background-color: #6c757d !important;
+    background-color: var(--gray) !important;
 }
 
 .btn-login:hover {
@@ -341,15 +313,20 @@ form button,
 }
 
 /* ==========================================================================
-   DASHBOARD & CRUD PAGES (Future sections)
+   UTILITIES
    ========================================================================== */
 
-/* Dashboard styles will go here when we add the dashboard */
-/* Product management styles will go here */
-/* Routine management styles will go here */
+.text-center {
+    text-align: center;
+}
+
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
 
 /* ==========================================================================
-   RESPONSIVE DESIGN - ALWAYS KEEP AT BOTTOM
+   RESPONSIVE DESIGN
    ========================================================================== */
 
 @media (max-width: 768px) {
