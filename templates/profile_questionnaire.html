@@ -22,15 +22,15 @@
         </div>
 
         <div class="form-group">
-            <label for="skin_concerns">Primary skin concerns? (Check all that apply)</label>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="skin_concerns" value="acne"> Acne</label>
-                <label><input type="checkbox" name="skin_concerns" value="aging"> Anti-aging</label>
-                <label><input type="checkbox" name="skin_concerns" value="dryness"> Dryness</label>
-                <label><input type="checkbox" name="skin_concerns" value="oiliness"> Oiliness</label>
-                <label><input type="checkbox" name="skin_concerns" value="sensitivity"> Sensitivity</label>
-                <label><input type="checkbox" name="skin_concerns" value="pigmentation"> Dark spots/Pigmentation</label>
-            </div>
+            <label for="main_concern">What's your main skin concern?</label>
+            <select name="main_concern" id="main_concern" class="form-control" required>
+                <option value="">Select your main concern</option>
+                <option value="acne">Acne</option>
+                <option value="dryness">Dryness</option>
+                <option value="aging">Anti-aging</option>
+                <option value="sensitivity">Sensitivity</option>
+                <option value="oiliness">Excess oil</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -45,19 +45,21 @@
         </div>
 
         <div class="form-group">
-            <label for="goals">What are your skincare goals? (Check all that apply)</label>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="goals" value="acne_free"> Acne-free skin</label>
-                <label><input type="checkbox" name="goals" value="moisturized"> Better moisturized skin</label>
-                <label><input type="checkbox" name="goals" value="hyperpigmentation"> Reduce hyperpigmentation</label>
-                <label><input type="checkbox" name="goals" value="easier_routine"> Easier/simpler routine</label>
-                <label><input type="checkbox" name="goals" value="anti_aging"> Anti-aging benefits</label>
-                <label><input type="checkbox" name="goals" value="even_tone"> More even skin tone</label>
-            </div>
-            
-            <label for="custom_goals" class="custom-goals-label">Other goals (optional):</label>
-            <textarea name="custom_goals" id="custom_goals" class="form-control" rows="2" 
-                      placeholder="Any other specific goals you'd like to achieve..."></textarea>
+            <label for="main_goal">What's your primary skincare goal?</label>
+            <select name="main_goal" id="main_goal" class="form-control" required>
+                <option value="">Select your main goal</option>
+                <option value="clear_skin">Clear skin</option>
+                <option value="moisturized">Better hydration</option>
+                <option value="anti_aging">Anti-aging</option>
+                <option value="simple_routine">Simple routine</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="prefers_natural" id="prefers_natural"> 
+                I prefer natural/organic products
+            </label>
         </div>
 
         <button type="submit" class="btn">Complete Profile</button>

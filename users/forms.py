@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
     AGE_RANGE_CHOICES = [
@@ -35,3 +36,47 @@ class CustomUserCreationForm(UserCreationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
+
+
+class ProfileQuestionnaireForm(forms.ModelForm):
+    """Simple skincare profile questionnaire - beginner friendly"""
+    
+    class Meta:
+        model = UserProfile
+        fields = [
+            'skin_type', 
+            'main_concern', 
+            'current_routine', 
+            'main_goal', 
+            'additional_notes',
+            'prefers_natural'
+        ]
+        
+        widgets = {
+            'skin_type': forms.Select(attrs={'class': 'form-control'}),
+            'main_concern': forms.Select(attrs={'class': 'form-control'}),
+            'current_routine': forms.Select(attrs={'class': 'form-control'}),
+            'main_goal': forms.Select(attrs={'class': 'form-control'}),
+            'additional_notes': forms.Textarea(attrs={
+                'class': 'form-control', 
+                'rows': 3,
+                'placeholder': 'Tell us about any other skincare concerns or goals...'
+            }),
+        }
+        
+        labels = {
+            'skin_type': 'What\'s your skin type?',
+            'main_concern': 'What\'s your main skin concern?',
+            'current_routine': 'Do you currently have a skincare routine?',
+            'main_goal': 'What\'s your primary skincare goal?',
+            'additional_notes': 'Additional notes (optional)',
+            'prefers_natural': 'I prefer natural/organic products',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add empty option for dropdowns - beginner technique
+        self.fields['skin_type'].empty_label = "Select your skin type"
+        self.fields['main_concern'].empty_label = "Select your main concern"
+        self.fields['current_routine'].empty_label = "Select one"
+        self.fields['main_goal'].empty_label = "Select your main goal"
