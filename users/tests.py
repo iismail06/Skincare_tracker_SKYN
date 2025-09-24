@@ -24,8 +24,8 @@ class BeginnerSignupTests(TestCase):
         # Check if page loaded successfully (200 means "OK, page found!")
         self.assertEqual(response.status_code, 200)
         
-        # Check if we can see "Join SkinTrack" text on the page
-        self.assertContains(response, 'Join SkinTrack')
+        # Check if we can see "Join SKYN" text on the page
+        self.assertContains(response, 'Join SKYN')
         
         print("✅ Test passed: Signup page loads correctly!")
     

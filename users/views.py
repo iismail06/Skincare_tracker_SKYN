@@ -25,7 +25,7 @@ def signup(request):
                 UserProfile.objects.create(user=user)
             
             login(request, user)
-            messages.success(request, f'Welcome to SkinTrack, {user.username}!')
+            messages.success(request, f'Welcome to SKYN, {user.username}!')
             return redirect('users:profile_questionnaire')
     else:
         form = CustomUserCreationForm()
