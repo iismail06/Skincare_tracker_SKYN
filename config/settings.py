@@ -105,9 +105,12 @@ DATABASES = {
     'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
 
-# Use SQLite for tests
+# Use SQLite for tests (convert Path to string)
 if 'test' in sys.argv:
-    DATABASES['default']['NAME'] = BASE_DIR / 'db.sqlite3'
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': str(BASE_DIR / 'test_db.sqlite3'),
+    }
 
 # Password validation
 CSRF_TRUSTED_ORIGINS = [
