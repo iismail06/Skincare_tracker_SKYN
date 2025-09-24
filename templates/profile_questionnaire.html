@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Welcome to SkinTrack! 🌿</h1>
+    <p class="welcome-text">Let's set up your skincare profile to get personalized recommendations.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="skin_type">What's your skin type?</label>
+            <select name="skin_type" id="skin_type" class="form-control" required>
+                <option value="">Select your skin type</option>
+                <option value="oily">Oily</option>
+                <option value="dry">Dry</option>
+                <option value="combination">Combination</option>
+                <option value="sensitive">Sensitive</option>
+                <option value="normal">Normal</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="skin_concerns">Primary skin concerns? (Check all that apply)</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="skin_concerns" value="acne"> Acne</label>
+                <label><input type="checkbox" name="skin_concerns" value="aging"> Anti-aging</label>
+                <label><input type="checkbox" name="skin_concerns" value="dryness"> Dryness</label>
+                <label><input type="checkbox" name="skin_concerns" value="oiliness"> Oiliness</label>
+                <label><input type="checkbox" name="skin_concerns" value="sensitivity"> Sensitivity</label>
+                <label><input type="checkbox" name="skin_concerns" value="pigmentation"> Dark spots/Pigmentation</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="current_routine">Do you currently have a skincare routine?</label>
+            <select name="current_routine" id="current_routine" class="form-control" required>
+                <option value="">Select one</option>
+                <option value="none">No routine</option>
+                <option value="basic">Basic (cleanser + moisturizer)</option>
+                <option value="moderate">Moderate (3-5 products)</option>
+                <option value="extensive">Extensive (5+ products)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="goals">What are your skincare goals?</label>
+            <textarea name="goals" id="goals" class="form-control" rows="3" 
+                      placeholder="Tell us what you'd like to achieve with your skincare routine..."></textarea>
+        </div>
+
+        <button type="submit" class="btn">Complete Profile</button>
+        <a href="{% url 'home' %}" class="btn-secondary">Skip for Now</a>
+    </form>
+</div>
+
+<style>
+.welcome-text {
+    margin-bottom: 30px;
+    color: #2c5f41;
+    font-size: 1.1em;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.btn-secondary {
+    display: inline-block;
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+</style>
+{% endblock %}
