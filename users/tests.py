@@ -121,4 +121,86 @@ class BeginnerQuestionnaireTests(TestCase):
         
         print("✅ Test passed: Questionnaire page loads!")
 
+# =============================================================================
+# TEST CLASS 3: LOGIN AND LOGOUT TESTS
+# =============================================================================
+class BeginnerLoginLogoutTests(TestCase):
+    """Simple tests for login and logout functionality"""
+    
+    def setUp(self):
+        """Prepare for login/logout tests"""
+        # Create fake browser
+        self.fake_browser = Client()
+        
+        # Create a test user to login with
+        self.test_user = User.objects.create_user(
+            username='logintest', 
+            password='testpass123'
+        )
+        
+        # Get login and logout URLs
+        self.login_page = reverse('login')
+        self.logout_page = reverse('users:logout')
+    
+    def test_can_see_login_page(self):
+        """Test #6: Check if login page loads"""
+        # Go to login page
+        response = self.fake_browser.get(self.login_page)
+        
+        # Should load successfully and show "Welcome Back"
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Welcome Back')
+        
+        print("✅ Test passed: Login page loads correctly!")
+    
+    def test_can_login_with_valid_credentials(self):
+        """Test #7: Check if user can login with correct username/password"""
+        # Try to login with correct credentials
+        login_data = {
+            'username': 'logintest',
+            'password': 'testpass123'
+        }
+        
+        # Submit login form
+        response = self.fake_browser.post(self.login_page, login_data)
+        
+        # Should redirect after successful login (302 means redirect)
+        self.assertEqual(response.status_code, 302)
+        
+        print("✅ Test passed: User can login successfully!")
+    
+    def test_cannot_login_with_wrong_password(self):
+        """Test #8: Check if login rejects wrong password"""
+        # Try to login with wrong password
+        bad_login_data = {
+            'username': 'logintest',
+            'password': 'wrongpassword'
+        }
+        
+        # Submit login form with bad password
+        response = self.fake_browser.post(self.login_page, bad_login_data)
+        
+        # Should stay on login page (200, not redirect)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Welcome Back')  # Still on login page
+        
+        print("✅ Test passed: Wrong password correctly rejected!")
+    
+    def test_can_logout(self):
+        """Test #9: Check if logged-in user can logout"""
+        # First, login the user
+        self.fake_browser.login(username='logintest', password='testpass123')
+        
+        # Then logout
+        response = self.fake_browser.get(self.logout_page)
+        
+        # Should redirect to home page
+        self.assertEqual(response.status_code, 302)
+        
+        print("✅ Test passed: User can logout successfully!")
+
+# =============================================================================
+# HOW TO RUN THESE TESTS:
+# =============================================================================
+
 
