@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SkinTrack{% endblock %}</title>
+    <title>{% block title %}SKYN - Skincare Tracker{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7">
 </head>
 
@@ -20,7 +20,7 @@
 
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{% url 'home' %}" class="nav-brand">SkinTrack</a>
+            <a href="{% url 'home' %}" class="nav-brand">SKYN</a>
 
             {% if user.is_authenticated %}
             <div class="nav-links">

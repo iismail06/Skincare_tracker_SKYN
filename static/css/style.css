@@ -5,21 +5,25 @@
 :root {
     /* Light theme (default) */
     --bg: #fdfcf9;
+    --card-bg: #ffffff;
     --text: #333333;
-    --primary: #0be968;
+    --primary: #07bc52;
     --secondary: #f7c948;
     --accent: #e07a5f;
     --gray: #6c757d;
+    --border: #ddd;
 }
 
 body.dark-theme {
     /* Dark theme overrides */
     --bg: #1c2b24;
+    --card-bg: #2a3b32;
     --text: #fdfcf9;
     --primary: #88a97b;
     --secondary: #e0b646;
     --accent: #d96a54;
     --gray: #a0a5a8;
+    --border: #4a5d52;
 }
 
 /* ==========================================================================
@@ -151,22 +155,50 @@ label {
     color: var(--text);
 }
 
+/* Form Controls - Consistent sizing for all input types */
+.form-control,
 input[type="text"],
 input[type="password"],
-input[type="email"] {
+input[type="email"],
+select {
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border);
     border-radius: 4px;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    font-family: inherit;
+    background-color: var(--card-bg);
+    color: var(--text);
+    transition: border-color 0.3s, background-color 0.3s;
+    box-sizing: border-box;
+    min-height: 48px; /* Ensures consistent height across all form elements */
 }
 
+.form-control:focus,
 input[type="text"]:focus,
 input[type="password"]:focus,
-input[type="email"]:focus {
+input[type="email"]:focus,
+select:focus {
     outline: none;
     border-color: var(--primary);
+}
+
+/* Form Groups and Labels */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label,
+form p label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* Django form.as_p paragraph styling */
+form p {
+    margin-bottom: 1.5rem;
 }
 
 /* Buttons */
