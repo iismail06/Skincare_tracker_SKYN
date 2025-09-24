@@ -1,4 +1,8 @@
 
+/* ==========================================================================
+   GLOBAL STYLES
+   ========================================================================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +16,9 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Navigation */
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
 .navbar {
     background-color: #2c5f41;
     padding: 1rem 0;
@@ -63,7 +69,9 @@ main {
     padding: 0 1rem;
 }
 
-/* Authentication Pages */
+/* ==========================================================================
+   AUTHENTICATION PAGES
+   ========================================================================== */
 .auth-container {
     max-width: 400px;
     margin: 3rem auto;
@@ -214,23 +222,6 @@ a.btn:hover {
     border: 1px solid #b8daff;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .nav-links {
-        gap: 1rem;
-    }
-    
-    .auth-container {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
-}
-
 /* Form Error Styling */
 .errorlist {
     list-style: none;
@@ -257,6 +248,10 @@ a.btn:hover {
 .mb-1 { margin-bottom: 1rem; }
 .mb-2 { margin-bottom: 2rem; }
 
+/* ==========================================================================
+   BUTTON FIXES & OVERRIDES
+   ========================================================================== */
+
 /* FORCE WHITE TEXT ON ALL BUTTONS - Last rule wins */
 button, 
 input[type="submit"],
@@ -265,4 +260,109 @@ button.btn,
 form button,
 .auth-container button {
     color: #ffffff !important;
+}
+
+/* ==========================================================================
+   PROFILE QUESTIONNAIRE
+   ========================================================================== */
+
+.welcome-text {
+    margin-bottom: 30px;
+    color: #2c5f41;
+    font-size: 1.1em;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.btn-secondary {
+    display: block;
+    background-color: transparent;
+    color: #6c757d;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    margin-left: 0;
+    border: 2px solid #6c757d;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* ==========================================================================
+   HOME PAGE
+   ========================================================================== */
+
+.home-actions {
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.home-actions.multiple-buttons {
+    gap: 1rem;
+}
+
+.btn-login {
+    background-color: #6c757d !important;
+}
+
+.btn-login:hover {
+    background-color: #5a6268 !important;
+}
+
+/* ==========================================================================
+   DASHBOARD & CRUD PAGES (Future sections)
+   ========================================================================== */
+
+/* Dashboard styles will go here when we add the dashboard */
+/* Product management styles will go here */
+/* Routine management styles will go here */
+
+/* ==========================================================================
+   RESPONSIVE DESIGN - ALWAYS KEEP AT BOTTOM
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-links {
+        gap: 1rem;
+    }
+    
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
 }
