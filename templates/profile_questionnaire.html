@@ -6,73 +6,58 @@
     <h1>Welcome to SkinTrack! 🌿</h1>
     <p class="welcome-text">Let's set up your skincare profile to get personalized recommendations.</p>
 
-    {% if form.errors %}
-        <div class="form-errors">
-            <p>Please correct the following errors:</p>
-            {{ form.errors }}
-        </div>
-    {% endif %}
-
     <form method="POST">
         {% csrf_token %}
         
-        <!-- Skin Type -->
         <div class="form-group">
-            <label for="{{ form.skin_type.id_for_label }}">{{ form.skin_type.label }}</label>
-            {{ form.skin_type }}
+            <label for="skin_type">What's your skin type?</label>
+            <select name="skin_type" id="skin_type" class="form-control" required>
+                <option value="">Select your skin type</option>
+                <option value="oily">Oily</option>
+                <option value="dry">Dry</option>
+                <option value="combination">Combination</option>
+                <option value="sensitive">Sensitive</option>
+                <option value="normal">Normal</option>
+            </select>
         </div>
 
-        <!-- Skin Concerns -->
         <div class="form-group">
-            <label>{{ form.skin_concerns.label }}</label>
+            <label for="skin_concerns">Primary skin concerns? (Check all that apply)</label>
             <div class="checkbox-group">
-                {% for choice in form.skin_concerns %}
-                    {{ choice.tag }}
-                    <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
-                {% endfor %}
+                <label><input type="checkbox" name="skin_concerns" value="acne"> Acne</label>
+                <label><input type="checkbox" name="skin_concerns" value="aging"> Anti-aging</label>
+                <label><input type="checkbox" name="skin_concerns" value="dryness"> Dryness</label>
+                <label><input type="checkbox" name="skin_concerns" value="oiliness"> Oiliness</label>
+                <label><input type="checkbox" name="skin_concerns" value="sensitivity"> Sensitivity</label>
+                <label><input type="checkbox" name="skin_concerns" value="pigmentation"> Dark spots/Pigmentation</label>
             </div>
         </div>
 
-        <!-- Current Routine -->
         <div class="form-group">
-            <label for="{{ form.current_routine.id_for_label }}">{{ form.current_routine.label }}</label>
-            {{ form.current_routine }}
+            <label for="current_routine">Do you currently have a skincare routine?</label>
+            <select name="current_routine" id="current_routine" class="form-control" required>
+                <option value="">Select one</option>
+                <option value="none">No routine</option>
+                <option value="basic">Basic (cleanser + moisturizer)</option>
+                <option value="moderate">Moderate (3-5 products)</option>
+                <option value="extensive">Extensive (5+ products)</option>
+            </select>
         </div>
 
-        <!-- Skincare Goals -->
         <div class="form-group">
-            <label>{{ form.skincare_goals.label }}</label>
+            <label for="goals">What are your skincare goals? (Check all that apply)</label>
             <div class="checkbox-group">
-                {% for choice in form.skincare_goals %}
-                    {{ choice.tag }}
-                    <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
-                {% endfor %}
+                <label><input type="checkbox" name="goals" value="acne_free"> Acne-free skin</label>
+                <label><input type="checkbox" name="goals" value="moisturized"> Better moisturized skin</label>
+                <label><input type="checkbox" name="goals" value="hyperpigmentation"> Reduce hyperpigmentation</label>
+                <label><input type="checkbox" name="goals" value="easier_routine"> Easier/simpler routine</label>
+                <label><input type="checkbox" name="goals" value="anti_aging"> Anti-aging benefits</label>
+                <label><input type="checkbox" name="goals" value="even_tone"> More even skin tone</label>
             </div>
-        </div>
-
-        <!-- Custom Goals -->
-        <div class="form-group">
-            <label for="{{ form.custom_goals.id_for_label }}" class="custom-goals-label">{{ form.custom_goals.label }}</label>
-            {{ form.custom_goals }}
-        </div>
-
-        <!-- Preferences -->
-        <div class="form-group">
-            <label>Product Preferences (optional):</label>
-            <div class="checkbox-group preferences-group">
-                <div class="preference-item">
-                    {{ form.prefers_vegan }}
-                    <label for="{{ form.prefers_vegan.id_for_label }}">{{ form.prefers_vegan.label }}</label>
-                </div>
-                <div class="preference-item">
-                    {{ form.prefers_fragrance_free }}
-                    <label for="{{ form.prefers_fragrance_free.id_for_label }}">{{ form.prefers_fragrance_free.label }}</label>
-                </div>
-                <div class="preference-item">
-                    {{ form.prefers_cruelty_free }}
-                    <label for="{{ form.prefers_cruelty_free.id_for_label }}">{{ form.prefers_cruelty_free.label }}</label>
-                </div>
-            </div>
+            
+            <label for="custom_goals" class="custom-goals-label">Other goals (optional):</label>
+            <textarea name="custom_goals" id="custom_goals" class="form-control" rows="2" 
+                      placeholder="Any other specific goals you'd like to achieve..."></textarea>
         </div>
 
         <button type="submit" class="btn">Complete Profile</button>
