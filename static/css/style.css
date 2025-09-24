@@ -294,6 +294,11 @@ form button,
     margin-right: 8px;
 }
 
+.custom-goals-label {
+    margin-top: 15px;
+    display: block;
+}
+
 .btn-secondary {
     display: block;
     background-color: transparent;

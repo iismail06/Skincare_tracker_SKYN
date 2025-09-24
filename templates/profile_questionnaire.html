@@ -45,9 +45,19 @@
         </div>
 
         <div class="form-group">
-            <label for="goals">What are your skincare goals?</label>
-            <textarea name="goals" id="goals" class="form-control" rows="3" 
-                      placeholder="Tell us what you'd like to achieve with your skincare routine..."></textarea>
+            <label for="goals">What are your skincare goals? (Check all that apply)</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="goals" value="acne_free"> Acne-free skin</label>
+                <label><input type="checkbox" name="goals" value="moisturized"> Better moisturized skin</label>
+                <label><input type="checkbox" name="goals" value="hyperpigmentation"> Reduce hyperpigmentation</label>
+                <label><input type="checkbox" name="goals" value="easier_routine"> Easier/simpler routine</label>
+                <label><input type="checkbox" name="goals" value="anti_aging"> Anti-aging benefits</label>
+                <label><input type="checkbox" name="goals" value="even_tone"> More even skin tone</label>
+            </div>
+            
+            <label for="custom_goals" class="custom-goals-label">Other goals (optional):</label>
+            <textarea name="custom_goals" id="custom_goals" class="form-control" rows="2" 
+                      placeholder="Any other specific goals you'd like to achieve..."></textarea>
         </div>
 
         <button type="submit" class="btn">Complete Profile</button>
