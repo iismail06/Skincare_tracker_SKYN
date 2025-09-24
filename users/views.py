@@ -17,10 +17,10 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             
-            # Create or update user profile with age
-            age = form.cleaned_data.get('age')
-            if age:
-                UserProfile.objects.create(user=user, age=age)
+            # Create or update user profile with age range
+            age_range = form.cleaned_data.get('age_range')
+            if age_range:
+                UserProfile.objects.create(user=user, age_range=age_range)
             else:
                 UserProfile.objects.create(user=user)
             

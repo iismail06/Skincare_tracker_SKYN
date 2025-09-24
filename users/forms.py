@@ -3,23 +3,31 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=False, help_text='Optional: We can send you skincare tips!')
-    age = forms.IntegerField(
-        required=False, 
-        min_value=13, 
-        max_value=120,
-        help_text='Optional: Helps us recommend age-appropriate products'
+    AGE_RANGE_CHOICES = [
+        ('', 'Select your age range (optional)'),
+        ('under_16', 'Under 16'),
+        ('16_24', '16-24'),
+        ('25_30', '25-30'),
+        ('31_40', '31-40'),
+        ('41_50', '41-50'),
+        ('above_50', 'Above 50'),
+    ]
+
+    email = forms.EmailField(required=False)
+    age_range = forms.ChoiceField(
+        choices=AGE_RANGE_CHOICES,
+        required=False,
     )
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'age', 'password1', 'password2')
+        fields = ('username', 'email', 'age_range', 'password1', 'password2')
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Customize field labels and help text
         self.fields['username'].help_text = 'Choose a unique username'
-        self.fields['age'].label = 'Age (optional)'
+        self.fields['age_range'].label = 'Age Range (optional)'
         self.fields['password1'].help_text = 'Your password should be secure'
         self.fields['password2'].help_text = 'Confirm your password'
         
