@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from .models import UserProfile
 
 def home(request):
     """Home page view with proper template"""
@@ -15,6 +16,14 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            
+            # Create or update user profile with age
+            age = form.cleaned_data.get('age')
+            if age:
+                UserProfile.objects.create(user=user, age=age)
+            else:
+                UserProfile.objects.create(user=user)
+            
             login(request, user)
             messages.success(request, f'Welcome to SkinTrack, {user.username}!')
             return redirect('users:profile_questionnaire')
