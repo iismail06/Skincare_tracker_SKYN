@@ -299,6 +299,76 @@ form button,
     display: block;
 }
 
+/* Django form elements */
+select.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background-color: white;
+}
+
+select.form-control:focus {
+    outline: none;
+    border-color: #2c5f41;
+}
+
+textarea.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    resize: vertical;
+    min-height: 80px;
+}
+
+textarea.form-control:focus {
+    outline: none;
+    border-color: #2c5f41;
+}
+
+/* Preferences styling */
+.preferences-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.preference-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preference-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.preference-item label {
+    margin: 0;
+    font-weight: normal;
+}
+
+/* Form errors */
+.form-errors {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 20px;
+}
+
+.form-errors p {
+    margin: 0 0 8px 0;
+    font-weight: 500;
+}
+
 .btn-secondary {
     display: block;
     background-color: transparent;
