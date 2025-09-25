@@ -86,7 +86,7 @@ Skincare_tracker_SKYN/
 ├── templates/             # HTML templates
 ├── requirements.txt       # Python dependencies
 ├── manage.py             # Django management script
-└── README.md             # This file
+└── README.md             
 
 ## 🎨 Design & Styling
 
