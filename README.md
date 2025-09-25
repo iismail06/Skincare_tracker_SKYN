@@ -19,9 +19,9 @@ A Django-based web application for tracking and managing skincare routines. SKYN
 
 ## 🛠️ Technologies Used
 
-- **Backend**: Django 5.2.6, Python
+- **Backend**: Django, Python
 - **Frontend**: HTML5, CSS3, JavaScript
-- **Database**: SQLite (development)
+- **Database**: PostgreSQL,  SQLite (development)
 - **Icons**: Font Awesome
 - **Styling**: Custom CSS with CSS Variables for theming
 - **Version Control**: Git & GitHub
@@ -86,7 +86,7 @@ Skincare_tracker_SKYN/
 ├── templates/             # HTML templates
 ├── requirements.txt       # Python dependencies
 ├── manage.py             # Django management script
-└── README.md             
+└── README.md
 
 ## 🎨 Design & Styling
 
@@ -118,14 +118,7 @@ Testing documentation will be completed during the development phase.
 - As a returning user, I want to quickly access my existing routines
 - As a user, I want to see my progress and skin improvements over time
 
-## 🔧 Future Enhancements
 
-- Product recommendation system based on skin type
-- Progress photos and visual tracking
-- Export routine data to PDF
-- Social features for sharing routines
-- Integration with skincare product databases
-- Mobile app development
 
 ## 🙏 Accreditations
 
@@ -154,13 +147,15 @@ This project was developed with assistance from GitHub Copilot AI assistant. The
 
 - **Auto Testing**: Helped structure and organize the stylesheet into logical sections
 
-### Learning Support
-
-- **Concept Explanation**: Provided explanations of Django concepts and web development principles
-- **Best Practices**: Guided implementation following industry standards and beginner-friendly approaches
-- **Code Review**: Offered suggestions for code improvements and optimization
-
 *All AI-generated code was reviewed, understood, and modified by the developer to ensure learning objectives were met.*
+
+## 🔧 Future Enhancements
+
+- Product recommendation system based on skin type
+- Progress photos and visual tracking
+- Export routine data to PDF
+- Social features for sharing routines
+- Integration with skincare product databases
 
 ## 📄 License
 
