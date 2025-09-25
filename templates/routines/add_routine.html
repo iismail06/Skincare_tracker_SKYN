@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Routine - SKYN{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Create New Routine</h1>
+    
+    <div class="form-card">
+        <form method="post" class="routine-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="routine_name">Routine Name</label>
+                <input type="text" id="routine_name" name="routine_name" 
+                       placeholder="e.g., My Morning Glow Routine" required>
+            </div>
+
+            <div class="form-group">
+                <label for="routine_type">Routine Type</label>
+                <select id="routine_type" name="routine_type" required>
+                    <option value="">Choose routine type</option>
+                    <option value="morning">Morning</option>
+                    <option value="evening">Evening</option>
+                </select>
+            </div>
+
+            <div class="steps-section">
+                <h3>Routine Steps</h3>
+                <p class="steps-help">Add up to 5 steps for your routine (leave blank if not needed)</p>
+                
+                <div class="form-group">
+                    <label for="step1">Step 1</label>
+                    <input type="text" id="step1" name="step1" 
+                           placeholder="e.g., Gentle cleanser">
+                </div>
+
+                <div class="form-group">
+                    <label for="step2">Step 2</label>
+                    <input type="text" id="step2" name="step2" 
+                           placeholder="e.g., Toner">
+                </div>
+
+                <div class="form-group">
+                    <label for="step3">Step 3</label>
+                    <input type="text" id="step3" name="step3" 
+                           placeholder="e.g., Serum">
+                </div>
+
+                <div class="form-group">
+                    <label for="step4">Step 4</label>
+                    <input type="text" id="step4" name="step4" 
+                           placeholder="e.g., Moisturizer">
+                </div>
+
+                <div class="form-group">
+                    <label for="step5">Step 5</label>
+                    <input type="text" id="step5" name="step5" 
+                           placeholder="e.g., Sunscreen">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'routines:dashboard' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Routine</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

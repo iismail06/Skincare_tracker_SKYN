@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Routines - SKYN{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="page-title">My Skincare Routines</h1>
+    <!-- Calendar Section -->
+    <div class="calendar-section">
+        <h2 class="calendar-title"><i class="fas fa-calendar-alt"></i> Routine Calendar</h2>
+        <div id="routine-calendar">
+            <!-- Calendar grid will go here -->
+            <p style="text-align:center; color: var(--gray);">Calendar coming soon! Track your daily routine completion here.</p>
+        </div>
+    </div>
+    
+    <div class="routines-grid">
+        <!-- Morning Routine -->
+        <div class="routine-card">
+            <div class="routine-header">
+                <h2><i class="fas fa-sun"></i> Morning Routine</h2>
+                {% if not morning_routine %}
+                    <a href="{% url 'routines:add_routine' %}" class="btn btn-primary">Create Morning Routine</a>
+                {% endif %}
+            </div>
+            
+            {% if morning_routine %}
+                <div class="routine-content">
+                    <h3>{{ morning_routine.name }}</h3>
+                    <div class="steps-list">
+                        {% for step in morning_routine.routinestep_set.all %}
+                            <div class="step-item">
+                                <span class="step-number">{{ step.order }}</span>
+                                <span class="step-name">{{ step.step_name }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-routine">
+                    <p>No morning routine created yet. Start your day right with a skincare routine!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Evening Routine -->
+        <div class="routine-card">
+            <div class="routine-header">
+                <h2><i class="fas fa-moon"></i> Evening Routine</h2>
+                {% if not evening_routine %}
+                    <a href="{% url 'routines:add_routine' %}" class="btn btn-primary">Create Evening Routine</a>
+                {% endif %}
+            </div>
+            
+            {% if evening_routine %}
+                <div class="routine-content">
+                    <h3>{{ evening_routine.name }}</h3>
+                    <div class="steps-list">
+                        {% for step in evening_routine.routinestep_set.all %}
+                            <div class="step-item">
+                                <span class="step-number">{{ step.order }}</span>
+                                <span class="step-name">{{ step.step_name }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-routine">
+                    <p>No evening routine created yet. End your day with a relaxing skincare routine!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="{% url 'routines:add_routine' %}" class="btn btn-secondary">
+            <i class="fas fa-plus"></i> Add New Routine
+        </a>
+    </div>
+</div>
+{% endblock %}
