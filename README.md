@@ -118,8 +118,6 @@ Testing documentation will be completed during the development phase.
 - As a returning user, I want to quickly access my existing routines
 - As a user, I want to see my progress and skin improvements over time
 
-
-
 ## 🙏 Accreditations
 
 ### Images & Assets
