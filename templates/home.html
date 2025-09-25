@@ -12,8 +12,8 @@
         {% if user.is_authenticated %}
             <div class="hero-actions">
                 <h2>Welcome back, {{ user.username }}! </h2>
-                <p>Your SKYN dashboard is coming soon...</p>
-                <a href="/admin/" class="btn btn-primary">Go to Dashboard</a>
+                <p>Ready to check your skincare routines?</p>
+                <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">My Routines</a>
             </div>
         {% else %}
             <div class="hero-actions">
