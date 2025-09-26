@@ -1,3 +1,4 @@
+{# base.html - global layout (nav, footer, css/js). All templates extend this for consistent styling. #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -35,8 +36,7 @@
                     <a href="{% url 'home' %}">Home</a>
                     <a href="{% url 'users:profile' %}">Profile</a>
                     <a href="{% url 'routines:dashboard' %}">Dashboard</a>
-                    <a href="{% url 'routines:add_routine' %}">Add Routine</a>
-                    <a href="{% url 'routines:my_routines' %}">My Routines</a>
+                    <a href="{% url 'users:profile' %}">Add Routine</a>
                     <a href="{% url 'users:logout' %}">Logout</a>
                 </div>
             {% else %}

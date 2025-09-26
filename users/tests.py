@@ -51,6 +51,25 @@ class BeginnerSignupTests(TestCase):
         self.assertTrue(user_exists)
         
         print("✅ Test passed: New user account created successfully!")
+
+    def test_signup_creates_userprofile(self):
+        """Test that signing up also creates a UserProfile linked to the User."""
+        signup_info = {
+            'username': 'profile_user',
+            'email': 'profile@example.com',
+            'age_range': '25_30',
+            'password1': 'safePassword123',
+            'password2': 'safePassword123'
+        }
+        response = self.fake_browser.post(self.signup_page, signup_info, follow=True)
+        self.assertEqual(response.status_code, 200)
+        from django.contrib.auth.models import User
+        from .models import UserProfile
+        user = User.objects.filter(username='profile_user').first()
+        self.assertIsNotNone(user)
+        profile = UserProfile.objects.filter(user=user).first()
+        self.assertIsNotNone(profile)
+        print("✅ Test passed: Signup creates UserProfile.")
     
     def test_passwords_must_match(self):
         """Test #3: Check if form rejects mismatched passwords"""

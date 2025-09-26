@@ -1,0 +1,16 @@
+{# users/profile_edit.html - edit the user's profile fields (skin type, concerns, goals) #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - SKYN{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Edit Your Profile</h1>
+    <form method="post" class="form-card" style="max-width:600px;margin:2rem auto;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Save</button>
+    </form>
+</div>
+{% endblock %}

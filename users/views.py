@@ -6,6 +6,9 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
+from routines.forms import RoutineCreateForm
+from routines.models import Routine, RoutineStep
+from django.urls import reverse
 
 def home(request):
     """Home page view with proper template"""
@@ -56,4 +59,91 @@ def simple_logout(request):
 @login_required
 def profile_view(request):
     profile = getattr(request.user, 'profile', None)
-    return render(request, 'users/profile.html', {'user': request.user, 'profile': profile})
+    routines = request.user.routine_set.all()
+    # Handle inline add-routine form submission here for a cleaner flow.
+    added_ok = False
+    form = None
+    last_added_routine = None
+
+    # If redirected from routines.add_routine, it can set a session id for the last added routine
+    last_added_id = request.session.pop('last_added_routine_id', None)
+    if last_added_id:
+        last_added_routine = Routine.objects.filter(pk=last_added_id, user=request.user).first()
+        # optional created timestamp
+        last_added_created_at_iso = request.session.pop('last_added_routine_created_at', None)
+        if last_added_created_at_iso:
+            try:
+                from django.utils.dateparse import parse_datetime
+                last_added_routine.created_at = parse_datetime(last_added_created_at_iso)
+            except Exception:
+                pass
+    if request.method == 'POST':
+        form = RoutineCreateForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            routine = Routine.objects.create(
+                user=request.user,
+                name=data['routine_name'],
+                routine_type=data['routine_type']
+            )
+            order = 1
+            for i in range(1, 6):
+                step_text = data.get(f'step{i}')
+                if step_text:
+                    RoutineStep.objects.create(routine=routine, step_name=step_text, order=order)
+                    order += 1
+            messages.success(request, 'Routine added successfully.')
+            added_ok = True
+            # expose the created routine so the template can show its name/link inline
+            last_added_routine = routine
+            # refresh routines queryset
+            routines = request.user.routine_set.all()
+        else:
+            # form with errors will be passed to template
+            pass
+
+    # If redirected back from routines.add_routine with errors/data in session, reconstruct a form
+    add_errors = request.session.pop('add_routine_errors', None)
+    add_non_field = request.session.pop('add_routine_non_field_errors', None)
+    add_data = request.session.pop('add_routine_data', None)
+    if add_data is not None:
+        # create a bound form so template can show errors and previous values
+        form = RoutineCreateForm(add_data)
+        if add_errors:
+            # manually set form._errors from session data
+            from django.forms.utils import ErrorDict, ErrorList
+            ed = ErrorDict()
+            for k, v in (add_errors or {}).items():
+                ed[k] = ErrorList(v)
+            form._errors = ed
+        if add_non_field:
+            # non-field errors
+            form._non_form_errors = ErrorList(add_non_field)
+
+    return render(request, 'users/profile.html', {
+        'user': request.user,
+        'profile': profile,
+        'routines': routines,
+        'added_ok': added_ok,
+        'added_routine_form': form,
+        'last_added_routine': last_added_routine,
+    })
+
+
+@login_required
+def profile_edit(request):
+    profile = getattr(request.user, 'profile', None)
+    from .forms import ProfileQuestionnaireForm
+
+    if request.method == 'POST':
+        form = ProfileQuestionnaireForm(request.POST, instance=profile)
+        if form.is_valid():
+            prof = form.save(commit=False)
+            prof.user = request.user
+            prof.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('users:profile')
+    else:
+        form = ProfileQuestionnaireForm(instance=profile)
+
+    return render(request, 'users/profile_edit.html', {'form': form})

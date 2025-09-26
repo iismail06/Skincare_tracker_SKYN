@@ -400,6 +400,30 @@ h2 {
     margin-top: 0;
 }
 
+/* Inline success block used on profile when a routine is added */
+.inline-success {
+    background: color-mix(in srgb, var(--primary) 10%, white);
+    border-left: 4px solid var(--primary);
+    color: var(--secondary-color-darker);
+    padding: 0.75rem;
+    border-radius: 6px;
+}
+.inline-success .muted {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+.inline-success .inline-dismiss {
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--secondary-color-darker);
+    padding: 0.25rem 0.5rem;
+}
+.inline-success .inline-dismiss:hover {
+    color: var(--primary);
+}
+
 .features-section .section-content {
     background: var(--background-color);
     height: 80vh;
