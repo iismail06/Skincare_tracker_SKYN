@@ -1,3 +1,4 @@
+{# routines/routine_checklist.html - daily/weekly checklist with optional calendar toggle #}
 {% extends 'base.html' %}
 {% load static %}
 
@@ -58,7 +59,7 @@
     <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Update Routine</button>
     </form>
     {% else %}
-    <p>No routine found. <a href="{% url 'routines:add_routine' %}">Create one now</a>.</p>
+    <p>No routine found. <a href="{% url 'users:profile' %}">Create one now</a>.</p>
     {% endif %}
 </div>
 {% endblock %}

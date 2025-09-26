@@ -1,0 +1,19 @@
+{# routines/detail.html - view a single routine and its steps #}
+{% extends 'base.html' %}
+{% block title %}Routine Detail - SKYN{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="page-title">{{ routine.name }}</h1>
+    <p>Type: {{ routine.routine_type|title }}</p>
+    <h2>Steps</h2>
+    {% if steps %}
+        <ol>
+        {% for step in steps %}
+            <li>{{ step.step_name }}{% if step.frequency %} ({{ step.frequency }}){% endif %}</li>
+        {% endfor %}
+        </ol>
+    {% else %}
+        <p>No steps added to this routine yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
