@@ -58,3 +58,26 @@ def add_routine(request):
         return redirect('routines:dashboard')
     
     return render(request, 'routines/add_routine.html')
+@login_required
+def routine_checklist_view(request):
+    """Display a daily/weekly checklist with calendar toggle"""
+    # Pick first routine as example
+    routine = Routine.objects.filter(user=request.user).first()
+    
+    if not routine:
+        routine = None
+
+    show_calendar = request.GET.get('show', '1')  # toggle calendar
+
+    if request.method == 'POST' and routine:
+        for step in routine.steps.all():
+            step.completed = bool(request.POST.get(f'completed_{step.id}', False))
+            step.save()
+
+    context = {
+        'routine': routine,
+        'user': request.user,
+        'show_calendar': show_calendar == '1',
+    }
+    return render(request, 'routines/routine_checklist.html', context)
+

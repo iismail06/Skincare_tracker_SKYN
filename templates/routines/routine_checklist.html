@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Routine Checklist - SKYN{% endblock %}
+
+{% block content %}
+<div class="routine-checklist-container">
+    <h1 class="page-title">Routine Checklist</h1>
+
+    <!-- Calendar Toggle -->
+    <a href="?show={% if show_calendar %}0{% else %}1{% endif %}" class="btn btn-secondary">
+        {% if show_calendar %}Hide Calendar{% else %}Show Calendar{% endif %}
+    </a>
+
+    {% if show_calendar %}
+    <div class="calendar-section">
+        <h2 class="calendar-title"><i class="fas fa-calendar-alt"></i> Routine Calendar</h2>
+        <ul>
+            {% for r in user.routine_set.all %}
+                <li>{{ r.name }} - {{ r.routine_type|title }} - {{ r.created_at|date:"M d, Y" }}</li>
+            {% empty %}
+                <li>No routines yet</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if routine %}
+    <form method="post">
+        {% csrf_token %}
+
+        <h2>Daily Routine</h2>
+        <ul>
+            {% for step in routine.steps.all %}
+                {% if step.frequency == 'daily' %}
+                <li>
+                    <input type="checkbox" name="completed_{{ step.id }}" id="step_{{ step.id }}"
+                           {% if step.completed %}checked{% endif %}>
+                    <label for="step_{{ step.id }}">{{ step.step_name }}</label>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <h2>Weekly Routine</h2>
+        <ul>
+            {% for step in routine.steps.all %}
+                {% if step.frequency == 'weekly' %}
+                <li>
+                    <input type="checkbox" name="completed_{{ step.id }}" id="step_{{ step.id }}"
+                           {% if step.completed %}checked{% endif %}>
+                    <label for="step_{{ step.id }}">{{ step.step_name }}</label>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <button type="submit" class="btn btn-primary">Update Routine</button>
+    </form>
+    {% else %}
+    <p>No routine found. <a href="{% url 'routines:add_routine' %}">Create one now</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}
