@@ -4,6 +4,7 @@
 {% block title %}My Routines - SKYN{% endblock %}
 
 {% block content %}
+
 <div class="dashboard-container">
     <h1 class="page-title">My Skincare Routines</h1>
     <!-- Calendar Section -->
@@ -72,14 +73,14 @@
     </div>
 
     <div class="dashboard-actions">
-        <a href="{% url 'routines:add_routine' %}" class="btn btn-secondary">
+        <a href="{% url 'routines:add_routine' %}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Add New Routine
         </a>
-        <a href="{% url 'routines:checklist' %}" class="btn btn-secondary">
+        <a href="{% url 'routines:checklist' %}" class="btn btn-primary">
                     <i class="fas fa-checklist"></i> View Checklist
         </a>
-
+        </div>
+    
     </div>
-
 </div>
 {% endblock %}
