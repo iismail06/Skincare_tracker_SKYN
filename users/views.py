@@ -69,14 +69,6 @@ def profile_view(request):
     last_added_id = request.session.pop('last_added_routine_id', None)
     if last_added_id:
         last_added_routine = Routine.objects.filter(pk=last_added_id, user=request.user).first()
-        # optional created timestamp
-        last_added_created_at_iso = request.session.pop('last_added_routine_created_at', None)
-        if last_added_created_at_iso:
-            try:
-                from django.utils.dateparse import parse_datetime
-                last_added_routine.created_at = parse_datetime(last_added_created_at_iso)
-            except Exception:
-                pass
     if request.method == 'POST':
         form = RoutineCreateForm(request.POST)
         if form.is_valid():

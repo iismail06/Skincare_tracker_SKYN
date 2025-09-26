@@ -9,7 +9,6 @@
     <h1 class="page-title">My Profile</h1>
     <div class="profile-info">
         <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
         
         {% if profile %}
@@ -37,9 +36,7 @@
                         <div>
                             <small style="color:#0b6b3a;">Added</small>
                             <div><strong id="inline-success-name">{{ last_added_routine.name }}</strong></div>
-                            {% if last_added_routine.created_at %}
-                                <div class="muted">Created: {{ last_added_routine.created_at|date:"M d, Y H:i" }}</div>
-                            {% endif %}
+                            {# timestamp intentionally hidden from inline success per user preference #}
                         </div>
                         <div style="display:flex;gap:.5rem;align-items:center;">
                             <a id="inline-success-view" href="{% url 'routines:detail' last_added_routine.id %}" class="btn btn-secondary">View</a>
@@ -126,8 +123,7 @@
                 <ul class="routines-list">
                     {% for routine in routines %}
                         <li>
-                            <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}<br>
-                            Created: {{ routine.created_at|date:"M d, Y" }}
+                            <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}
                             <a href="{% url 'routines:detail' routine.id %}" class="btn btn-secondary" style="margin-left:1rem;">View</a>
                         </li>
                     {% endfor %}

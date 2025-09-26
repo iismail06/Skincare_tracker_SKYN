@@ -45,8 +45,6 @@ def add_routine(request):
                     order += 1
             # store created routine id in session so profile view can show richer inline success
             request.session['last_added_routine_id'] = routine.id
-            # also store created timestamp for immediate display (ISO format)
-            request.session['last_added_routine_created_at'] = timezone.localtime(routine.created_at).isoformat()
 
             # If this is an AJAX request, return JSON so client can update UI without full reload
             if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
@@ -54,8 +52,7 @@ def add_routine(request):
                     'success': True,
                     'id': routine.id,
                     'name': routine.name,
-                    'detail_url': reverse('routines:detail', args=[routine.id]),
-                    'created_at': request.session.get('last_added_routine_created_at')
+                    'detail_url': reverse('routines:detail', args=[routine.id])
                 })
 
             return redirect(reverse('users:profile'))

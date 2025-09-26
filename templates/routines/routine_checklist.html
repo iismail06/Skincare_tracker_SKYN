@@ -18,7 +18,7 @@
         <h2 class="calendar-title"><i class="fas fa-calendar-alt"></i> Routine Calendar</h2>
         <ul>
             {% for r in user.routine_set.all %}
-                <li>{{ r.name }} - {{ r.routine_type|title }} - {{ r.created_at|date:"M d, Y" }}</li>
+                <li>{{ r.name }} - {{ r.routine_type|title }}</li>
             {% empty %}
                 <li>No routines yet</li>
             {% endfor %}

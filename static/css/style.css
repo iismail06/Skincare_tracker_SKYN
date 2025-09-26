@@ -400,6 +400,24 @@ h2 {
     margin-top: 0;
 }
 
+.profile-info {
+    margin-bottom: 0.6rem;
+    line-height: 1.45;
+}
+.profile-actions {
+    margin-top: 0.4rem;
+    margin-bottom: 0.9rem;
+}
+.profile-routines {
+    margin-top: 1.4rem;
+}
+
+/* Keep inline-success compact */
+.inline-success {
+    padding: .6rem .75rem;
+    border-radius: 6px;
+}
+
 /* Inline success block used on profile when a routine is added */
 .inline-success {
     background: color-mix(in srgb, var(--primary) 10%, white);

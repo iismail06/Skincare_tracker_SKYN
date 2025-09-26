@@ -72,7 +72,7 @@
         inline.style = 'margin-top:.5rem;padding:.75rem;border-left:4px solid #28a745;background:#f8fff9;border-radius:4px;display:flex;align-items:center;justify-content:space-between;';
         form.parentNode.parentNode.insertBefore(inline, form.parentNode);
       }
-      inline.innerHTML = '<div><small style="color:#0b6b3a;">Added</small><div><strong id="inline-success-name">' + (data.name || '') + '</strong></div><div class="muted">Created: ' + (data.created_at || '') + '</div></div><div style="display:flex;gap:.5rem;align-items:center;">' +
+  inline.innerHTML = '<div><small style="color:#0b6b3a;">Added</small><div><strong id="inline-success-name">' + (data.name || '') + '</strong></div></div><div style="display:flex;gap:.5rem;align-items:center;">' +
         '<a id="inline-success-view" class="btn btn-secondary" href="' + (data.detail_url || '#') + '">View</a>' +
         '<button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>' +
         '</div>';
@@ -98,7 +98,7 @@
         form.parentNode.parentNode.appendChild(list);
       }
       var li = document.createElement('li');
-      li.innerHTML = '<strong>' + (data.name || '') + '</strong> - ' + (data.routine_type || '') + '<br>Created: ' + (data.created_at || '') + ' <a href="' + (data.detail_url || '#') + '" class="btn btn-secondary" style="margin-left:1rem;">View</a>';
+  li.innerHTML = '<strong>' + (data.name || '') + '</strong> - ' + (data.routine_type || '') + ' <a href="' + (data.detail_url || '#') + '" class="btn btn-secondary" style="margin-left:1rem;">View</a>';
       // add to top
       if (list.firstChild) list.insertBefore(li, list.firstChild); else list.appendChild(li);
     }
@@ -123,7 +123,7 @@
           if (json && json.success) {
             // update inline success and routines list
             renderInlineSuccess(json);
-            prependRoutineToList({name: json.name, detail_url: json.detail_url, created_at: json.created_at, routine_type: ''});
+            prependRoutineToList({name: json.name, detail_url: json.detail_url, routine_type: ''});
             // reset form inputs
             form.reset();
             // remove extra step inputs except the first
