@@ -22,11 +22,18 @@ class Routine(models.Model):
         unique_together = ['user', 'routine_type']  # One morning, one evening per user
 
 
+FREQUENCY_CHOICES = [
+    ('daily', 'Daily'),
+    ('weekly', 'Weekly'),
+]
+
 class RoutineStep(models.Model):
     """Individual steps within a routine"""
     routine = models.ForeignKey(Routine, on_delete=models.CASCADE, related_name='steps')
     step_name = models.CharField(max_length=200)
     order = models.PositiveIntegerField(default=0)
+    completed = models.BooleanField(default=False)          # for checklist
+    frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, default='daily')  # daily/weekly
     
     def __str__(self):
         return f"{self.routine.name} - {self.step_name}"
@@ -48,3 +55,4 @@ class DailyCompletion(models.Model):
     
     class Meta:
         unique_together = ['user', 'routine_step', 'date']  # One completion record per step per day
+
