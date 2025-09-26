@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile | SKYN{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">My Profile</h1>
+    <div class="profile-info">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+        
+        {% if profile %}
+            {% if profile.date_of_birth %}
+                <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
+            {% endif %}
+            {% if profile.skin_type %}
+                <p><strong>Skin Type:</strong> {{ profile.get_skin_type_display }}</p>
+            {% endif %}
+            {% if profile.skin_concerns %}
+                <p><strong>Skin Concerns:</strong></p>
+                <ul>
+                    {% for concern in profile.skin_concerns.all %}
+                        <li>{{ concern }}</li>
+                    {% empty %}
+                        <li>No skin concerns added yet.</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+    <div class="profile-actions">
+        <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'home' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

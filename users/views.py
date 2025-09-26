@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
 from .models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     """Home page view with proper template"""
@@ -51,3 +52,8 @@ def simple_logout(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('home')
+
+@login_required
+def profile_view(request):
+    profile = getattr(request.user, 'profile', None)
+    return render(request, 'users/profile.html', {'user': request.user, 'profile': profile})
