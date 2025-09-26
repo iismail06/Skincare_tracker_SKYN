@@ -17,6 +17,24 @@ A Django-based web application for tracking and managing skincare routines. SKYN
 
 [View Live Application](your-deployed-url-here) <!-- Add when deployed -->
 
+## 📚 User Stories
+
+### First Time Visitor
+
+- As a first-time visitor, I want to understand what SKYN does immediately upon landing
+- As a new user, I want to easily create an account and start tracking my routine
+
+### Registered User
+
+- As a registered user, I want to create and manage my skincare routines
+- As a user, I want to track my skin's response to different products
+- As a user, I want to switch between light and dark themes for comfortable viewing
+
+### Returning User
+
+- As a returning user, I want to quickly access my existing routines
+- As a user, I want to see my progress and skin improvements over time
+
 ## 🛠️ Technologies Used
 
 - **Backend**: Django, Python
@@ -100,23 +118,12 @@ Skincare_tracker_SKYN/
 <!-- Testing table will be added here -->
 Testing documentation will be completed during the development phase.
 
-## 📚 User Stories
-
-### First Time Visitor
-
-- As a first-time visitor, I want to understand what SKYN does immediately upon landing
-- As a new user, I want to easily create an account and start tracking my routine
-
-### Registered User
-
-- As a registered user, I want to create and manage my skincare routines
-- As a user, I want to track my skin's response to different products
-- As a user, I want to switch between light and dark themes for comfortable viewing
-
-### Returning User
-
-- As a returning user, I want to quickly access my existing routines
-- As a user, I want to see my progress and skin improvements over time
+| Test Area  | Description                                      | Status |
+| ---------- | ------------------------------------------------ | ------ |
+| **Models** | Check model creation, relationships, validations | ✅      |
+| **Views**  | Test routine creation, listing, and detail pages | ✅      |
+| **Forms**  | Ensure forms validate correctly                  | ✅      |
+| **Auth**   | Test login/logout and registration               | ✅      |
 
 ## 🙏 Accreditations
 
@@ -137,15 +144,25 @@ Testing documentation will be completed during the development phase.
 - Color palette inspired by modern skincare brand aesthetics
 - Typography choices based on accessibility best practices
 
-## 🤖 AI Contribution
+## 📖 Inspiration & Acknowledgments
 
-This project was developed with assistance from GitHub Copilot AI assistant. The AI contributed to:
+This project was developed as a **learning exercise**. I combined ideas from multiple tutorials, blog posts, and online snippets, adapting them into a skincare routine tracker.
 
-### Code Development
+Some key resources and inspirations:
 
-- **Auto Testing**: Helped structure and organize the stylesheet into logical sections
+- [Django official tutorial](https://docs.djangoproject.com/en/5.2/intro/tutorial01/) — Understanding project/app structure, models, views, templates, and migrations.  
+- [MDN Django generic views](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Generic_views) — Using and adapting class-based views like `ListView` and `DetailView`.  
+- [DigitalOcean Django views guide](https://www.digitalocean.com/community/tutorials/how-to-create-views-for-django-web-development) — Handling GET/POST requests and URL mapping.  
+- [GeeksforGeeks Django CRUD tutorial](https://www.geeksforgeeks.org/python/create-view-function-based-views-django/) — CRUD operations and forms in Django.  
+- [StudyGyaan Django calendar app](https://studygyaan.com/django/django-calendar-app) — Inspiration for displaying routines in a calendar format.  
+- Various frontend snippets (dark mode toggle, CSS styling, form design) adapted from online examples.  
 
-*All AI-generated code was reviewed, understood, and modified by the developer to ensure learning objectives were met.*
+### 🤖 AI Contribution  
+
+- **Automated Testing**: AI was used to help structure and organize the test cases into logical sections.  
+- *All AI-generated code was reviewed, understood, and modified by the developer to ensure learning objectives were met.*  
+
+I learned the most by **integrating, debugging, and adapting** these patterns into a working app.
 
 ## 🔧 Future Enhancements
 
