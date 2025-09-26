@@ -10,14 +10,12 @@
     var addBtn = document.createElement('button');
     addBtn.type = 'button';
     addBtn.textContent = 'Add step';
-    addBtn.className = 'btn btn-secondary';
-    addBtn.style.marginTop = '0.5rem';
+  addBtn.className = 'btn btn-secondary';
 
     var removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.textContent = 'Remove last step';
-    removeBtn.className = 'btn btn-secondary';
-    removeBtn.style.marginLeft = '0.5rem';
+  removeBtn.className = 'btn btn-secondary';
 
     container.parentNode.insertBefore(addBtn, container.nextSibling);
     container.parentNode.insertBefore(removeBtn, addBtn.nextSibling);
@@ -34,8 +32,7 @@
       input.type = 'text';
       input.name = 'step' + next;
       input.placeholder = 'Step ' + next;
-      input.style.display = 'block';
-      input.style.marginTop = '0.25rem';
+  input.className = 'form-control';
       container.appendChild(input);
     });
 
@@ -64,16 +61,15 @@
 
     function renderInlineSuccess(data) {
       var inline = document.getElementById('inline-success');
-      if (!inline) {
+  if (!inline) {
         // create a new inline block above the form
         inline = document.createElement('div');
-        inline.id = 'inline-success';
-        inline.className = 'inline-success';
-        inline.style = 'margin-top:.5rem;padding:.75rem;border-left:4px solid #28a745;background:#f8fff9;border-radius:4px;display:flex;align-items:center;justify-content:space-between;';
+    inline.id = 'inline-success';
+    inline.className = 'inline-success inline-success--added';
         form.parentNode.parentNode.insertBefore(inline, form.parentNode);
       }
-  inline.innerHTML = '<div><small style="color:#0b6b3a;">Added</small><div><strong id="inline-success-name">' + (data.name || '') + '</strong></div></div><div style="display:flex;gap:.5rem;align-items:center;">' +
-        '<a id="inline-success-view" class="btn btn-secondary" href="' + (data.detail_url || '#') + '">View</a>' +
+  inline.innerHTML = '<div><small class="muted">Added</small><div><strong id="inline-success-name">' + (data.name || '') + '</strong></div></div><div>' +
+    '<a id="inline-success-view" class="btn btn-secondary" href="' + (data.detail_url || '#') + '">View</a>' +
         '<button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>' +
         '</div>';
       wireDismiss();
@@ -98,7 +94,7 @@
         form.parentNode.parentNode.appendChild(list);
       }
       var li = document.createElement('li');
-  li.innerHTML = '<strong>' + (data.name || '') + '</strong> - ' + (data.routine_type || '') + ' <a href="' + (data.detail_url || '#') + '" class="btn btn-secondary" style="margin-left:1rem;">View</a>';
+  li.innerHTML = '<strong>' + (data.name || '') + '</strong> - ' + (data.routine_type || '') + ' <a href="' + (data.detail_url || '#') + '" class="btn btn-secondary">View</a>';
       // add to top
       if (list.firstChild) list.insertBefore(li, list.firstChild); else list.appendChild(li);
     }
