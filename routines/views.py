@@ -115,6 +115,15 @@ def detail(request, pk):
     """Show routine detail and steps"""
     routine = get_object_or_404(Routine, pk=pk, user=request.user)
     steps = routine.steps.all()
+    # If the user submitted the checklist, update step completion flags
+    if request.method == 'POST':
+        for step in steps:
+            checked = bool(request.POST.get(f'completed_{step.id}', False))
+            if step.completed != checked:
+                step.completed = checked
+                step.save()
+        # stay on the same page after saving
+        return redirect(request.path)
     return render(request, 'routines/detail.html', {
         'routine': routine,
         'steps': steps,

@@ -13,11 +13,22 @@
 
         <h2 class="u-margin-top-sm">Steps</h2>
         {% if steps %}
-            <ol>
-            {% for step in steps %}
-                <li>{{ step.step_name }}{% if step.frequency %} ({{ step.frequency }}){% endif %}</li>
-            {% endfor %}
-            </ol>
+            <form method="post" action="">
+                {% csrf_token %}
+                <ol>
+                {% for step in steps %}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
+                            {{ step.step_name }}{% if step.frequency %} ({{ step.frequency }}){% endif %}
+                        </label>
+                    </li>
+                {% endfor %}
+                </ol>
+                <div class="form-actions u-margin-top-sm">
+                    <button type="submit" class="btn btn-primary">Save checklist</button>
+                </div>
+            </form>
         {% else %}
             <p>No steps added to this routine yet.</p>
         {% endif %}
