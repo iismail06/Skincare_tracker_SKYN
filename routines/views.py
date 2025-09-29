@@ -19,6 +19,22 @@ def dashboard(request):
     morning_routine = morning_routines.first()
     evening_routine = evening_routines.first()
 
+    # Handle checklist POSTs from dashboard (each form sends routine_id)
+    if request.method == 'POST':
+        try:
+            rid = int(request.POST.get('routine_id') or 0)
+        except (TypeError, ValueError):
+            rid = 0
+        if rid:
+            routine = Routine.objects.filter(pk=rid, user=request.user).first()
+            if routine:
+                for step in routine.steps.all():
+                    checked = bool(request.POST.get(f'completed_{step.id}', False))
+                    if step.completed != checked:
+                        step.completed = checked
+                        step.save()
+        return redirect(request.path)
+
     return render(request, 'routines/dashboard.html', {
         'morning_routine': morning_routine,
         'evening_routine': evening_routine,
