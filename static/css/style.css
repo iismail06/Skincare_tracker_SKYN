@@ -281,6 +281,33 @@ h2 {
     margin-bottom: 0;
 }
 
+/* Reusable hero background for other pages.
+   Uses a CSS variable so the image can be overridden per-page if desired. */
+:root {
+    --site-hero-image: url(https://images.pexels.com/photos/7479915/pexels-photo-7479915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
+}
+
+.site-hero-bg {
+    background-image: var(--site-hero-image);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    filter: brightness(95%) saturate(105%) contrast(105%);
+    padding: 3rem 0;
+    min-height: calc(100vh - 120px);
+}
+
+/* Keep content readable on the hero background by using a semi-opaque panel */
+.site-hero-bg .container {
+    background: rgba(255,255,255,0.60);
+    padding: 1.5rem 1.75rem;
+    border-radius: 8px;
+    box-shadow: none;
+    margin: 0 auto; /* ensure hero container centers too */
+}
+
+/* If a page wants the darker overlay (like the home hero), it can still use .hero-header */
+
 .hero-content {
     position: relative;
     z-index: 1;
@@ -292,10 +319,6 @@ h2 {
 
 .hero-title {
     font-size: 3.5rem;
-    margin: 0 0 1rem 0;
-    text-transform: uppercase;
-    color: #ffffff;
-    font-weight: 700;
     line-height: 1.2;
 }
 
@@ -412,6 +435,35 @@ h2 {
     margin-top: 1.4rem;
 }
 
+/* Profile: narrower centered container and button adjustments */
+.profile-container {
+    max-width: 760px; /* comfortable reading width */
+    margin: 0 auto;   /* center container */
+    padding: 1rem;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center; /* center action buttons */
+}
+
+.profile-actions .btn {
+    padding: 0.5rem 0.9rem; /* slightly smaller */
+    font-size: 0.95rem;
+}
+
+.profile-routines .form-card--wide,
+.form-card {
+    max-width: 640px;
+    margin: 0.9rem auto 0 auto;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+}
+
 /* Keep inline-success compact */
 .inline-success {
     padding: .6rem .75rem;
@@ -484,13 +536,13 @@ h2 {
     padding: 1.5rem;
     background: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .feature-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: none;
 }
 
 .feature-item h3 {
@@ -563,45 +615,79 @@ label {
 
 /* Buttons */
 .btn {
-    width: 100%;
-    padding: 0.75rem;
+    display: inline-block;
+    padding: 0.6rem 1rem;
     background-color: var(--accent-color-lighter);
     color: #ffffff !important;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 1rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    margin: 0.25rem 0;
 }
 
 .btn:hover {
-    background-color: var(--accent-color);
     transform: translateY(-1px);
 }
 
+/* Primary: the prominent filled button used on the home "My Routines" action */
 .btn-primary {
-    background: var(--accent-color-lighter);
-    color: white !important;
-    border: 2px solid var(--accent-color-lighter);
-    padding: 0.8rem 2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    text-decoration: none;
+    padding: 0.8rem 1.8rem;
+    background: linear-gradient(180deg, var(--accent-color) 0%, var(--accent-color-lighter) 100%);
+    color: #fff !important;
+    border: 0;
+    box-shadow: 0 8px 20px rgba(16, 24, 40, 0.12);
 }
 
 .btn-primary:hover {
-    background: transparent;
-    color: var(--accent-color-lighter) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
 }
+
+/* Secondary: outline or muted alternate */
+.btn-secondary {
+    background: transparent;
+    color: var(--accent-color) !important;
+    border: 2px solid var(--accent-color);
+    padding: 0.6rem 1rem;
+}
+
+/* Small button variant for inline controls */
+.btn-sm {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+}
+
+/* Specific smaller styling for the step control buttons (Add step / Remove last step) */
+.step-control {
+    padding: 0.32rem 0.6rem !important;
+    font-size: 0.85rem !important;
+    line-height: 1;
+    border-radius: 6px;
+}
+/* Prevent step controls from expanding to container width */
+.step-control {
+    display: inline-block;
+    width: auto !important;
+    min-width: 0;
+}
+
+/* Small spacing helpers used by templates (kept minimal and semantic) */
+.u-margin-top-xl { margin-top: 2.5rem; }
+.u-margin-bottom-md { margin-bottom: 1.5rem; }
+.muted-success { color: #0b6b3a; font-weight:600; }
+.inline-success-actions { display:flex; gap:0.5rem; align-items:center; }
+.form-card--wide { max-width:600px; margin:2rem auto; }
+
+/* Small helpers used by JS when dynamically inserting elements */
+.u-margin-top-sm { margin-top: 0.5rem; }
+.u-margin-left-sm { margin-left: 0.5rem; }
+.u-margin-left-md { margin-left: 1rem; }
+.input-block { display:block; margin-top:0.25rem; width:100%; }
 
 
 /* ==========================================================================
@@ -650,7 +736,7 @@ main .hero-header {
 
 .container {
     max-width: 1200px;
-    margin: 0 0.2rem;
+    margin: 0 auto; /* center the main container in the viewport */
     padding: 0 0.2rem;
 }
 
@@ -755,18 +841,16 @@ main .hero-header {
 }
 
 .routine-card {
-    background: var(--card-bg);
-    border-radius: 12px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 10px;
     padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 2px solid transparent;
+    box-shadow: none;
+    transition: transform 0.18s ease;
+    border: 1px solid rgba(0,0,0,0.04);
 }
 
 .routine-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    border-color: var(--primary);
+    transform: translateY(-3px);
 }
 
 .routine-header {
@@ -858,11 +942,11 @@ main .hero-header {
 }
 
 .form-card {
-    background: var(--card-bg);
-    border-radius: 12px;
+    background: rgba(255,255,255,0.94);
+    border-radius: 10px;
     padding: 2.5rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    border: 2px solid transparent;
+    box-shadow: none;
+    border: 1px solid rgba(0,0,0,0.04);
 }
 
 .routine-form {
@@ -938,7 +1022,7 @@ main .hero-header {
 #calendar { max-width: 900px; margin: 0 auto; }
 .month { display: block; }
 .week { display: flex; width: 100%; }
-.week .day { flex: 1 1 0; padding: 0.6rem; border: 1px solid rgba(0,0,0,0.04); background: var(--card-bg); display:flex; flex-direction:column; gap:0.4rem; min-height:90px; }
+.week .day { flex: 1 1 0; padding: 0.6rem; border: 1px solid rgba(0,0,0,0.03); background: rgba(255,255,255,0.92); display:flex; flex-direction:column; gap:0.4rem; min-height:90px; }
 .day.other { opacity: 0.45; }
 .day .day-name { font-size: 0.8rem; color: var(--gray); }
 .day .day-number { font-weight: 600; font-size: 1rem; }
@@ -946,7 +1030,7 @@ main .hero-header {
 .day .day-events span { width:10px; height:10px; border-radius:2px; display:inline-block; }
 .day.today { box-shadow: 0 0 0 2px rgba(150,154,139,0.12); border: 2px solid var(--primary); }
 .day.completed { background: linear-gradient(180deg, rgba(160,166,143,0.06), transparent); }
-.details { padding: 1rem; background: var(--card-bg); border-radius:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+.details { padding: 1rem; background: rgba(255,255,255,0.92); border-radius:8px; box-shadow: none; border: 1px solid rgba(0,0,0,0.04); }
 
 /* Ensure calendar is responsive: stack days on very small screens */
 @media (max-width: 420px) {
@@ -961,9 +1045,9 @@ main .hero-header {
 .checklist-container {
     max-width: 600px;
     margin: 2rem auto;
-    background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    background: rgba(255,255,255,0.94);
+    border-radius: 10px;
+    box-shadow: none;
     padding: 2.5rem;
     display: flex;
     flex-direction: column;

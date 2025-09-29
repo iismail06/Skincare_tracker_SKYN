@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="container">
+    <div class="profile-container">
     <h1 class="page-title">My Profile</h1>
     <div class="profile-info">
         <p><strong>Username:</strong> {{ user.username }}</p>
@@ -29,23 +30,23 @@
         <a href="{% url 'home' %}" class="btn btn-primary">Back to Dashboard</a>
     </div>
 
-        <div class="profile-routines" style="margin-top:2.5rem;">
+    <div class="profile-routines u-margin-top-xl">
             <h2>My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
                 {% if last_added_routine %}
-                    <div id="inline-success" class="inline-success" style="margin-top:.5rem;padding:.75rem;border-left:4px solid #28a745;background:#f8fff9;border-radius:4px;display:flex;align-items:center;justify-content:space-between;">
+                    <div id="inline-success" class="inline-success">
                         <div>
-                            <small style="color:#0b6b3a;">Added</small>
+                            <small class="muted-success">Added</small>
                             <div><strong id="inline-success-name">{{ last_added_routine.name }}</strong></div>
                             {# timestamp intentionally hidden from inline success per user preference #}
                         </div>
-                        <div style="display:flex;gap:.5rem;align-items:center;">
-                            <a id="inline-success-view" href="{% url 'routines:detail' last_added_routine.id %}" class="btn btn-secondary">View</a>
+                        <div class="inline-success-actions">
+                            <a id="inline-success-view" href="{% url 'routines:detail' last_added_routine.id %}" class="btn btn-primary">View</a>
                             <button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>
                         </div>
                     </div>
                 {% endif %}
             <!-- Inline add-routine form (consolidated) -->
-            <div class="form-card" style="padding:1rem;margin-bottom:1.25rem;">
+            <div class="form-card">
                 <form id="add-routine-form" method="post" action="{% url 'routines:add_routine' %}" class="routine-form" data-ajax-url="{% url 'routines:add_routine' %}">
                     {% csrf_token %}
                     {% comment %} If the view attached a form (`added_routine_form`), use it to show errors. Otherwise show blank inputs. {% endcomment %}
@@ -88,7 +89,7 @@
                                 <input type="text" name="step5" value="{{ added_routine_form.data.step5|default_if_none:'' }}" placeholder="Step 5">
                             </div>
 
-                            <div class="form-actions" style="margin-top:.75rem;">
+                                <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
                             </div>
                         {% endwith %}
@@ -113,7 +114,7 @@
                             <input type="text" name="step4" placeholder="Step 4">
                             <input type="text" name="step5" placeholder="Step 5">
                         </div>
-                        <div class="form-actions" style="margin-top:.75rem;">
+                        <div class="form-actions u-margin-top-sm">
                             <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
                         </div>
                     {% endif %}
@@ -124,14 +125,15 @@
                     {% for routine in routines %}
                         <li>
                             <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}
-                            <a href="{% url 'routines:detail' routine.id %}" class="btn btn-secondary" style="margin-left:1rem;">View</a>
+                            <a href="{% url 'routines:detail' routine.id %}" class="btn btn-primary">View</a>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No routines found. <a href="#" onclick="document.getElementById('routine_name').focus();" class="btn btn-primary">Add a Routine</a></p>
+                <p>No routines found. <a href="#" class="btn btn-primary add-routine-cta">Add a Routine</a></p>
             {% endif %}
-        </div>
+    </div>
+    </div> <!-- /.profile-container -->
 </div>
 {% endblock %}
 

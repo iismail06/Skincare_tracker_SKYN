@@ -9,7 +9,7 @@
     <h1 class="page-title">Routine Checklist</h1>
 
     <!-- Calendar Toggle -->
-    <a href="?show={% if show_calendar %}0{% else %}1{% endif %}" class="btn btn-secondary" style="margin-bottom:1.5rem;">
+    <a href="?show={% if show_calendar %}0{% else %}1{% endif %}" class="btn btn-primary u-margin-bottom-md">
         {% if show_calendar %}Hide Calendar{% else %}Show Calendar{% endif %}
     </a>
 
@@ -27,7 +27,7 @@
     {% endif %}
 
     {% if routine %}
-    <form method="post" class="form-card" style="max-width:600px;margin:2rem auto;">
+    <form method="post" class="form-card form-card--wide">
         {% csrf_token %}
 
         <h2>Daily Routine</h2>
@@ -56,7 +56,7 @@
             {% endfor %}
         </ul>
 
-    <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Update Routine</button>
+    <button type="submit" class="btn btn-primary">Update Routine</button>
     </form>
     {% else %}
     <p>No routine found. <a href="{% url 'users:profile' %}">Create one now</a>.</p>
