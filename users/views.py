@@ -124,7 +124,8 @@ def profile_view(request):
 
 @login_required
 def profile_edit(request):
-    profile = getattr(request.user, 'profile', None)
+    # Ensure we fetch the existing UserProfile by user to avoid creating duplicates
+    profile = UserProfile.objects.filter(user=request.user).first()
     from .forms import ProfileQuestionnaireForm
 
     if request.method == 'POST':
