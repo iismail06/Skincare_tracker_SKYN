@@ -306,6 +306,74 @@ h2 {
     margin: 0 auto; /* ensure hero container centers too */
 }
 
+/* Ensure important hero headings remain readable on the hero image. */
+.site-hero-bg .page-title,
+.site-hero-bg .calendar-title,
+.site-hero-bg .calendar-title i,
+.site-hero-bg .hero-title,
+.site-hero-bg .hero-subtitle,
+.site-hero-bg .hero-description {
+    color: #ffffff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.45);
+}
+
+/* Routines dashboard tweaks */
+.routines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.routine-card {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(25,25,25,0.06);
+}
+
+.routine-header h2 {
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.steps-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.step-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+.step-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 8px;
+}
+
+.dashboard-actions {
+    margin-top: 1.75rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-start;
+}
+
 /* If a page wants the darker overlay (like the home hero), it can still use .hero-header */
 
 .hero-content {
@@ -813,8 +881,6 @@ main .hero-header {
 }
 
 
-
-
 /* ==========================================================================
    13. ROUTINES DASHBOARD STYLES
    ========================================================================== */
@@ -832,6 +898,7 @@ main .hero-header {
     font-size: 2.5rem;
     font-weight: 600;
 }
+
 
 .routines-grid {
     display: grid;
@@ -1018,6 +1085,30 @@ main .hero-header {
 /* ==========================================================================
      15. CALENDAR WIDGET     
  ========================================================================== */
+
+/* Calendar header overrides (merged from calendar-overrides.css) */
+#calendar .header h1,
+#calendar .header .title,
+.calendar-section #calendar .header h1 {
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Tahoma, Verdana, sans-serif;
+    font-size: 1.6rem; /* smaller than hero title but prominent */
+    font-weight: 700;
+    color: #080604; /* dark text for contrast on light panel */
+    display: inline-block; /* let background wrap text */
+    background: rgba(255,255,255,0.90);
+    padding: 0.36rem 0.8rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    border: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 0.65rem;
+}
+
+/* Ensure header container is not forcing full-width background */
+#calendar .header {
+    background: transparent;
+    padding: 0.25rem 0;
+}
+
 
 #calendar { max-width: 900px; margin: 0 auto; }
 .month { display: block; }
@@ -1218,7 +1309,13 @@ main .hero-header {
         order: 1;
     }
 }
-
+/* Small responsive tweak */
+@media (max-width: 600px) {
+    #calendar .header h1 {
+        font-size: 1.35rem;
+        padding: 0.28rem 0.6rem;
+    }
+}
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
     .hero-title {

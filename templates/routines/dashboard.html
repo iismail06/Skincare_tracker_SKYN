@@ -10,7 +10,7 @@
     <h1 class="page-title">My Skincare Routines</h1>
     <!-- Calendar Section -->
     <div class="calendar-section">
-        <h2 class="calendar-title"><i class="fas fa-calendar-alt"></i> Routine Calendar</h2>
+        <h2 class="calendar-title"> Routine Calendar</h2>
         <div id="calendar"></div>
     </div>
 
@@ -20,76 +20,68 @@
         <div class="routine-card">
             <div class="routine-header">
                 <h2><i class="fas fa-sun"></i> Morning Routine</h2>
-                {% if not morning_routine %}
-                <a href="{% url 'users:profile' %}" class="btn btn-primary">Create Morning Routine</a>
-                {% endif %}
+                {% if morning_routine %}
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" name="routine_id" value="{{ morning_routine.id }}">
                         <div class="steps-list">
                             {% for step in morning_routine.routinestep_set.all %}
-                            <div class="step-item">
-                                <label>
-                                    <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
-                                    <span class="step-number">{{ step.order }}</span>
-                                    <span class="step-name">{{ step.step_name }}</span>
-                                </label>
-                            </div>
+                                <div class="step-item">
+                                    <label>
+                                        <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
+                                        <span class="step-number">{{ step.order }}</span>
+                                        <span class="step-name">{{ step.step_name }}</span>
+                                    </label>
+                                </div>
+                            {% empty %}
+                                <p class="muted">No steps yet for this routine.</p>
                             {% endfor %}
                         </div>
                         <div class="form-actions u-margin-top-sm">
                             <button type="submit" class="btn btn-primary">Save Morning Checklist</button>
                         </div>
                     </form>
-                        <span class="step-number">{{ step.order }}</span>
-                        <span class="step-name">{{ step.step_name }}</span>
+                {% else %}
+                    <a href="{% url 'users:profile' %}" class="btn btn-primary">Create Morning Routine</a>
+                    <div class="empty-routine">
+                        <p>No morning routine created yet. Start your day right with a skincare routine!</p>
                     </div>
-                    {% endfor %}
-                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="empty-routine">
-                <p>No morning routine created yet. Start your day right with a skincare routine!</p>
-            </div>
-            {% endif %}
         </div>
 
         <!-- Evening Routine -->
         <div class="routine-card">
             <div class="routine-header">
                 <h2><i class="fas fa-moon"></i> Evening Routine</h2>
-                {% if not evening_routine %}
-                <a href="{% url 'users:profile' %}" class="btn btn-primary">Create Evening Routine</a>
-                {% endif %}
+                {% if evening_routine %}
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" name="routine_id" value="{{ evening_routine.id }}">
                         <div class="steps-list">
                             {% for step in evening_routine.routinestep_set.all %}
-                            <div class="step-item">
-                                <label>
-                                    <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
-                                    <span class="step-number">{{ step.order }}</span>
-                                    <span class="step-name">{{ step.step_name }}</span>
-                                </label>
-                            </div>
+                                <div class="step-item">
+                                    <label>
+                                        <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
+                                        <span class="step-number">{{ step.order }}</span>
+                                        <span class="step-name">{{ step.step_name }}</span>
+                                    </label>
+                                </div>
+                            {% empty %}
+                                <p class="muted">No steps yet for this routine.</p>
                             {% endfor %}
                         </div>
                         <div class="form-actions u-margin-top-sm">
                             <button type="submit" class="btn btn-primary">Save Evening Checklist</button>
                         </div>
                     </form>
-                        <span class="step-number">{{ step.order }}</span>
-                        <span class="step-name">{{ step.step_name }}</span>
+                {% else %}
+                    <a href="{% url 'users:profile' %}" class="btn btn-primary">Create Evening Routine</a>
+                    <div class="empty-routine">
+                        <p>No evening routine created yet. End your day with a relaxing skincare routine!</p>
                     </div>
-                    {% endfor %}
-                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="empty-routine">
-                <p>No evening routine created yet. End your day with a relaxing skincare routine!</p>
-            </div>
-            {% endif %}
         </div>
     </div>
 
