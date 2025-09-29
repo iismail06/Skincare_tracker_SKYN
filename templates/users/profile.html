@@ -40,7 +40,7 @@
                             {# timestamp intentionally hidden from inline success per user preference #}
                         </div>
                         <div class="inline-success-actions">
-                            <a id="inline-success-view" href="{% url 'routines:detail' last_added_routine.id %}" class="btn btn-primary">View</a>
+                            <a id="inline-success-view" href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
                             <button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                     {% for routine in routines %}
                         <li>
                             <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}
-                            <a href="{% url 'routines:detail' routine.id %}" class="btn btn-primary">View</a>
+                            <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
                         </li>
                     {% endfor %}
                 </ul>

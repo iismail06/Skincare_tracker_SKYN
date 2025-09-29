@@ -1,4 +1,5 @@
-# tests package for routines app
-__all__ = [
-    'test_add_routine_via_profile',
-]
+"""routines.tests package
+
+This file intentionally left minimal so test discovery finds the module
+without exposing a top-level `tests` name that confuses unittest.
+"""

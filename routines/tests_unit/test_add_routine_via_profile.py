@@ -76,8 +76,8 @@ class AddRoutineViaProfileTest(TestCase):
         # routine created
         routine = Routine.objects.filter(user=self.user, name='Inline Success Routine').first()
         self.assertIsNotNone(routine)
-        # profile should contain the inline success block with the routine name and the detail URL
-        detail_url = reverse('routines:detail', args=[routine.id])
+        # profile should contain the inline success block with the routine name and the dashboard URL
+        detail_url = reverse('routines:dashboard')
         self.assertContains(response, 'Added')
         self.assertContains(response, 'Inline Success Routine')
         self.assertContains(response, detail_url)

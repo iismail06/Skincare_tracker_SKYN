@@ -68,7 +68,8 @@ def add_routine(request):
                     'success': True,
                     'id': routine.id,
                     'name': routine.name,
-                    'detail_url': reverse('routines:detail', args=[routine.id])
+                    # point to the dashboard where checklists are now managed
+                    'detail_url': reverse('routines:dashboard')
                 })
 
             return redirect(reverse('users:profile'))
@@ -140,9 +141,7 @@ def detail(request, pk):
                 step.save()
         # stay on the same page after saving
         return redirect(request.path)
-    return render(request, 'routines/detail.html', {
-        'routine': routine,
-        'steps': steps,
-    })
+    # detail page removed; redirect users to the dashboard where checklists are managed
+    return redirect('routines:dashboard')
 
 
