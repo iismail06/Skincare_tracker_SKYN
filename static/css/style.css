@@ -480,6 +480,19 @@ h2 {
     }
 }
 
+/* Remove the global site hero background only on the home page */
+.home.site-hero-bg,
+main.home.site-hero-bg,
+main.home {
+    background-image: none !important;
+    background: none !important;
+    filter: none !important;
+}
+
+.home .site-hero-bg .container {
+    background: transparent;
+}
+
 /* ==========================================================================
    7. FEATURES SECTION
    ========================================================================== */
