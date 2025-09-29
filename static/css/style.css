@@ -1103,10 +1103,79 @@ main .hero-header {
     margin-bottom: 0.65rem;
 }
 
-/* Ensure header container is not forcing full-width background */
+/* Ensure header container groups the title and controls; controls sit visually inside the month pill */
 #calendar .header {
     background: transparent;
     padding: 0.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* group title and controls together on the left */
+    gap: 0.5rem;
+}
+
+/* Title appears as the pill; controls will tuck into its right edge */
+#calendar .header h1,
+#calendar .header .title {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.90);
+    padding: 0.36rem 0.9rem; /* leave slightly more room for controls */
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    border: 1px solid rgba(0,0,0,0.06);
+    color: #080604;
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+
+/* Place the nav controls overlapping the right edge of the pill */
+#calendar .header .left,
+#calendar .header .right {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.92);
+    color: #080604;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.12s ease, transform 0.08s ease;
+    margin-left: -4px; /* slight tuck into the pill (smaller overlap) */
+    z-index: 2;
+}
+
+/* Chevrons */
+#calendar .header .left::after {
+    content: '\276E';
+    font-size: 1.1rem;
+}
+
+#calendar .header .right::after {
+    content: '\276F';
+    font-size: 1.1rem;
+}
+
+/* Hover states: slightly darker and lift */
+#calendar .header .left:hover,
+#calendar .header .right:hover {
+    background: rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+}
+
+/* Ensure the controls remain visible on small screens */
+@media (max-width: 600px) {
+    #calendar .header .left,
+    #calendar .header .right {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
 }
 
 
