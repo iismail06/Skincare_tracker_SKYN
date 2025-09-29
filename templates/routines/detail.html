@@ -2,18 +2,25 @@
 {% extends 'base.html' %}
 {% block title %}Routine Detail - SKYN{% endblock %}
 {% block content %}
-<div class="dashboard-container">
-    <h1 class="page-title">{{ routine.name }}</h1>
-    <p>Type: {{ routine.routine_type|title }}</p>
-    <h2>Steps</h2>
-    {% if steps %}
-        <ol>
-        {% for step in steps %}
-            <li>{{ step.step_name }}{% if step.frequency %} ({{ step.frequency }}){% endif %}</li>
-        {% endfor %}
-        </ol>
-    {% else %}
-        <p>No steps added to this routine yet.</p>
-    {% endif %}
+<div class="container">
+    <div class="profile-container">
+        <h1 class="page-title">{{ routine.name }}</h1>
+        <p class="muted-success">Type: {{ routine.routine_type|title }}</p>
+
+        <div class="form-actions u-margin-top-sm">
+            <a href="{% url 'users:profile' %}#add-routine-form" class="btn btn-secondary">Add to Routine</a>
+        </div>
+
+        <h2 class="u-margin-top-sm">Steps</h2>
+        {% if steps %}
+            <ol>
+            {% for step in steps %}
+                <li>{{ step.step_name }}{% if step.frequency %} ({{ step.frequency }}){% endif %}</li>
+            {% endfor %}
+            </ol>
+        {% else %}
+            <p>No steps added to this routine yet.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
