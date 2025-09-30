@@ -1,10 +1,13 @@
-{# routines/dashboard.html - routines overview and calendar widget #}
+
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}My Routines - SKYN{% endblock %}
 
+
 {% block content %}
+
+
 
 <div class="dashboard-container">
     <h1 class="page-title">My Skincare Routines</h1>
@@ -25,7 +28,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="routine_id" value="{{ morning_routine.id }}">
                         <div class="steps-list">
-                            {% for step in morning_routine.routinestep_set.all %}
+                            {% for step in morning_routine.steps.all %}
                                 <div class="step-item">
                                     <label>
                                         <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
@@ -59,7 +62,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="routine_id" value="{{ evening_routine.id }}">
                         <div class="steps-list">
-                            {% for step in evening_routine.routinestep_set.all %}
+                            {% for step in evening_routine.steps.all %}
                                 <div class="step-item">
                                     <label>
                                         <input type="checkbox" name="completed_{{ step.id }}" value="1" {% if step.completed %}checked{% endif %}>
@@ -96,4 +99,7 @@
     
     </div>
 </div>
+<script>
+  window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}"|escapejs }}');
+</script>
 {% endblock %}
