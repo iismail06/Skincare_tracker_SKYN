@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
@@ -7,17 +6,64 @@ from django.utils import timezone
 from .forms import RoutineCreateForm
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Routine, RoutineStep
+from .models import Routine, RoutineStep, DailyCompletion
+from datetime import date
 
 
 @login_required
 def dashboard(request):
     """Show user's routines"""
+
+    import calendar
+    from datetime import date, timedelta
+    import json
+
+    today = date.today()
+    year = today.year
+    month = today.month
+    # Get first and last day of the month
+    start_date = date(year, month, 1)
+    last_day = calendar.monthrange(year, month)[1]
+    end_date = date(year, month, last_day)
+
     morning_routines = Routine.objects.filter(user=request.user, routine_type='morning')
     evening_routines = Routine.objects.filter(user=request.user, routine_type='evening')
-
     morning_routine = morning_routines.first()
     evening_routine = evening_routines.first()
+
+    # Query all completions for this user in this month
+    completions = DailyCompletion.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
+
+    # Build a dict: {date: {'morning': bool, 'evening': bool}}
+    completion_map = {}
+    for comp in completions:
+        dkey = comp.date.strftime('%Y-%m-%d')
+        step_type = comp.routine_step.routine.routine_type if hasattr(comp.routine_step.routine, 'routine_type') else None
+        if dkey not in completion_map:
+            completion_map[dkey] = {'morning': False, 'evening': False}
+        if step_type in ['morning', 'evening'] and comp.completed:
+            completion_map[dkey][step_type] = True
+
+    # Build events list for JS
+    routine_events = []
+    for day in range(1, last_day+1):
+        d = date(year, month, day)
+        dkey = d.strftime('%Y-%m-%d')
+        status = 'not_done'
+        if dkey in completion_map:
+            m = completion_map[dkey]['morning']
+            e = completion_map[dkey]['evening']
+            if m and e:
+                status = 'completed'
+            elif m:
+                status = 'morning'
+            elif e:
+                status = 'evening'
+            else:
+                status = 'not_done'
+        routine_events.append({'date': dkey, 'status': status})
+
+    routine_events_json = json.dumps(routine_events)
 
     # Handle checklist POSTs from dashboard (each form sends routine_id)
     if request.method == 'POST':
@@ -28,16 +74,29 @@ def dashboard(request):
         if rid:
             routine = Routine.objects.filter(pk=rid, user=request.user).first()
             if routine:
+                today = date.today()
                 for step in routine.steps.all():
                     checked = bool(request.POST.get(f'completed_{step.id}', False))
+                    # Update RoutineStep.completed for UI
                     if step.completed != checked:
                         step.completed = checked
                         step.save()
+                    # Create or update DailyCompletion record
+                    dc, created = DailyCompletion.objects.get_or_create(
+                        user=request.user,
+                        routine_step=step,
+                        date=today,
+                        defaults={'completed': checked}
+                    )
+                    if not created and dc.completed != checked:
+                        dc.completed = checked
+                        dc.save()
         return redirect(request.path)
 
     return render(request, 'routines/dashboard.html', {
         'morning_routine': morning_routine,
         'evening_routine': evening_routine,
+        'routine_events_json': routine_events_json,
     })
 
 
