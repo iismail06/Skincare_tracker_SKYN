@@ -1,3 +1,83 @@
+/* ==========================================================================
+   19. ROUTINE STEPPER STYLES
+   ========================================================================== */
+.routine-stepper {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    padding: 1rem 0;
+}
+
+.stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.stepper-checkbox {
+    display: none;
+}
+
+.stepper-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stepper-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent-color-lighter);
+    color: var(--secondary-color-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    border: 2px solid var(--accent-color);
+    transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+.stepper-checkbox:checked + .stepper-label .stepper-circle,
+.stepper-completed {
+    background: var(--secondary-color);
+    color: #fff;
+    border: 2px solid var(--secondary-color);
+}
+
+.stepper-name {
+    font-size: 0.95rem;
+    color: var(--text);
+    text-align: center;
+    max-width: 80px;
+    word-break: break-word;
+}
+
+@media (max-width: 600px) {
+    .routine-stepper {
+        gap: 1rem;
+        padding: 0.5rem 0;
+    }
+    .stepper-step {
+        min-width: 60px;
+    }
+    .stepper-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    .stepper-name {
+        font-size: 0.85rem;
+        max-width: 60px;
+    }
+}
 /* 
 DARK THEME COLOR OVERRIDES
 body.dark-theme {
