@@ -35,6 +35,14 @@ class RoutineStep(models.Model):
     completed = models.BooleanField(default=False)          # for checklist
     frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, default='daily')  # daily/weekly
     
+    # product link
+    product = models.ForeignKey(
+        'products.Product', 
+        on_delete=models.SET_NULL, 
+        blank=True, 
+        null=True,
+    )
+    
     def __str__(self):
         return f"{self.routine.name} - {self.step_name}"
     
