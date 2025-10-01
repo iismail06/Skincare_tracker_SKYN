@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}My Products - SKYN{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>My Products</h1>
+        <a href="{% url 'products:create' %}" class="btn btn-primary">Add New Product</a>
+    </div>
+
+    {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                    {% else %}
+                        <div class="product-image-placeholder">
+                            <i class="fas fa-bottle-droplet"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="product-info">
+                        <h3>{{ product.name }}</h3>
+                        <p class="brand">{{ product.brand }}</p>
+                        <span class="product-type">{{ product.get_product_type_display }}</span>
+                        
+                        {% if product.notes %}
+                            <p class="notes">{{ product.notes|truncatewords:20 }}</p>
+                        {% endif %}
+                        
+                        <div class="product-actions">
+                            <a href="{% url 'products:edit' product.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                            <a href="{% url 'products:delete' product.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-bottle-droplet"></i>
+            <h3>No Products Yet</h3>
+            <p>Start building your skincare collection by adding your first product!</p>
+            <a href="{% url 'products:create' %}" class="btn btn-primary">Add Your First Product</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
