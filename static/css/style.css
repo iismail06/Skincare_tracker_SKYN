@@ -1,5 +1,5 @@
 /* 
-DARK THEME COLOR OVERRIDES
+ALTERNATIVE DARK THEME COLOR OPTIONS (for future experimentation)
 body.dark-theme {
     --background-color: #232136;
     --background-color-darker: #181825;
@@ -10,6 +10,7 @@ body.dark-theme {
     --text: #e0def4;
     --gray: #a0a0b0;
 } */
+
 /* ==========================================================================
    1. RESET & GLOBAL STYLES
    ========================================================================== */
@@ -178,56 +179,6 @@ h2 {
 .nav-links a:hover {
     background-color: var(--background-color-darker);
     color: var(--accent-color);
-}
-
-/* Mobile Navigation */
-.custom-wrapper {
-    background-color: var(--background-color);
-    -webkit-font-smoothing: antialiased;
-    height: 2.1em;
-    overflow: hidden;
-    transition: height 0.5s;
-}
-
-.custom-wrapper.open {
-    height: 9.5em;
-}
-
-.custom-menu-3 {
-    text-align: right;
-}
-
-.custom-toggle {
-    width: 34px;
-    height: 34px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: none;
-}
-
-.custom-toggle .bar {
-    background-color: var(--secondary-color-darker);
-    display: block;
-    width: 20px;
-    height: 2px;
-    border-radius: 100px;
-    position: absolute;
-    top: 18px;
-    right: 7px;
-    transition: all 0.5s;
-}
-
-.custom-toggle .bar:first-child {
-    transform: translateY(-6px);
-}
-
-.custom-toggle.x .bar {
-    transform: rotate(45deg);
-}
-
-.custom-toggle.x .bar:first-child {
-    transform: rotate(-45deg);
 }
 
 /* Theme Toggle Button */
@@ -1305,20 +1256,6 @@ main .hero-header {
     cursor: pointer;
 }
 
-@media (max-width: 600px) {
-    #calendar .header .left,
-    #calendar .header .right {
-        width: 32px;
-        height: 32px;
-        font-size: 0.95rem;
-    }
-    
-    #calendar .header h1 {
-        font-size: 1.35rem;
-        padding: 0.28rem 0.6rem;
-    }
-}
-
 /* ==========================================================================
    16. ROUTINE CHECKLIST STYLES
    ========================================================================== */
@@ -1492,114 +1429,275 @@ main .hero-header {
    18. RESPONSIVE DESIGN
    ========================================================================== */
 
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-    .hero-title {
-        font-size: 1.5rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-    
-    .hero-description {
-        font-size: 0.9rem;
-    }
-    
-    .hero-content {
-        padding: 0.5rem;
-    }
-    
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.8rem;
-    }
-    
-    .btn-primary, .btn-secondary {
-        width: 100%;
-        max-width: 280px;
-    }
-    
-    .features-section {
-        grid-template-columns: 1fr;
-        margin-top: 1rem;
-    }
-    
-    .features-section .section-content,
-    .features-section .section-image {
-        height: 50vh;
-    }
-    
-    .features-section .section-content {
-        padding: 5vw;
-    }
-    
-    .custom-menu-3 {
-        text-align: left;
-    }
-    
-    .custom-toggle {
-        display: block;
-    }
-    
-    h2 {
-        font-size: 1rem;
-    }
-    
-    .footer-content {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-        padding: 0 1rem;
-    }
-    
-    .footer-social {
-        order: 2;
-    }
-    
-    .footer-copyright {
-        order: 1;
-    }
+/* ==========================================================================
+   19. RESPONSIVE ROUTINES STYLES - MOVED TO BOTTOM
+   ========================================================================== */
+
+/* ==========================================================================
+   20. PRODUCT MANAGEMENT STYLES
+   ========================================================================== */
+
+/* Product List & Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
 }
-/* Small responsive tweak */
-@media (max-width: 600px) {
-    #calendar .header h1 {
-        font-size: 1.35rem;
-        padding: 0.28rem 0.6rem;
-    }
+
+.product-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border);
 }
-/* Small devices (portrait tablets and large phones, 600px and up) */
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: var(--background-color);
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 200px;
+    background: var(--background-color-darker);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--gray);
+    font-size: 3rem;
+}
+
+.product-info h3 {
+    color: var(--text);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.product-info .brand {
+    color: var(--accent-color);
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-type {
+    display: inline-block;
+    background: var(--accent-color-lighter);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.product-info .notes {
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.product-actions .btn {
+    flex: 1;
+    text-align: center;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gray);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.empty-state h3 {
+    color: var(--text);
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* Product Form Styles */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.product-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.current-image {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 8px;
+}
+
+.current-image p {
+    margin-bottom: 0.5rem;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.current-image img {
+    border-radius: 8px;
+    border: 2px solid var(--border);
+}
+
+/* Delete Confirmation */
+.delete-confirmation {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.product-preview {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+}
+
+.product-preview .product-image,
+.product-preview .product-image-placeholder {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.product-preview .product-image-placeholder {
+    font-size: 2rem;
+}
+
+.product-details {
+    text-align: left;
+    flex: 1;
+}
+
+.product-details h3 {
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.product-details .brand {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.warning-message {
+    background: #fff3cd;
+    color: #856404;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #ffeaa7;
+}
+
+.warning-message i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Dark theme warning message */
+body.dark-theme .warning-message {
+    background: #3a3124;
+    color: var(--accent-color-lighter);
+    border-color: var(--border);
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.page-header h1 {
+    color: var(--text);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Product Info in Routine Steps */
+.product-info {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+/* Button Variants */
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    border-color: #bd2130;
+    color: white;
+}
+
+/* ==========================================================================
+   21. RESPONSIVE DESIGN - ALL MEDIA QUERIES
+   ========================================================================== */
+
+/* Small Tablet and Large Mobile (600px and up) */
 @media only screen and (min-width: 600px) {
     .hero-title {
         font-size: 1.8rem;
     }
     
     .hero-content {
-        padding: 0.8rem;
+        padding: 2rem;
     }
-}
-/* Responsive tweaks for the routine stepper */
-@media (max-width: 600px) {
-    .routine-stepper {
-        gap: 1rem;
-        padding: 0.5rem 0;
-    }
-    .stepper-step {
-        min-width: 60px;
-    }
-    .stepper-circle {
-        width: 28px;
-        height: 28px;
-        font-size: 0.9rem;
-    }
-    .stepper-name {
-        font-size: 0.85rem;
-        max-width: 60px;
+    
+    .features-section .section-content {
+        padding: 4rem;
     }
 }
 
-/* Medium devices (landscape tablets, 768px and up) */
+/* Tablet (768px and up) */
 @media only screen and (min-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -1614,7 +1712,7 @@ main .hero-header {
     }
     
     .hero-content {
-        padding: 1rem;
+        padding: 2rem;
     }
     
     .hero-buttons {
@@ -1630,12 +1728,20 @@ main .hero-header {
         grid-template-columns: 1fr 1fr;
         margin-top: 2rem;
     }
+    
+    .features-section .section-content {
+        padding: 4rem;
+    }
 }
 
-/* Large devices (laptops/desktops, 992px and up) */
+/* Desktop (992px and up) */
 @media only screen and (min-width: 992px) {
     .hero-title {
         font-size: 3rem;
+    }
+    
+    .hero-content {
+        padding: 3rem;
     }
     
     .features-section .section-content {
@@ -1643,26 +1749,24 @@ main .hero-header {
     }
 }
 
-/* Extra large devices (large laptops and desktops, 1200px and up) */
+/* Large Desktop (1200px and up) */
 @media only screen and (min-width: 1200px) {
     .hero-title {
         font-size: 3.5rem;
     }
     
     .hero-content {
-        padding: 2rem;
+        padding: 4rem;
     }
     
     .features-section .section-content {
-        padding: 4rem;
+        padding: 6rem;
     }
 }
 
-/* ==========================================================================
-   19. RESPONSIVE ROUTINES STYLES
-   ========================================================================== */
-
+/* Tablet (max-width: 768px) */
 @media (max-width: 768px) {
+    /* Dashboard & Routines */
     .dashboard-container,
     .form-container {
         padding: 1rem;
@@ -1696,22 +1800,165 @@ main .hero-header {
         flex-direction: column-reverse;
     }
     
+    .form-actions .btn {
+        width: 100%;
+    }
+    
+    /* Products */
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .product-preview {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .product-details {
+        text-align: center;
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+}
 
+/* Mobile (max-width: 600px) */
+@media (max-width: 600px) {
+    /* Calendar */
+    #calendar .header .left,
+    #calendar .header .right {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
+    
+    #calendar .header h1 {
+        font-size: 1.35rem;
+        padding: 0.28rem 0.6rem;
+    }
+    
+    /* Hero Section */
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .hero-description {
+        font-size: 0.9rem;
+    }
+    
+    .hero-content {
+        padding: 0.5rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    /* Features */
+    .features-section {
+        grid-template-columns: 1fr;
+        margin-top: 1rem;
+    }
+    
+    .features-section .section-content,
+    .features-section .section-image {
+        height: 50vh;
+    }
+    
+    .features-section .section-content {
+        padding: 5vw;
+    }
+    
+    /* Routine Stepper */
+    .routine-stepper {
+        gap: 1rem;
+        padding: 0.5rem 0;
+    }
+    .stepper-step {
+        min-width: 60px;
+    }
+    .stepper-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    .stepper-name {
+        font-size: 0.85rem;
+        max-width: 60px;
+    }
+    
+    /* Typography */
+    h2 {
+        font-size: 1rem;
+    }
+    
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding: 0 1rem;
+    }
+    
+    .footer-social {
+        order: 2;
+    }
+    
+    .footer-copyright {
+        order: 1;
+    }
+    
+    /* Forms */
+    .form-card {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
     .form-actions .btn {
         width: 100%;
     }
 }
 
-@media (max-width: 600px) {
-    .form-card {
-        padding: 1.5rem;
-        margin-bottom: 2rem;
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    /* Products */
+    .form-container {
+        padding: 1rem;
     }
-    .form-actions {
-        flex-direction: column-reverse;
+    
+    .product-card {
+        padding: 1rem;
     }
-    .form-actions .btn {
-        width: 100%;
+    
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
     }
 }
 
