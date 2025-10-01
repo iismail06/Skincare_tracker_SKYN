@@ -4,5 +4,8 @@ from . import views
 app_name = 'products'
 
 urlpatterns = [
-    # Product URLs will be added here as we build the views
+    path('', views.product_list, name='list'),
+    path('add/', views.product_create, name='create'),
+    path('edit/<int:pk>/', views.product_edit, name='edit'),
+    path('delete/<int:pk>/', views.product_delete, name='delete'),
 ]

@@ -12,4 +12,5 @@ urlpatterns = [
     path('signup/', user_views.signup, name='signup'),         # Custom signup
     path('profile/', include('users.urls')),                   # Profile pages
     path('routines/', include('routines.urls')),               # Routine functionality
+    path('products/', include('products.urls')),               # Product management
 ]
