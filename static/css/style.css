@@ -1,83 +1,3 @@
-/* ==========================================================================
-   19. ROUTINE STEPPER STYLES
-   ========================================================================== */
-.routine-stepper {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-x: auto;
-    padding: 1rem 0;
-}
-
-.stepper-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 80px;
-}
-
-.stepper-checkbox {
-    display: none;
-}
-
-.stepper-label {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stepper-circle {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--accent-color-lighter);
-    color: var(--secondary-color-darker);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    border: 2px solid var(--accent-color);
-    transition: background 0.3s, color 0.3s, border 0.3s;
-}
-
-.stepper-checkbox:checked + .stepper-label .stepper-circle,
-.stepper-completed {
-    background: var(--secondary-color);
-    color: #fff;
-    border: 2px solid var(--secondary-color);
-}
-
-.stepper-name {
-    font-size: 0.95rem;
-    color: var(--text);
-    text-align: center;
-    max-width: 80px;
-    word-break: break-word;
-}
-
-@media (max-width: 600px) {
-    .routine-stepper {
-        gap: 1rem;
-        padding: 0.5rem 0;
-    }
-    .stepper-step {
-        min-width: 60px;
-    }
-    .stepper-circle {
-        width: 28px;
-        height: 28px;
-        font-size: 0.9rem;
-    }
-    .stepper-name {
-        font-size: 0.85rem;
-        max-width: 60px;
-    }
-}
 /* 
 DARK THEME COLOR OVERRIDES
 body.dark-theme {
@@ -97,34 +17,15 @@ body.dark-theme {
     scroll-behavior: smooth;
     margin: 0;
     padding: 0;
-
-
-
+    box-sizing: border-box;
+}
 
 html, body {
-
-::-webkit-scrollbar {
-    width: 12px;
-}
-
-
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Tahoma, Verdana, sans-serif;
+    height: 100%;
     background: var(--background-color);
-    border-radius: 6px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #aaaaaa;
-    border-radius: 6px;
-    border: 3px solid transparent;
-    background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-color-lighter);
-    border-radius: 6px;
-    border: 3px solid transparent;
-    background-clip: content-box;
-}
+    color: var(--text);
+    line-height: 1.6;
 }
 
 /* ==========================================================================
@@ -147,6 +48,10 @@ html, body {
     --secondary: var(--secondary-color);
     --accent: var(--accent-color-lighter);
     --gray: #6c757d;
+    --border: var(--background-color-darker);
+    
+    /* Hero image */
+    --site-hero-image: url(https://images.pexels.com/photos/7479915/pexels-photo-7479915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
 }
 
 body.dark-theme {
@@ -169,18 +74,9 @@ body.dark-theme {
 }
 
 /* Dark theme hero section text colors */
-body.dark-theme .hero-title {
-    color: var(--secondary-color-darker);
-}
-
-body.dark-theme .hero-subtitle {
-    color: var(--secondary-color-darker);
-}
-
-body.dark-theme .hero-description {
-    color: var(--secondary-color-darker);
-}
-
+body.dark-theme .hero-title,
+body.dark-theme .hero-subtitle,
+body.dark-theme .hero-description,
 body.dark-theme .brand-highlight {
     color: var(--secondary-color-darker);
 }
@@ -563,8 +459,6 @@ h2 {
 
     html, body {
     }
-
-/* .home .site-hero-bg .container { ...existing code... } */
 
 }
 
@@ -982,10 +876,12 @@ main .hero-header {
 
 .dashboard-container {
     max-width: 1200px;
-    padding: 1.5rem 0 2rem 0;
     box-sizing: border-box;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
 }
 
 .page-title {
@@ -1198,24 +1094,33 @@ main .hero-header {
 #calendar {
     max-width: 900px;
     margin: 0 auto;
+    background: none;
+    box-shadow: none;
 }
+
 .sc-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.2rem;
 }
+
 .sc-title {
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--text);
+    background: none;
+    border: none;
+    box-shadow: none;
 }
+
 .sc-dow {
     display: flex;
     background: var(--background-color-darker);
     border-radius: 6px 6px 0 0;
     overflow: hidden;
 }
+
 .sc-dow-cell {
     flex: 1;
     text-align: center;
@@ -1224,29 +1129,34 @@ main .hero-header {
     color: var(--gray);
     font-size: 1rem;
 }
+
 .sc-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 0.2rem;
-    background: var(--background-color);
-    border-radius: 0 0 8px 8px;
+    background: none;
+    border-radius: 0;
     padding-bottom: 1rem;
 }
+
 .sc-cell {
     min-height: 64px;
-    background: var(--card-bg);
-    border-radius: 6px;
+    background: none;
+    border-radius: 0;
     box-shadow: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     position: relative;
-    transition: background 0.2s;
+    border: 1px solid #d3d3d3;
+    transition: none;
 }
+
 .sc-other {
-    opacity: 0.35;
+    opacity: 1;
 }
+
 .sc-day-num {
     font-size: 1.1rem;
     font-weight: 600;
@@ -1254,51 +1164,34 @@ main .hero-header {
     color: var(--text);
 }
 
-/* Calendar header overrides (merged from calendar-overrides.css) */
-#calendar .header h1,
-#calendar .header .title,
-.calendar-section #calendar .header h1 {
-    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Tahoma, Verdana, sans-serif;
-    font-size: 1.6rem; /* smaller than hero title but prominent */
-    font-weight: 700;
-    color: #080604; /* dark text for contrast on light panel */
-    display: inline-block; /* let background wrap text */
-    background: rgba(255,255,255,0.90);
-    padding: 0.36rem 0.8rem;
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-    border: 1px solid rgba(0,0,0,0.06);
-    margin-bottom: 0.65rem;
-}
-
-/* Ensure header container groups the title and controls; controls sit visually inside the month pill */
+/* Calendar header */
 #calendar .header {
     background: transparent;
     padding: 0.25rem 0;
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* group title and controls together on the left */
+    justify-content: flex-start;
     gap: 0.5rem;
 }
 
-/* Title appears as the pill; controls will tuck into its right edge */
 #calendar .header h1,
-#calendar .header .title {
-    margin: 0;
+#calendar .header .title,
+.calendar-section #calendar .header h1 {
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Tahoma, Verdana, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #080604;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255,255,255,0.90);
-    padding: 0.36rem 0.9rem; /* leave slightly more room for controls */
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-    border: 1px solid rgba(0,0,0,0.06);
-    color: #080604;
-    font-weight: 700;
-    font-size: 1.6rem;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    margin: 0;
 }
 
-/* Place the nav controls overlapping the right edge of the pill */
 #calendar .header .left,
 #calendar .header .right {
     width: 36px;
@@ -1314,11 +1207,10 @@ main .hero-header {
     cursor: pointer;
     font-weight: 700;
     transition: background 0.12s ease, transform 0.08s ease;
-    margin-left: -4px; /* slight tuck into the pill (smaller overlap) */
+    margin-left: -4px;
     z-index: 2;
 }
 
-/* Chevrons */
 #calendar .header .left::after {
     content: '\276E';
     font-size: 1.1rem;
@@ -1329,48 +1221,90 @@ main .hero-header {
     font-size: 1.1rem;
 }
 
-/* Hover states: slightly darker and lift */
 #calendar .header .left:hover,
 #calendar .header .right:hover {
     background: rgba(0,0,0,0.06);
     transform: translateY(-1px);
 }
 
-/* Calendar day status icons */
+/* Calendar day status styles */
 .sc-day-icon {
-  font-size: 1.3em;
-  text-align: center;
-  margin-top: 0.2em;
-  line-height: 1.1;
-}
-
-.sc-day-completed {
-  background: #e6ffe6;
-  border: 2px solid #2ecc40;
+    font-size: 1.3em;
+    text-align: center;
+    margin-top: 0.2em;
+    line-height: 1.1;
+    display: none;
 }
 
 .sc-day-not-done {
-  background: #ffeaea;
-  border: 2px solid #e74c3c;
+    background: none;
+    border: 1px solid #d3d3d3;
+    box-shadow: none;
+}
+
+.sc-day-not-done .sc-day-icon {
+    display: block;
+    color: #d3d3d3;
+    font-size: 1.6em;
+}
+
+.sc-day-not-done .sc-day-icon::before {
+    content: '\f00d';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
 }
 
 .sc-day-morning {
-  background: #fffbe6;
-  border: 2px solid #f1c40f;
+    background: none;
+    border: 1px solid #d3d3d3;
+    box-shadow: none;
+}
+
+.sc-day-morning .sc-day-icon {
+    display: block;
+    color: #d3d3d3;
+    font-size: 1.6em;
+}
+
+.sc-day-morning .sc-day-icon::before {
+    content: '\f185';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
 }
 
 .sc-day-evening {
-  background: #eaeaff;
-  border: 2px solid #6c63ff;
+    background: none;
+    border: 1px solid #d3d3d3;
+    box-shadow: none;
 }
 
-/* subtle hover effect */
+.sc-day-evening .sc-day-icon {
+    display: block;
+    color: #d3d3d3;
+    font-size: 1.6em;
+}
+
+.sc-day-evening .sc-day-icon::before {
+    content: '\f186';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+.sc-day-completed {
+    background: rgba(230, 255, 230, 0.3);
+    border: 1px solid #d3d3d3;
+    box-shadow: none;
+}
+
+.sc-day-completed .sc-day-icon {
+    display: none;
+}
+
 .sc-day:hover {
-  filter: brightness(0.95);
-  cursor: pointer;
+    filter: brightness(0.95);
+    cursor: pointer;
 }
 
-/* Ensure the controls remain visible on small screens */
 @media (max-width: 600px) {
     #calendar .header .left,
     #calendar .header .right {
@@ -1378,13 +1312,12 @@ main .hero-header {
         height: 32px;
         font-size: 0.95rem;
     }
+    
+    #calendar .header h1 {
+        font-size: 1.35rem;
+        padding: 0.28rem 0.6rem;
+    }
 }
-
-/* Ensure calendar is responsive: stack days on very small screens */
-/* @media (max-width: 420px) {
-    .week { flex-direction: column; }
-    .week .day { min-height: 64px; }
-} */
 
 /* ==========================================================================
    16. ROUTINE CHECKLIST STYLES
@@ -1492,9 +1425,71 @@ main .hero-header {
 .checklist-item button:hover {
     background: var(--secondary);
 }
+/* ==========================================================================
+   17. ROUTINE STEPPER STYLES
+   ========================================================================== */
+.routine-stepper {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    padding: 1rem 0;
+}
+
+.stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.stepper-checkbox {
+    display: none;
+}
+
+.stepper-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stepper-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent-color-lighter);
+    color: var(--secondary-color-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    border: 2px solid var(--accent-color);
+    transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+.stepper-checkbox:checked + .stepper-label .stepper-circle,
+.stepper-completed {
+    background: var(--secondary-color);
+    color: #fff;
+    border: 2px solid var(--secondary-color);
+}
+
+.stepper-name {
+    font-size: 0.95rem;
+    color: var(--text);
+    text-align: center;
+    max-width: 80px;
+    word-break: break-word;
+}
+
 
 /* ==========================================================================
-   17. RESPONSIVE DESIGN
+   18. RESPONSIVE DESIGN
    ========================================================================== */
 
 /* Extra small devices (phones, 600px and down) */
@@ -1584,6 +1579,25 @@ main .hero-header {
         padding: 0.8rem;
     }
 }
+/* Responsive tweaks for the routine stepper */
+@media (max-width: 600px) {
+    .routine-stepper {
+        gap: 1rem;
+        padding: 0.5rem 0;
+    }
+    .stepper-step {
+        min-width: 60px;
+    }
+    .stepper-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    .stepper-name {
+        font-size: 0.85rem;
+        max-width: 60px;
+    }
+}
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
@@ -1645,7 +1659,7 @@ main .hero-header {
 }
 
 /* ==========================================================================
-   18. RESPONSIVE ROUTINES STYLES
+   19. RESPONSIVE ROUTINES STYLES
    ========================================================================== */
 
 @media (max-width: 768px) {

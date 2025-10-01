@@ -8,9 +8,9 @@
     <h1 class="page-title mb-4 text-center">My Skincare Routines</h1>
 
     <!-- Calendar Section -->
-    <div class="calendar-section card shadow-sm mb-5 p-4">
+    <div class="calendar-section mb-5">
         <h2 class="calendar-title h4 mb-3">
-            <i class="fas fa-calendar-alt text-primary"></i> Routine Calendar
+            <i class="fas fa-calendar-alt"></i> Routine Calendar
         </h2>
         <div id="calendar"></div>
     </div>
@@ -19,24 +19,15 @@
     <div class="row routines-grid g-4">
         <!-- Morning Routine -->
         <div class="col-md-6">
-            <div class="routine-card card shadow-sm p-4">
-                <h2 class="routine-title text-warning mb-3">
+            <div class="routine-card">
+                <h2 class="routine-title mb-3">
                     <i class="fas fa-sun"></i> Morning Routine
                 </h2>
                 {% if morning_routine %}
-                    <!-- Progress bar -->
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-warning text-dark" role="progressbar"
-                             style="width: {{ morning_routine.completion_percentage|default:0 }};"
-                             aria-valuenow="{{ morning_routine.completion_percentage|default:0 }}"
-                             aria-valuemin="0" aria-valuemax="100">
-                            {{ morning_routine.completion_percentage|default:0 }}%
-                        </div>
-                    </div>
-
-                    <form method="post" action="">
+                    <form method="post" action="{% url 'routines:dashboard' %}">
                         {% csrf_token %}
                         <input type="hidden" name="routine_id" value="{{ morning_routine.id }}">
+                        <input type="hidden" name="routine_type" value="morning">
                         <div class="routine-stepper mb-3">
                             {% for step in morning_routine.steps.all %}
                                 <div class="stepper-step">
@@ -53,14 +44,14 @@
                             {% endfor %}
                         </div>
                         <div class="form-actions mt-3">
-                            <button type="submit" class="btn btn-warning w-100">Save Morning Checklist</button>
+                            <button type="submit" class="btn btn-primary">Save Morning Checklist</button>
                         </div>
                     </form>
                 {% else %}
                     <div class="empty-routine text-center p-3">
-                        <i class="fas fa-sun fa-2x text-warning mb-2"></i>
+                        <i class="fas fa-sun fa-2x mb-2"></i>
                         <p class="text-muted">No morning routine created yet.</p>
-                        <a href="{% url 'users:profile' %}" class="btn btn-outline-warning">
+                        <a href="{% url 'users:profile' %}" class="btn btn-outline-primary">
                             Create Morning Routine
                         </a>
                     </div>
@@ -70,24 +61,15 @@
 
         <!-- Evening Routine -->
         <div class="col-md-6">
-            <div class="routine-card card shadow-sm p-4">
-                <h2 class="routine-title text-primary mb-3">
+            <div class="routine-card">
+                <h2 class="routine-title mb-3">
                     <i class="fas fa-moon"></i> Evening Routine
                 </h2>
                 {% if evening_routine %}
-                    <!-- Progress bar -->
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-primary" role="progressbar"
-                             style="width: {{ evening_routine.completion_percentage|default:0 }}%;"
-                             aria-valuenow="{{ evening_routine.completion_percentage|default:0 }}"
-                             aria-valuemin="0" aria-valuemax="100">
-                            {{ evening_routine.completion_percentage|default:0 }}%
-                        </div>
-                    </div>
-
-                    <form method="post" action="">
+                    <form method="post" action="{% url 'routines:dashboard' %}">
                         {% csrf_token %}
                         <input type="hidden" name="routine_id" value="{{ evening_routine.id }}">
+                        <input type="hidden" name="routine_type" value="evening">
                         <div class="routine-stepper mb-3">
                             {% for step in evening_routine.steps.all %}
                                 <div class="stepper-step">
@@ -104,12 +86,12 @@
                             {% endfor %}
                         </div>
                         <div class="form-actions mt-3">
-                            <button type="submit" class="btn btn-primary w-100">Save Evening Checklist</button>
+                            <button type="submit" class="btn btn-primary">Save Evening Checklist</button>
                         </div>
                     </form>
                 {% else %}
                     <div class="empty-routine text-center p-3">
-                        <i class="fas fa-moon fa-2x text-primary mb-2"></i>
+                        <i class="fas fa-moon fa-2x mb-2"></i>
                         <p class="text-muted">No evening routine created yet.</p>
                         <a href="{% url 'users:profile' %}" class="btn btn-outline-primary">
                             Create Evening Routine
@@ -122,7 +104,7 @@
 
     <!-- Dashboard Actions -->
     <div class="dashboard-actions text-center mt-5">
-        <a href="{% url 'users:profile' %}" class="btn btn-success me-2">
+        <a href="{% url 'users:profile' %}" class="btn btn-primary me-2">
             <i class="fas fa-plus"></i> Add New Routine
         </a>
         <a href="{% url 'routines:checklist' %}" class="btn btn-info">
@@ -132,6 +114,15 @@
 </div>
 
 <script>
-  window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}"|escapejs }}');
+    // Calendar initialization
+    if (typeof window.ROUTINE_EVENTS === 'undefined') {
+        window.ROUTINE_EVENTS = {};
+    }
+    try {
+        window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}" |escapejs }}');
+    } catch (e) {
+        console.warn('Could not parse routine events:', e);
+        window.ROUTINE_EVENTS = {};
+    }
 </script>
 {% endblock %}
