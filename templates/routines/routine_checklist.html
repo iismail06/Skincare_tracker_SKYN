@@ -16,7 +16,29 @@
     {% if show_calendar %}
     <div class="calendar-section">
         <h2 class="calendar-title"><i class="fas fa-calendar-alt"></i> Routine Calendar</h2>
-        <ul>
+        <div id="calendar"></div>
+        
+        <!-- Calendar Legend -->
+        <div class="calendar-legend">
+            <div class="legend-item">
+                <div class="legend-icon completed"></div>
+                <span>Completed</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon morning"></div>
+                <span>Morning Only</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon evening"></div>
+                <span>Evening Only</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon not-done"></div>
+                <span>Not Done</span>
+            </div>
+        </div>
+        
+        <ul style="margin-top: 1rem;">
             {% for r in user.routine_set.all %}
                 <li>{{ r.name }} - {{ r.routine_type|title }}</li>
             {% empty %}
