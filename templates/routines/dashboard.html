@@ -1,138 +1,146 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+{% endblock %}
+
+
 {% block title %}My Routines - SKYN{% endblock %}
 
+
 {% block content %}
-<div class="dashboard-container container py-4">
-    <h1 class="page-title mb-4 text-center">Welcome to Skincare Routines</h1>
+<div class="dashboard-container">
 
-    <!-- Calendar Section -->
-    <div class="calendar-section mb-5">
-        <h2 class="calendar-title h4 mb-3">
-              Routine Calendar
-        </h2>
-        <div id="calendar"></div>
-        
-        <!-- Calendar Legend -->
-        <div class="calendar-legend">
-            <div class="legend-item">
-                <div class="legend-icon completed"></div>
-                <span>Completed</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon morning"></div>
-                <span>Morning Only</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon evening"></div>
-                <span>Evening Only</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon not-done"></div>
-                <span>Not Done</span>
-            </div>
+  <!-- Header -->
+  <h1 class="page-title">Your Dashboard</h1>
+  
+  <!-- Progress Section -->
+  <section class="progress-section">
+    <div class="progress-cards">
+      <div class="progress-card">
+        <h4>Today's Progress</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 75%"></div>
         </div>
-    </div>
-
-    <!-- Routines Grid -->
-    <div class="row routines-grid g-4">
-        <!-- Morning Routine -->
-        <div class="col-md-6">
-            <div class="routine-card">
-                <h2 class="routine-title mb-3">
-                    <i class="fas fa-sun"></i> Morning Routine
-                </h2>
-                {% if morning_routine %}
-                    <form method="post" action="{% url 'routines:dashboard' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="routine_id" value="{{ morning_routine.id }}">
-                        <input type="hidden" name="routine_type" value="morning">
-                        <div class="routine-stepper mb-3">
-                            {% for step in morning_routine.steps.all %}
-                                <div class="stepper-step">
-                                    <input type="checkbox" name="completed_{{ step.id }}" id="morning-step-{{ step.id }}"
-                                           value="1" class="stepper-checkbox"
-                                           {% if step.completed %}checked{% endif %}>
-                                    <label for="morning-step-{{ step.id }}" class="stepper-label">
-                                        <span class="stepper-circle {% if step.completed %}stepper-completed{% endif %}">{{ step.order }}</span>
-                                        <span class="stepper-name">{{ step.step_name }}</span>
-                                    </label>
-                                </div>
-                            {% empty %}
-                                <p class="text-muted">No steps yet for this routine.</p>
-                            {% endfor %}
-                        </div>
-                        <div class="form-actions mt-3">
-                            <button type="submit" class="btn btn-primary">Save Morning Checklist</button>
-                        </div>
-                    </form>
-                {% else %}
-                    <div class="empty-routine text-center p-3">
-                        <i class="fas fa-sun fa-2x mb-2"></i>
-                        <p class="text-muted">No morning routine created yet.</p>
-                        <a href="{% url 'users:profile' %}" class="btn btn-outline-primary">
-                            Create Morning Routine
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+        <span class="progress-text">3 of 4 steps completed</span>
+      </div>
+      <div class="progress-card">
+        <h4>Current Streak</h4>
+        <div class="streak-counter">🔥 7 days</div>
+      </div>
+      <div class="progress-card">
+        <h4>This Week</h4>
+        <div class="week-progress">
+          <span class="week-day completed">M</span>
+          <span class="week-day completed">T</span>
+          <span class="week-day completed">W</span>
+          <span class="week-day current">T</span>
+          <span class="week-day">F</span>
+          <span class="week-day">S</span>
+          <span class="week-day">S</span>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Evening Routine -->
-        <div class="col-md-6">
-            <div class="routine-card">
-                <h2 class="routine-title mb-3">
-                    <i class="fas fa-moon"></i> Evening Routine
-                </h2>
-                {% if evening_routine %}
-                    <form method="post" action="{% url 'routines:dashboard' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="routine_id" value="{{ evening_routine.id }}">
-                        <input type="hidden" name="routine_type" value="evening">
-                        <div class="routine-stepper mb-3">
-                            {% for step in evening_routine.steps.all %}
-                                <div class="stepper-step">
-                                    <input type="checkbox" name="completed_{{ step.id }}" id="evening-step-{{ step.id }}"
-                                           value="1" class="stepper-checkbox"
-                                           {% if step.completed %}checked{% endif %}>
-                                    <label for="evening-step-{{ step.id }}" class="stepper-label">
-                                        <span class="stepper-circle {% if step.completed %}stepper-completed{% endif %}">{{ step.order }}</span>
-                                        <span class="stepper-name">{{ step.step_name }}</span>
-                                    </label>
-                                </div>
-                            {% empty %}
-                                <p class="text-muted">No steps yet for this routine.</p>
-                            {% endfor %}
-                        </div>
-                        <div class="form-actions mt-3">
-                            <button type="submit" class="btn btn-primary">Save Evening Checklist</button>
-                        </div>
-                    </form>
-                {% else %}
-                    <div class="empty-routine text-center p-3">
-                        <i class="fas fa-moon fa-2x mb-2"></i>
-                        <p class="text-muted">No evening routine created yet.</p>
-                        <a href="{% url 'users:profile' %}" class="btn btn-outline-primary">
-                            Create Evening Routine
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+  <!-- Routines Section -->
+  <section class="routines-section">
+    <h2 class="section-title">Your Routines</h2>
+    <div class="routine-cards">
+      <!-- Morning Routine -->
+      <div class="routine-card morning">
+        <div class="routine-header">
+          <h3>Morning Routine</h3>
+          {% if morning_routine %}
+            <a href="{% url 'routines:detail' morning_routine.pk %}" class="edit-btn"> Edit</a>
+          {% else %}
+            <button class="edit-btn" disabled style="opacity: 0.5;"> Edit</button>
+          {% endif %}
         </div>
-    </div>
+        {% if morning_routine %}
+          <ul>
+            {% for step in morning_routine.steps.all %}
+              <li>{{ step.product.name }} – {{ step.step_type }}</li>
+            {% endfor %}
+          </ul>
+          <div class="routine-actions">
+            <button class="complete-btn"> Mark Complete</button>
+          </div>
+        {% else %}
+          <p>No morning routine yet.</p>
+          <button class="add-routine-btn">➕ Add Morning Routine</button>
+        {% endif %}
+      </div>
 
-    <!-- Dashboard Actions -->
-    <div class="dashboard-actions text-center mt-5">
-        <a href="{% url 'users:profile' %}" class="btn btn-primary me-2">
-            <i class="fas fa-plus"></i> Add New Routine
-        </a>
-        <a href="{% url 'routines:checklist' %}" class="btn btn-info">
-            <i class="fas fa-list-check"></i> View Checklist
-        </a>
+      <!-- Evening Routine -->
+      <div class="routine-card evening">
+        <div class="routine-header">
+          <h3>Evening Routine</h3>
+          {% if evening_routine %}
+            <a href="{% url 'routines:detail' evening_routine.pk %}" class="edit-btn"> Edit</a>
+          {% else %}
+            <button class="edit-btn" disabled style="opacity: 0.5;"> Edit</button>
+          {% endif %}
+        </div>
+        {% if evening_routine %}
+          <ul>
+            {% for step in evening_routine.steps.all %}
+              <li>{{ step.product.name }} – {{ step.step_type }}</li>
+            {% endfor %}
+          </ul>
+          <div class="routine-actions">
+            <button class="complete-btn">Mark Complete</button>
+          </div>
+        {% else %}
+          <p>No evening routine yet.</p>
+          <button class="add-routine-btn">➕ Add Evening Routine</button>
+        {% endif %}
+      </div>
     </div>
+  </section>
+
+  <!-- Tips Section -->
+  <section class="dashboard-section">
+    <h2 class="section-title">💡 Skincare Tips</h2>
+    <div class="tips-container">
+      <div class="tip-card">
+        <h4>💧 Hydration Tip</h4>
+        <p>Apply moisturizer to slightly damp skin to lock in extra hydration.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🌙 Evening Care</h4>
+        <p>Remove makeup thoroughly before starting your evening routine for best results.</p>
+      </div>
+      <div class="tip-card">
+        <h4>☀️ Morning Protection</h4>
+        <p>Always finish your morning routine with SPF, even on cloudy days.</p>
+      </div>
+      <div class="tip-card">
+        <h4>😴 Beauty Sleep</h4>
+        <p>Get 7-8 hours of quality sleep - it's when your skin repairs and regenerates itself.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🌱 Ingredient Order</h4>
+        <p>Apply thinnest to thickest consistency: serums before moisturizers, oils last.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🔄 Product Rotation</h4>
+        <p>Introduce new active ingredients gradually, one at a time every 2-3 weeks.</p>
+      </div>
+    </div>
+    <!-- Placeholder for future dynamic tips functionality -->
+  </section>
+
+  <!-- Calendar Section -->
+  <section class="dashboard-section">
+    <h2 class="section-title">Calendar Overview</h2>
+    <div id="calendar"></div>
+  </section>
+
 </div>
 
+{% block extra_js %}
 <script>
     // Calendar initialization
     if (typeof window.ROUTINE_EVENTS === 'undefined') {
@@ -145,4 +153,6 @@
         window.ROUTINE_EVENTS = {};
     }
 </script>
+{% endblock %}
+
 {% endblock %}
