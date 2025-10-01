@@ -37,7 +37,12 @@
                 <li>
                     <input type="checkbox" name="completed_{{ step.id }}" id="step_{{ step.id }}"
                            {% if step.completed %}checked{% endif %}>
-                    <label for="step_{{ step.id }}">{{ step.step_name }}</label>
+                    <label for="step_{{ step.id }}">
+                        {{ step.step_name }}
+                        {% if step.product %}
+                            <span class="product-info">- {{ step.product.brand }} {{ step.product.name }}</span>
+                        {% endif %}
+                    </label>
                 </li>
                 {% endif %}
             {% endfor %}
@@ -50,7 +55,12 @@
                 <li>
                     <input type="checkbox" name="completed_{{ step.id }}" id="step_{{ step.id }}"
                            {% if step.completed %}checked{% endif %}>
-                    <label for="step_{{ step.id }}">{{ step.step_name }}</label>
+                    <label for="step_{{ step.id }}">
+                        {{ step.step_name }}
+                        {% if step.product %}
+                            <span class="product-info">- {{ step.product.brand }} {{ step.product.name }}</span>
+                        {% endif %}
+                    </label>
                 </li>
                 {% endif %}
             {% endfor %}

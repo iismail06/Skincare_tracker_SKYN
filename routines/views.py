@@ -104,7 +104,7 @@ def dashboard(request):
 def add_routine(request):
     """Accept POSTs from profile inline form; validate and create routine or render profile with errors."""
     if request.method == 'POST':
-        form = RoutineCreateForm(request.POST)
+        form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
             data = form.cleaned_data
             routine = Routine.objects.create(
@@ -115,8 +115,14 @@ def add_routine(request):
             order = 1
             for i in range(1, 6):
                 step_text = data.get(f'step{i}')
+                product = data.get(f'product{i}')
                 if step_text:
-                    RoutineStep.objects.create(routine=routine, step_name=step_text, order=order)
+                    RoutineStep.objects.create(
+                        routine=routine, 
+                        step_name=step_text, 
+                        order=order,
+                        product=product
+                    )
                     order += 1
             # store created routine id in session so profile view can show richer inline success
             request.session['last_added_routine_id'] = routine.id

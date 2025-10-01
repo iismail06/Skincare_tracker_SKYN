@@ -62,7 +62,7 @@ def profile_view(request):
     routines = request.user.routine_set.all()
     # Handle inline add-routine form submission here for a cleaner flow.
     added_ok = False
-    form = None
+    form = RoutineCreateForm(user=request.user)  # Initialize form with user
     last_added_routine = None
 
     # If redirected from routines.add_routine, it can set a session id for the last added routine
@@ -70,7 +70,7 @@ def profile_view(request):
     if last_added_id:
         last_added_routine = Routine.objects.filter(pk=last_added_id, user=request.user).first()
     if request.method == 'POST':
-        form = RoutineCreateForm(request.POST)
+        form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
             data = form.cleaned_data
             routine = Routine.objects.create(
@@ -100,7 +100,7 @@ def profile_view(request):
     add_data = request.session.pop('add_routine_data', None)
     if add_data is not None:
         # create a bound form so template can show errors and previous values
-        form = RoutineCreateForm(add_data)
+        form = RoutineCreateForm(add_data, user=request.user)
         if add_errors:
             # manually set form._errors from session data
             from django.forms.utils import ErrorDict, ErrorList
