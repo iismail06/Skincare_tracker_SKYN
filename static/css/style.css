@@ -75,6 +75,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     padding-top: 80px;
+    margin: 0 !important; /* Override Bootstrap */
 }
 
 main {
@@ -82,6 +83,35 @@ main {
     padding: 0;
     width: 100%;
     margin: 0 auto;
+}
+
+/* ==========================================================================
+   BOOTSTRAP OVERRIDES - Fix conflicts with our custom design
+   ========================================================================== */
+
+/* Prevent Bootstrap from adding unwanted margins/padding */
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: none !important;
+}
+
+/* Ensure our navbar stays on top without Bootstrap interference */
+.navbar {
+    border-bottom: none !important;
+    border-radius: 0 !important;
+}
+
+/* Remove any Bootstrap-added spacing around page elements */
+* {
+    box-sizing: border-box !important;
+}
+
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Dark theme hero section text colors */
@@ -156,15 +186,17 @@ h2 {
     right: 0;
     width: 100%;
     z-index: 1000;
+    margin: 0 !important; /* Override Bootstrap */
+    border: none !important; /* Remove any Bootstrap borders */
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
+    gap: 6rem; /* BIG space between logo and navigation links */
 }
 
 .nav-brand {
@@ -172,7 +204,7 @@ h2 {
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: bold;
-    margin-right: auto;
+    flex-shrink: 0; /* Prevent logo from shrinking */
 }
 
 .nav-brand:hover {
@@ -181,8 +213,7 @@ h2 {
 
 .nav-links {
     display: flex;
-    gap: 2rem;
-    margin-left: auto;
+    gap: 0.5rem; /* SMALL gap between navigation links - close together */
 }
 
 .nav-links a {
