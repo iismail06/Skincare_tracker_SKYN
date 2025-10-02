@@ -204,6 +204,44 @@ def dashboard(request):
     # This handles the old-style form submissions from routine checklists
     # We keep this to maintain backward compatibility
     if request.method == 'POST':
+        # Check if this is an edit routine submission
+        if request.POST.get('action') == 'edit_routine':
+            from .forms import RoutineCreateForm
+            form = RoutineCreateForm(request.POST, user=request.user)
+            
+            if form.is_valid():
+                routine_id = request.POST.get('routine_id')
+                routine = get_object_or_404(Routine, pk=routine_id, user=request.user)
+                
+                data = form.cleaned_data
+                # Update the routine
+                routine.name = data['routine_name']
+                routine.routine_type = data['routine_type']
+                routine.save()
+                
+                # Delete existing steps and create new ones
+                routine.steps.all().delete()
+                
+                order = 1
+                for i in range(1, 6):
+                    step_text = data.get(f'step{i}')
+                    product = data.get(f'product{i}')
+                    if step_text:
+                        RoutineStep.objects.create(
+                            routine=routine, 
+                            step_name=step_text, 
+                            order=order,
+                            product=product
+                        )
+                        order += 1
+                
+                messages.success(request, f'Routine "{routine.name}" updated successfully!')
+                return redirect('routines:dashboard')
+            else:
+                messages.error(request, 'There was an error updating your routine. Please try again.')
+                return redirect('routines:dashboard')
+        
+        # Original completion tracking functionality
         try:
             # Get routine ID from form submission
             routine_id = int(request.POST.get('routine_id') or 0)
@@ -321,29 +359,6 @@ def add_routine(request):
 
 
 @login_required
-def routine_checklist_view(request):
-    """Display a daily/weekly checklist with calendar toggle"""
-    routine = Routine.objects.filter(user=request.user).first()
-
-    if not routine:
-        routine = None
-
-    show_calendar = request.GET.get('show', '1')  # toggle calendar
-
-    if request.method == 'POST' and routine:
-        for step in routine.steps.all():
-            step.completed = bool(request.POST.get(f'completed_{step.id}', False))
-            step.save()
-
-    context = {
-        'routine': routine,
-        'user': request.user,
-        'show_calendar': show_calendar == '1',
-    }
-    return render(request, 'routines/routine_checklist.html', context)
-
-
-@login_required
 def my_routines(request):
     """Show all of a user's routines (renders dashboard summary)."""
     morning_routines = Routine.objects.filter(user=request.user, routine_type='morning')
@@ -432,24 +447,6 @@ def edit_routine(request, pk):
             'page_title': f'Edit {routine.name}'
         }
         return render(request, 'routines/add_routine.html', context)
-
-
-@login_required
-def detail(request, pk):
-    """Show routine detail and steps"""
-    routine = get_object_or_404(Routine, pk=pk, user=request.user)
-    steps = routine.steps.all()
-    # If the user submitted the checklist, update step completion flags
-    if request.method == 'POST':
-        for step in steps:
-            checked = bool(request.POST.get(f'completed_{step.id}', False))
-            if step.completed != checked:
-                step.completed = checked
-                step.save()
-        # stay on the same page after saving
-        return redirect(request.path)
-    # detail page removed; redirect users to the dashboard where checklists are managed
-    return redirect('routines:dashboard')
 
 
 @login_required
@@ -565,4 +562,28 @@ def toggle_step_completion(request):
         return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Error: {str(e)}'})
+
+
+@login_required
+def get_routine_data(request, pk):
+    """Get routine data for modal editing"""
+    try:
+        routine = get_object_or_404(Routine, pk=pk, user=request.user)
+        steps_data = []
+        
+        for step in routine.steps.all().order_by('order'):
+            steps_data.append({
+                'step_name': step.step_name,
+                'product_id': step.product.id if step.product else None,
+                'order': step.order
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'routine_name': routine.name,
+            'routine_type': routine.routine_type,
+            'steps': steps_data
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
