@@ -1,0 +1,677 @@
+/* 
+   DASHBOARD CSS 
+   This file contains all styles needed for the dashboard with no dependencies on style.css
+*/
+
+/* Base reset to prevent conflicts */
+#calendar * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", Arial, sans-serif;
+}
+
+/* =========================
+   CSS Variables
+   ========================= */
+:root {
+  --accent-color: #FF6B35;
+  --accent-color-rgb: 255, 107, 53; /* RGB values of #FF6B35 */
+  --text-color: #333;
+  --text-light: #666;
+  --border-color: #ddd;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================
+   Global Styles
+   ========================= */
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================
+   Layout Containers
+   ========================= */
+.dashboard-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.dashboard-section, .calendar-section {
+  background: rgba(255, 255, 255, 0.35); 
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.calendar-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.dashboard-section:hover, .calendar-section:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   Page Title & Headings
+   ========================= */
+.page-title {
+  text-align: center;
+  background: transparent;
+  border-radius: 0;
+  padding: 0.7rem 1.2rem;
+  box-shadow: none;
+  color: var(--text-color);
+  margin-bottom: 3rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h1, h2, h3 {
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+p {
+  line-height: 1.6;
+  color: var(--text-light);
+}
+
+/* =========================
+   Action Buttons
+   ========================= */
+.edit-btn, .add-routine-btn, .complete-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(2px);
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.edit-btn:hover, .add-routine-btn:hover, .complete-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.edit-btn {
+  background: rgba(9, 9, 9, 0.8);
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(2px);
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background: rgba(40, 40, 40, 0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.complete-btn {
+  background: rgba(8, 7, 7, 0.2);
+  border-color: rgba(255, 107, 53, 0.4);
+  color: #0b0b0b;
+  font-weight: bold;
+}
+
+.complete-btn:hover {
+  background: rgba(255, 107, 53, 0.3);
+}
+
+.add-routine-btn {
+  background: rgba(33, 150, 243, 0.2);
+  border-color: rgba(33, 150, 243, 0.4);
+  color: #1565C0;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.add-routine-btn:hover {
+  background: rgba(33, 150, 243, 0.3);
+}
+
+/* =========================
+   Card Components
+   ========================= */
+.card {
+  background: rgba(255, 255, 255, 0.35); 
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  border: 1px solid rgba(200, 200, 200, 0.8);
+}
+
+/* =========================
+   Routine Cards
+   ========================= */
+.routines-section {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.routine-card {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.routine-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.routine-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.routine-header h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.routine-content {
+  display: block;
+  width: 100%;
+}
+
+.routine-actions {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* =========================
+   Progress Section
+   ========================= */
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.progress-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.progress-card {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.progress-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.progress-card h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Progress Bar */
+.progress-bar {
+  background: rgba(200, 200, 200, 0.3);
+  border-radius: 10px;
+  height: 8px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--accent-color), #c6502d);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+/* Streak Counter */
+.streak-counter {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #FF6B35;
+}
+
+/* Week Progress */
+.week-progress {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.week-day {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background: rgba(200, 200, 200, 0.3);
+  color: var(--text-light);
+}
+
+.week-day.completed {
+  background: var(--accent-color);
+  color: white;
+}
+
+.week-day.current {
+  background: var(--accent-color);
+  color: white;
+  border: 2px solid #FF6B35;
+}
+
+/* =========================
+   Tips Section
+   ========================= */
+.tips-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tip-card {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tip-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.tip-card h4 {
+  margin: 0 0 0.8rem 0;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.tip-card p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* =========================
+   Calendar Styles
+   ========================= */
+/* Calendar wrapper */
+#calendar-wrapper {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#calendar-wrapper .section-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+/* Calendar container */
+#calendar {
+  width: 100%;
+  max-width: 100%;
+  font-family: "Inter", Arial, sans-serif;
+  margin: 1rem 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: block;
+}
+
+/* Calendar header */
+.sc-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 1rem !important;
+  background: var(--accent-color) !important;
+  color: white !important;
+}
+
+.sc-title {
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+}
+
+.sc-header button {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.2s ease !important;
+}
+
+.sc-header button:hover {
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Days of week row */
+.sc-dow {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  text-align: center !important;
+  padding: 0.7rem 0 !important;
+  background: rgba(var(--accent-color-rgb), 0.1) !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  margin-bottom: 4px !important;
+}
+
+.sc-dow-cell {
+  padding: 0.5rem 0 !important;
+}
+
+/* Calendar grid */
+.sc-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  width: 100% !important;
+  gap: 2px !important;
+}
+
+/* Calendar cells */
+.sc-cell {
+  aspect-ratio: 1 !important;
+  border: 1px solid var(--border-color) !important;
+  padding: 0.5rem !important;
+  text-align: center !important;
+  position: relative !important;
+  transition: background-color 0.2s ease !important;
+  cursor: pointer !important;
+  min-height: 60px !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  border-radius: 6px !important;
+}
+
+.sc-cell:hover {
+  background-color: rgba(var(--accent-color-rgb), 0.05) !important;
+}
+
+.sc-cell.sc-other {
+  color: #aaa !important;
+  background-color: rgba(240, 240, 240, 0.5) !important;
+  cursor: default !important;
+}
+
+/* Day number */
+.sc-day-num {
+  position: absolute !important;
+  top: 5px !important;
+  left: 5px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  z-index: 1 !important;
+}
+
+/* Icons in days */
+.sc-day-icon {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 1.2rem !important;
+  z-index: 0 !important;
+}
+
+/* Cell status styles */
+.sc-day-completed {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.sc-day-not-done {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+/* Fix for the red cross issue */
+.sc-day-not-done .sc-day-icon {
+  color: #dc3545 !important;
+  font-size: 1.5rem !important;
+  content: "•" !important;
+}
+
+/* Future day styling - Option 1: Blank/Neutral */
+.sc-day-future {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(200, 200, 200, 0.3) !important;
+}
+
+.sc-day-morning {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.1) 50%, transparent 50%) !important;
+}
+
+.sc-day-evening {
+  background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(13, 110, 253, 0.1) 50%) !important;
+}
+
+/* Details section */
+.sc-details {
+  margin-top: 1rem !important;
+  padding: 1rem !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 8px !important;
+}
+
+.sc-event {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.5rem 0 !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.sc-event:last-child {
+  border-bottom: none !important;
+}
+
+.sc-ok {
+  color: #28a745 !important;
+}
+
+.sc-miss {
+  color: #dc3545 !important;
+}
+
+/* =========================
+   Dark Mode Styles
+   ========================= */
+/* Dark mode body - only applies when body has dark-theme class */
+body.dark-theme {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Arial', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Links */
+body.dark-theme a {
+  color: #bb86fc;
+  text-decoration: none;
+}
+
+body.dark-theme a:hover {
+  color: #ffffff;
+}
+
+/* Headers */
+body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, 
+body.dark-theme h4, body.dark-theme h5, body.dark-theme h6 {
+  color: #ffffff;
+}
+
+/* Buttons */
+body.dark-theme button {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+body.dark-theme button:hover {
+  background-color: #333;
+}
+
+/* Inputs and textareas */
+body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+body.dark-theme input::placeholder, body.dark-theme textarea::placeholder {
+  color: #aaa;
+}
+
+/* Calendar / Dashboard container */
+body.dark-theme .dashboard-container, body.dark-theme .calendar-section {
+  background-color: rgba(30, 30, 30, 0.9); /* translucent dark background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Calendar days / items */
+body.dark-theme .calendar-day, body.dark-theme .routine-item {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+/* Tables */
+body.dark-theme table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+body.dark-theme th, body.dark-theme td {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: left;
+  color: #e0e0e0;
+}
+
+body.dark-theme th {
+  background-color: #1f1f1f;
+}
+
+/* Cards / sections */
+body.dark-theme .card {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Scrollbar (optional, nice touch for dark mode) */
+body.dark-theme ::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 4px;
+}
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+  
+  .sc-grid {
+    font-size: 0.8rem;
+  }
+  
+  .sc-dow-cell {
+    padding: 0.3rem 0;
+  }
+}

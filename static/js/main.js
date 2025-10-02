@@ -98,13 +98,30 @@ document.addEventListener('DOMContentLoaded', function() {
       var icon = document.createElement('div');
       icon.className = 'sc-day-icon';
       var ev = eventsByDate[dateKey];
+      
+      // Check if the date is in the future
+      var today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      var cellDate = new Date(state.year, state.month, day);
+      var isFutureDay = cellDate > today;
+      
       if (ev) {
         if (ev.status === 'completed') {
           icon.textContent = '🟢';
           cell.classList.add('sc-day-completed');
         } else if (ev.status === 'not_done') {
-          icon.textContent = '❌';
-          cell.classList.add('sc-day-not-done');
+          if (isFutureDay) {
+            // Option 1: Future days - add class but leave empty (no marker)
+            cell.classList.add('sc-day-future');
+            // No marker for future days
+            icon.textContent = '';
+          } else {
+            // Past missed days - red dot
+            icon.textContent = '•';
+            icon.style.color = '#dc3545';
+            icon.style.fontSize = '2rem';
+            cell.classList.add('sc-day-not-done');
+          }
         } else if (ev.status === 'morning') {
           icon.textContent = '☀️';
           cell.classList.add('sc-day-morning');
@@ -112,7 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
           icon.textContent = '🌙';
           cell.classList.add('sc-day-evening');
         }
+      } else if (isFutureDay) {
+        // Future days with no events
+        cell.classList.add('sc-day-future');
       }
+      
       cell.appendChild(icon);
 
       cell.addEventListener('click', function(e) {

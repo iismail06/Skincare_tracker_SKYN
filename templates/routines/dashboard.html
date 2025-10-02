@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
 
@@ -132,8 +132,8 @@
     <!-- Placeholder for future dynamic tips functionality -->
   </section>
 
-  <!-- Calendar Section -->
-  <section class="dashboard-section">
+  <!-- Calendar Section with isolated styling -->
+  <section class="calendar-section" id="calendar-wrapper">
     <h2 class="section-title">Calendar Overview</h2>
     <div id="calendar"></div>
   </section>
