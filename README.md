@@ -12,6 +12,10 @@ A Django-based web application for tracking and managing skincare routines. SKYN
 - **User Authentication**: Secure user registration and login system
 - **Responsive Design**: Optimized for desktop and mobile devices
 - **Dark/Light Theme**: Toggle between light and dark modes for better user experience
+- **Calendar Integration**: The dashboard features a calendar that highlights daily, weekly, and monthly routines. Clicking on highlighted days opens popups with detailed routine steps and product info.
+- **User Profile & Questionnaire**: Includes a user profile page and a questionnaire to personalize recommendations and routine suggestions.
+- **Progress Tracking**: Users can monitor routine completion and view historical data to track improvements in their skincare journey.
+- **Other Dashboard Features**: Quick access to routine management, product overview, and user settings for streamlined navigation.
 
 ## 🚀 Live Demo
 
@@ -115,7 +119,6 @@ Skincare_tracker_SKYN/
 
 ## 🧪 Testing
 
-<!-- Testing table will be added here -->
 Testing documentation will be completed during the development phase.
 
 | Test Area  | Description                                      | Status |
@@ -148,21 +151,43 @@ Testing documentation will be completed during the development phase.
 
 This project was developed as a **learning exercise**. I combined ideas from multiple tutorials, blog posts, and online snippets, adapting them into a skincare routine tracker.
 
-Some key resources and inspirations:
+### Popups with Routine Details
 
-- [Django official tutorial](https://docs.djangoproject.com/en/5.2/intro/tutorial01/) — Understanding project/app structure, models, views, templates, and migrations.  
-- [MDN Django generic views](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Generic_views) — Using and adapting class-based views like `ListView` and `DetailView`.  
-- [DigitalOcean Django views guide](https://www.digitalocean.com/community/tutorials/how-to-create-views-for-django-web-development) — Handling GET/POST requests and URL mapping.  
-- [GeeksforGeeks Django CRUD tutorial](https://www.geeksforgeeks.org/python/create-view-function-based-views-django/) — CRUD operations and forms in Django.  
-- [StudyGyaan Django calendar app](https://studygyaan.com/django/django-calendar-app) — Inspiration for displaying routines in a calendar format.  
-- Various frontend snippets (dark mode toggle, CSS styling, form design) adapted from online examples.  
+- [Bootstrap Modal Tutorial (YouTube)](https://www.youtube.com/watch?v=Jyvffr3aCp0)
+- [JavaScript Popups & Event Listeners (YouTube)](https://www.youtube.com/watch?v=K8Q4KX1Tu7w)
 
-### 🤖 AI Contribution  
+### Product Management (Add/Edit/Delete)
+
+- [Django CRUD Tutorial (YouTube)](https://www.youtube.com/watch?v=F5mRW0jo-U4)
+- [Django Admin & Forms (YouTube)](https://www.youtube.com/watch?v=UIpKQ7fSxkY)
+
+### User Profile & Questionnaire
+
+- [Django Custom User Model Tutorial (YouTube)](https://www.youtube.com/watch?v=Hshbjg5P4d4)
+- [Django Forms & Validation (YouTube)](https://www.youtube.com/watch?v=UIpKQ7fSxkY)
+
+#### Dashboard & Tracking Features
+
+- [Django Dashboard Tutorial (YouTube)](https://www.youtube.com/watch?v=6WruncSoCdI)
+- [JavaScript Dynamic Dashboard (YouTube)](https://www.youtube.com/watch?v=0ik6X4DJKCc)
+
+### Calendar & JavaScript Tutorials
+
+- [YouTube: JavaScript DOM Crash Course](https://www.youtube.com/watch?v=0ik6X4DJKCc) — Learn how to manipulate HTML and CSS with JavaScript.
+- [MDN Web Docs: Introduction to Django](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction) — Django basics for beginners.
+- [Real Python: Django Templates Tutorial](https://realpython.com/django-templates/) — How Django templates work and how to pass data from views to HTML.
+- [YouTube: Django Forms Tutorial](https://www.youtube.com/watch?v=UIpKQ7fSxkY) — How to create and use forms in Django.
+- [YouTube: JavaScript Event Listeners Explained](https://www.youtube.com/watch?v=jq4V6Iu6AmE) — How to handle clicks and other events in JS.
+- [MDN Web Docs: Using Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) — How to send and receive data between JS and backend.
+
+- [YouTube: Build a Calendar in JavaScript](https://www.youtube.com/watch?v=K8Q4KX1Tu7w) — Shows how to build and style a calendar, add events, and handle clicks.
+- [YouTube: Django Calendar App Tutorial](https://www.youtube.com/watch?v=Q3u1n6b1xGk) — Shows how to pass data from Django to JS and display events.
+- [MDN Web Docs: Manipulating documents with JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents) — Explains how to update HTML and add interactivity.
+
+## 🤖 AI Contribution  
 
 - **Automated Testing**: AI was used to help structure and organize the test cases into logical sections.  
-- *All AI-generated code was reviewed, understood, and modified by the developer to ensure learning objectives were met.*  
-
-I learned the most by **integrating, debugging, and adapting** these patterns into a working app.
+- *All AI-generated code was reviewed, understood, and modified by the developer to ensure learning objectives were met.*
 
 ## 🔧 Future Enhancements
 
