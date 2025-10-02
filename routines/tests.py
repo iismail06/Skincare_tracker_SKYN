@@ -13,7 +13,7 @@ class AddRoutineViaProfileTest(TestCase):
 
 	def test_post_add_routine_creates_routine_and_steps(self):
 		self.client.login(username=self.username, password=self.password)
-		url = reverse('routines:add_routine')
+		url = reverse('routines:add')
 		data = {
 			'routine_name': 'Test Routine',
 			'routine_type': 'morning',
@@ -34,7 +34,7 @@ class AddRoutineViaProfileTest(TestCase):
 
 	def test_post_add_routine_missing_name_shows_error(self):
 		self.client.login(username=self.username, password=self.password)
-		url = reverse('routines:add_routine')
+		url = reverse('routines:add')
 		data = {
 			'routine_name': '',
 			'routine_type': 'morning',
@@ -51,7 +51,7 @@ class AddRoutineViaProfileTest(TestCase):
 
 	def test_post_add_routine_no_steps_shows_error(self):
 		self.client.login(username=self.username, password=self.password)
-		url = reverse('routines:add_routine')
+		url = reverse('routines:add')
 		data = {
 			'routine_name': 'No Steps',
 			'routine_type': 'evening',
@@ -65,7 +65,7 @@ class AddRoutineViaProfileTest(TestCase):
 	def test_profile_shows_inline_success_after_create(self):
 		"""After creating a routine via the add endpoint, profile should show inline success with name and link."""
 		self.client.login(username=self.username, password=self.password)
-		url = reverse('routines:add_routine')
+		url = reverse('routines:add')
 		data = {
 			'routine_name': 'Inline Success Routine',
 			'routine_type': 'morning',
@@ -86,7 +86,7 @@ class AddRoutineViaProfileTest(TestCase):
 	def test_ajax_add_routine_returns_json(self):
 		"""Simulate an AJAX POST and assert a JSON success response and created routine."""
 		self.client.login(username=self.username, password=self.password)
-		url = reverse('routines:add_routine')
+		url = reverse('routines:add')
 		data = {
 			'routine_name': 'AJAX Routine',
 			'routine_type': 'morning',
@@ -143,7 +143,7 @@ class RoutineChecklistCompletionTest(TestCase):
         self.assertIsNotNone(dc2)
 
     def test_add_routine_and_steps(self):
-        url = reverse('routines:add_routine')
+        url = reverse('routines:add')
         data = {
             'routine_name': 'Evening Routine',
             'routine_type': 'evening',

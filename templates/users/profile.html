@@ -47,7 +47,7 @@
                 {% endif %}
             <!-- Inline add-routine form (consolidated) -->
             <div class="form-card">
-                <form id="add-routine-form" method="post" action="{% url 'routines:add_routine' %}" class="routine-form" data-ajax-url="{% url 'routines:add_routine' %}">
+                <form id="add-routine-form" method="post" action="{% url 'routines:add' %}" class="routine-form" data-ajax-url="{% url 'routines:add' %}">
                     {% csrf_token %}
                     {% comment %} If the view attached a form (`added_routine_form`), use it to show errors. Otherwise show blank inputs. {% endcomment %}
                     {% if added_routine_form %}
