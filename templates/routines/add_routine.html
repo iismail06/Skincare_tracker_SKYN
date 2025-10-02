@@ -30,35 +30,40 @@
             <div class="steps-section">
                 <h3>Routine Steps</h3>
                 <p class="steps-help">Add up to 5 steps for your routine (leave blank if not needed)</p>
-                
+
                 <div class="form-group">
                     <label for="step1">Step 1</label>
-                    <input type="text" id="step1" name="step1" 
-                           placeholder="e.g., Gentle cleanser">
+                    {{ form.step1 }}
+                    <label for="product1">Product</label>
+                    {{ form.product1 }}
                 </div>
 
                 <div class="form-group">
                     <label for="step2">Step 2</label>
-                    <input type="text" id="step2" name="step2" 
-                           placeholder="e.g., Toner">
+                    {{ form.step2 }}
+                    <label for="product2">Product</label>
+                    {{ form.product2 }}
                 </div>
 
                 <div class="form-group">
                     <label for="step3">Step 3</label>
-                    <input type="text" id="step3" name="step3" 
-                           placeholder="e.g., Serum">
+                    {{ form.step3 }}
+                    <label for="product3">Product</label>
+                    {{ form.product3 }}
                 </div>
 
                 <div class="form-group">
                     <label for="step4">Step 4</label>
-                    <input type="text" id="step4" name="step4" 
-                           placeholder="e.g., Moisturizer">
+                    {{ form.step4 }}
+                    <label for="product4">Product</label>
+                    {{ form.product4 }}
                 </div>
 
                 <div class="form-group">
                     <label for="step5">Step 5</label>
-                    <input type="text" id="step5" name="step5" 
-                           placeholder="e.g., Sunscreen">
+                    {{ form.step5 }}
+                    <label for="product5">Product</label>
+                    {{ form.product5 }}
                 </div>
             </div>
 
