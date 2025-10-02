@@ -223,6 +223,30 @@ p {
   text-align: center;
 }
 
+.routine-note {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.35);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(200,200,200,0.5);
+  margin-top: 0.5rem;
+}
+
+.routine-card p {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.35);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(200,200,200,0.5);
+  margin-top: 0.5rem;
+}
+
 /* =========================
    Routine Steps & Checkboxes
    ========================= */
@@ -249,12 +273,13 @@ p {
   cursor: pointer;
   font-size: 0.95rem;
   user-select: none;
+  gap: 24px;
 }
 
 .step-checkbox {
   width: 18px;
   height: 18px;
-  margin-right: 12px;
+  margin-right: 0;
   cursor: pointer;
   accent-color: var(--accent-color);
   transform: scale(1.1);
@@ -280,6 +305,79 @@ p {
 /* Dark theme adjustments for steps */
 body.dark-theme .routine-step:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================
+   Bootstrap Accordion Styling to Match Cards
+   ========================= */
+.accordion-item {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.accordion-button {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border: none;
+  border-radius: 12px 12px 0 0;
+  padding: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.accordion-button:not(.collapsed) {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--text-color);
+  box-shadow: none;
+}
+
+.accordion-button:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.accordion-body {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+/* Disabled edit button styling */
+.edit-btn:disabled {
+  opacity: 0.5;
+}
+
+/* Accordion routine card containers specific styling */
+.accordion-body .routine-card {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(200, 200, 200, 0.8);
+}
+
+/* Accordion routine headers specific styling */
+.accordion-body .routine-header {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  margin-bottom: 1rem;
 }
 
 body.dark-theme .step-checkbox {

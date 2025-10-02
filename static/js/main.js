@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   function render() {
-    root.innerHTML = '';
+  root.innerHTML = '';
 
     var header = document.createElement('div');
     header.className = 'sc-header';
@@ -84,10 +84,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     for (var day = 1; day <= daysInMonth; day++) {
-      var dateKey = toDateKey(state.year, state.month, day);
-      var cell = document.createElement('div');
-      cell.className = 'sc-cell sc-day';
-      cell.dataset.date = dateKey;
+  var dateKey = toDateKey(state.year, state.month, day);
+  var cell = document.createElement('div');
+  cell.className = 'sc-cell sc-day';
+  cell.dataset.date = dateKey;
+  cell.id = 'calendar-day-' + dateKey;
 
       var num = document.createElement('div');
       num.className = 'sc-day-num';
@@ -143,6 +144,51 @@ document.addEventListener('DOMContentLoaded', function() {
       grid.appendChild(cell);
     }
 
+    // === HEATMAP COLORING: Assign status classes after rendering ===
+    if (window.ROUTINE_EVENTS && Array.isArray(window.ROUTINE_EVENTS)) {
+      window.ROUTINE_EVENTS.forEach(function(event) {
+        var dayElem = document.getElementById('calendar-day-' + event.date);
+        if (dayElem) {
+          dayElem.classList.remove('sc-day-completed', 'sc-day-not-done', 'sc-day-morning', 'sc-day-evening');
+          if (event.status === 'completed') {
+            dayElem.classList.add('sc-day-completed');
+          } else if (event.status === 'morning') {
+            dayElem.classList.add('sc-day-morning');
+          } else if (event.status === 'evening') {
+            dayElem.classList.add('sc-day-evening');
+          } else {
+            dayElem.classList.add('sc-day-not-done');
+          }
+        }
+      });
+    }
+
+    // === WEEKLY STEP REMINDERS: Highlight days with weekly steps due ===
+    var weeklyDueDates = [];
+    try {
+      weeklyDueDates = JSON.parse('{{ weekly_due_dates_json|default:"[]"|escapejs }}');
+    } catch (e) {}
+    weeklyDueDates.forEach(function(item) {
+      var dayElem = document.getElementById('calendar-day-' + item.date);
+      if (dayElem) {
+        dayElem.style.border = '2px solid #ffc107'; // yellow border for weekly step
+        dayElem.title = 'Weekly step: ' + item.step_name + ' (' + item.routine_type + ')';
+      }
+    });
+
+    // === MONTHLY STEP REMINDERS: Highlight days with monthly steps due ===
+    var monthlyDueDates = [];
+    try {
+      monthlyDueDates = JSON.parse('{{ monthly_due_dates_json|default:"[]"|escapejs }}');
+    } catch (e) {}
+    monthlyDueDates.forEach(function(item) {
+      var dayElem = document.getElementById('calendar-day-' + item.date);
+      if (dayElem) {
+        dayElem.style.border = '2px solid #17a2b8'; // blue border for monthly step
+        dayElem.title = 'Monthly step: ' + item.step_name + ' (' + item.routine_type + ')';
+      }
+    });
+
     var totalCells = startWeekday + daysInMonth;
     var trailing = (7 - (totalCells % 7)) % 7;
     for (var t = 0; t < trailing; t++) {
@@ -161,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function showDetails(dateKey) {
     var details = root.querySelector('.sc-details');
-    var evs = eventsByDate[dateKey] || [];
+    var ev = eventsByDate[dateKey];
     details.innerHTML = '';
 
     var parts = dateKey.split('-');
@@ -170,23 +216,47 @@ document.addEventListener('DOMContentLoaded', function() {
     heading.textContent = display;
     details.appendChild(heading);
 
-    if (!evs.length) {
+    var found = false;
+    // Show weekly routine info if present
+    if (window.weeklyDueDates && Array.isArray(window.weeklyDueDates)) {
+      window.weeklyDueDates.forEach(function(item) {
+        if (item.date === dateKey) {
+          var div = document.createElement('div');
+          div.className = 'sc-event';
+          div.innerHTML = '<b>Weekly Routine Step:</b> ' + item.step_name + ' <span style="color:#ffc107">(' + item.routine_type + ')</span>';
+          details.appendChild(div);
+          found = true;
+        }
+      });
+    }
+    // Show monthly routine info if present
+    if (window.monthlyDueDates && Array.isArray(window.monthlyDueDates)) {
+      window.monthlyDueDates.forEach(function(item) {
+        if (item.date === dateKey) {
+          var div = document.createElement('div');
+          div.className = 'sc-event';
+          div.innerHTML = '<b>Monthly Routine Step:</b> ' + item.step_name + ' <span style="color:#17a2b8">(' + item.routine_type + ')</span>';
+          details.appendChild(div);
+          found = true;
+        }
+      });
+    }
+
+    if (!ev && !found) {
       var p = document.createElement('p');
       p.textContent = 'No events';
       details.appendChild(p);
-    } else {
-      evs.forEach(function(ev) {
-        var div = document.createElement('div');
-        div.className = 'sc-event';
-        var name = document.createElement('div');
-        name.textContent = ev.eventName || '(Unnamed)';
-        var status = document.createElement('div');
-        status.textContent = ev.completed ? 'Completed' : 'Missed';
-        status.className = ev.completed ? 'sc-ok' : 'sc-miss';
-        div.appendChild(name);
-        div.appendChild(status);
-        details.appendChild(div);
-      });
+    } else if (ev) {
+      var div = document.createElement('div');
+      div.className = 'sc-event';
+      var name = document.createElement('div');
+      name.textContent = ev.eventName || '(Unnamed)';
+      var status = document.createElement('div');
+      status.textContent = (ev.status === 'completed') ? 'Completed' : 'Missed';
+      status.className = (ev.status === 'completed') ? 'sc-ok' : 'sc-miss';
+      div.appendChild(name);
+      div.appendChild(status);
+      details.appendChild(div);
     }
     details.style.display = 'block';
   }
@@ -205,5 +275,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   render();
+// Properly close the IIFE
 })();
 

@@ -14,6 +14,13 @@ from datetime import date
 
 @login_required
 def dashboard(request):
+    # Beginner-friendly: Query routines for each category
+    weekly_routine = Routine.objects.filter(user=request.user, routine_type='weekly').first()
+    monthly_routine = Routine.objects.filter(user=request.user, routine_type='monthly').first()
+    hair_routine = Routine.objects.filter(user=request.user, routine_type='hair').first()
+    body_routine = Routine.objects.filter(user=request.user, routine_type='body').first()
+    special_routine = Routine.objects.filter(user=request.user, routine_type='special').first()
+    seasonal_routine = Routine.objects.filter(user=request.user, routine_type='seasonal').first()
     """
     Dashboard view that shows user's routines with real progress tracking.
     
@@ -196,6 +203,31 @@ def dashboard(request):
                 status = 'not_done'   # Neither completed
         
         routine_events.append({'date': date_key, 'status': status})
+    # === COLLECT WEEKLY STEPS AND DUE DATES (moved here) ===
+    weekly_steps = RoutineStep.objects.filter(routine__user=request.user, frequency='weekly')
+    weekly_due_dates = []
+    # For simplicity, default weekly steps to Monday (weekday=0)
+    for step in weekly_steps:
+        for day in range(1, last_day + 1):
+            day_date = date(year, month, day)
+            if day_date.weekday() == 0:  # Monday
+                weekly_due_dates.append({
+                    'date': day_date.strftime('%Y-%m-%d'),
+                    'step_name': step.step_name,
+                    'routine_type': step.routine.routine_type
+                })
+    weekly_due_dates_json = json.dumps(weekly_due_dates)
+
+    # Monthly routine due dates (default: first day of month)
+    monthly_steps = RoutineStep.objects.filter(routine__user=request.user, frequency='monthly')
+    monthly_due_dates = []
+    for step in monthly_steps:
+        monthly_due_dates.append({
+            'date': start_date.strftime('%Y-%m-%d'),
+            'step_name': step.step_name,
+            'routine_type': step.routine.routine_type
+        })
+    monthly_due_dates_json = json.dumps(monthly_due_dates)
 
     # Convert to JSON for JavaScript calendar
     routine_events_json = json.dumps(routine_events)
@@ -290,7 +322,15 @@ def dashboard(request):
     return render(request, 'routines/dashboard.html', {
         'morning_routine': morning_routine,
         'evening_routine': evening_routine,
+        'weekly_routine': weekly_routine,
+        'monthly_routine': monthly_routine,
+        'hair_routine': hair_routine,
+        'body_routine': body_routine,
+        'special_routine': special_routine,
+        'seasonal_routine': seasonal_routine,
         'routine_events_json': routine_events_json,
+        'weekly_due_dates_json': weekly_due_dates_json,
+        'monthly_due_dates_json': monthly_due_dates_json,
         'today_progress': today_progress,
         'completed_steps_today': completed_steps_today,
         'total_steps_today': total_steps_today,
