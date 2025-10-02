@@ -221,6 +221,12 @@ def dashboard(request):
         # Redirect to same page to prevent double-submission
         return redirect(request.path)
 
+    # === PREPARE STEP COMPLETION DATA FOR TEMPLATE ===
+    # Get today's completed step IDs for easy lookup in template
+    today_completed_step_ids = set(
+        today_completions.filter(completed=True).values_list('routine_step_id', flat=True)
+    )
+
     # === SEND DATA TO TEMPLATE ===
     # Pass all calculated data to the HTML template
     return render(request, 'routines/dashboard.html', {
@@ -232,6 +238,7 @@ def dashboard(request):
         'total_steps_today': total_steps_today,
         'current_streak': current_streak,
         'week_progress': week_progress,
+        'today_completed_step_ids': today_completed_step_ids,
     })
 
 
@@ -484,4 +491,56 @@ def mark_routine_complete(request):
         # Handle any other errors
         return JsonResponse({'success': False, 'error': f'Error: {str(e)}'})
 
+
+@login_required
+@require_http_methods(["POST"])
+def toggle_step_completion(request):
+    """
+    AJAX endpoint to toggle completion status of individual routine steps.
+    
+    This allows users to check/uncheck individual steps in their routine cards
+    on the dashboard for more granular progress tracking.
+    """
+    try:
+        # Parse the JSON data from request body
+        data = json.loads(request.body)
+        step_id = data.get('step_id')
+        
+        if not step_id:
+            return JsonResponse({'success': False, 'error': 'Step ID is required'})
+        
+        # Get the routine step and verify it belongs to current user
+        try:
+            step = RoutineStep.objects.get(id=step_id, routine__user=request.user)
+        except RoutineStep.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Step not found or access denied'})
+        
+        # Get today's date
+        today = date.today()
+        
+        # Get or create completion record for this step and date
+        completion, created = DailyCompletion.objects.get_or_create(
+            user=request.user,
+            routine_step=step,
+            date=today,
+            defaults={'completed': False}
+        )
+        
+        # Toggle the completion status
+        completion.completed = not completion.completed
+        completion.completed_at = timezone.now() if completion.completed else None
+        completion.save()
+        
+        # Return success response with new status
+        return JsonResponse({
+            'success': True, 
+            'completed': completion.completed,
+            'step_name': step.step_name,
+            'message': f'{"Completed" if completion.completed else "Unchecked"}: {step.step_name}'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': f'Error: {str(e)}'})
 

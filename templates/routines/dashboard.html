@@ -65,14 +65,22 @@
           {% endif %}
         </div>
         {% if morning_routine %}
-          <ul>
+          <ul class="routine-steps">
             {% for step in morning_routine.steps.all %}
-              <li>
-                {% if step.product %}
-                  {{ step.product.name }} – {{ step.step_name }}
-                {% else %}
-                  {{ step.step_name }}
-                {% endif %}
+              <li class="routine-step">
+                <label class="step-label">
+                  <input type="checkbox" 
+                         class="step-checkbox" 
+                         data-step-id="{{ step.id }}"
+                         {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                  <span class="step-text">
+                    {% if step.product %}
+                      {{ step.product.name }} – {{ step.step_name }}
+                    {% else %}
+                      {{ step.step_name }}
+                    {% endif %}
+                  </span>
+                </label>
               </li>
             {% endfor %}
           </ul>
@@ -100,14 +108,22 @@
           {% endif %}
         </div>
         {% if evening_routine %}
-          <ul>
+          <ul class="routine-steps">
             {% for step in evening_routine.steps.all %}
-              <li>
-                {% if step.product %}
-                  {{ step.product.name }} – {{ step.step_name }}
-                {% else %}
-                  {{ step.step_name }}
-                {% endif %}
+              <li class="routine-step">
+                <label class="step-label">
+                  <input type="checkbox" 
+                         class="step-checkbox" 
+                         data-step-id="{{ step.id }}"
+                         {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                  <span class="step-text">
+                    {% if step.product %}
+                      {{ step.product.name }} – {{ step.step_name }}
+                    {% else %}
+                      {{ step.step_name }}
+                    {% endif %}
+                  </span>
+                </label>
               </li>
             {% endfor %}
           </ul>
@@ -191,6 +207,95 @@
         window.ROUTINE_EVENTS = {};
     }
 
+    // === TOGGLE INDIVIDUAL STEP COMPLETION ===
+    // This function runs when user clicks checkbox for individual steps
+    function toggleStepCompletion(stepId) {
+        // Basic validation
+        if (!stepId) {
+            alert('Error: Step not found');
+            return;
+        }
+
+        console.log('Toggling completion for step ID:', stepId);
+
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+            alert('Error: Security token not found');
+            return;
+        }
+
+        // Send request to Django backend
+        fetch('{% url "routines:toggle_step" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken.value
+            },
+            body: JSON.stringify({
+                step_id: stepId
+            })
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                console.log('Success:', data.message);
+                // Update the progress display without full page reload
+                updateProgressDisplay();
+            } else {
+                // Show error and revert checkbox
+                alert('Error: ' + (data.error || 'Unknown error occurred'));
+                // Find the checkbox and revert its state
+                const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+            }
+        })
+        .catch(function(error) {
+            console.error('Network error:', error);
+            alert('Error: Could not connect to server');
+            // Revert checkbox state on error
+            const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+        });
+    }
+
+    // === UPDATE PROGRESS DISPLAY ===
+    // This function updates the progress indicators without full page reload
+    function updateProgressDisplay() {
+        // Count completed checkboxes
+        const totalCheckboxes = document.querySelectorAll('.step-checkbox').length;
+        const completedCheckboxes = document.querySelectorAll('.step-checkbox:checked').length;
+        
+        // Update progress percentage
+        const progressPercent = totalCheckboxes > 0 ? Math.round((completedCheckboxes / totalCheckboxes) * 100) : 0;
+        
+        // Update the progress display in the DOM
+        const progressElement = document.querySelector('.progress-stat h3');
+        if (progressElement) {
+            progressElement.textContent = progressPercent + '%';
+        }
+        
+        const progressText = document.querySelector('.progress-stat p');
+        if (progressText) {
+            progressText.textContent = `${completedCheckboxes} of ${totalCheckboxes} steps completed today`;
+        }
+        
+        // Update progress bar if it exists
+        const progressBar = document.querySelector('.progress-fill');
+        if (progressBar) {
+            progressBar.style.width = progressPercent + '%';
+        }
+    }
+
     // === MARK ROUTINE COMPLETE FUNCTION ===
     // This function runs when user clicks "Mark Complete" button
     function markRoutineComplete(routineId, routineType) {
@@ -249,6 +354,19 @@
             alert('Error: Could not connect to server');
         });
     }
+
+    // === INITIALIZE EVENT LISTENERS ===
+    // Set up event listeners for checkboxes when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all step checkboxes and add event listeners
+        const checkboxes = document.querySelectorAll('.step-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const stepId = this.getAttribute('data-step-id');
+                toggleStepCompletion(stepId);
+            });
+        });
+    });
 </script>
 {% endblock %}
 
