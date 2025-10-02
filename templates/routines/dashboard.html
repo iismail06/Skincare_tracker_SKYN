@@ -29,6 +29,12 @@
       <div class="progress-card">
         <h4>Current Streak</h4>
         <div class="streak-counter">🔥 {{ current_streak|default:0 }} day{{ current_streak|pluralize }}</div>
+        {% if milestone_message %}
+          <div class="milestone-message">
+            <span class="milestone-emoji">{{ milestone_emoji }}</span>
+            <span class="milestone-text">{{ milestone_message }}</span>
+          </div>
+        {% endif %}
       </div>
       <div class="progress-card">
         <h4>This Week</h4>

@@ -98,7 +98,27 @@ def dashboard(request):
         else:
             # Streak broken, stop counting
             break
+
+    # === CALCULATE MILESTONE MESSAGES ===
+    milestone_message = None
+    milestone_emoji = None
     
+    # Define milestone thresholds and messages
+    milestones = [
+        (30, " Fantastic! One month streak!", "🎯"),
+        (14, " Two weeks strong! Keep it up!", "🔥"),
+        (7, " One week streak! You're on fire!", "🚀"),
+        (3, " Great start! Building habits!", "👏"),
+        (1, " First day completed! Welcome!", "🎊")
+    ]
+    
+    # Find the appropriate milestone message
+    for threshold, message, emoji in milestones:
+        if current_streak >= threshold:
+            milestone_message = message
+            milestone_emoji = emoji
+            break
+
     # === CALCULATE THIS WEEK'S PROGRESS ===
     # Get Monday of current week
     week_start = today - timedelta(days=today.weekday())  # Monday = 0
@@ -237,6 +257,8 @@ def dashboard(request):
         'completed_steps_today': completed_steps_today,
         'total_steps_today': total_steps_today,
         'current_streak': current_streak,
+        'milestone_message': milestone_message,
+        'milestone_emoji': milestone_emoji,
         'week_progress': week_progress,
         'today_completed_step_ids': today_completed_step_ids,
     })
