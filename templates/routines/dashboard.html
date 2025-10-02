@@ -10,6 +10,7 @@
 
 
 {% block content %}
+{% csrf_token %}
 <div class="dashboard-container">
 
   <!-- Header -->
@@ -21,24 +22,29 @@
       <div class="progress-card">
         <h4>Today's Progress</h4>
         <div class="progress-bar">
-          <div class="progress-fill" style="width: 75%"></div>
+          <div class="progress-fill" data-progress="{{ today_progress|default:0 }}"></div>
         </div>
-        <span class="progress-text">3 of 4 steps completed</span>
+        <span class="progress-text">{{ completed_steps_today|default:0 }} of {{ total_steps_today|default:0 }} steps completed</span>
       </div>
       <div class="progress-card">
         <h4>Current Streak</h4>
-        <div class="streak-counter">🔥 7 days</div>
+        <div class="streak-counter">🔥 {{ current_streak|default:0 }} day{{ current_streak|pluralize }}</div>
       </div>
       <div class="progress-card">
         <h4>This Week</h4>
         <div class="week-progress">
-          <span class="week-day completed">M</span>
-          <span class="week-day completed">T</span>
-          <span class="week-day completed">W</span>
-          <span class="week-day current">T</span>
-          <span class="week-day">F</span>
-          <span class="week-day">S</span>
-          <span class="week-day">S</span>
+          {% for day in week_progress %}
+            <span class="week-day {% if day.status == 'completed' %}completed{% elif day.status == 'current' %}current{% endif %}">{{ day.day }}</span>
+          {% empty %}
+            <!-- Fallback if week_progress is empty -->
+            <span class="week-day">M</span>
+            <span class="week-day">T</span>
+            <span class="week-day">W</span>
+            <span class="week-day">T</span>
+            <span class="week-day">F</span>
+            <span class="week-day">S</span>
+            <span class="week-day">S</span>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -53,7 +59,7 @@
         <div class="routine-header">
           <h3>Morning Routine</h3>
           {% if morning_routine %}
-            <a href="{% url 'routines:detail' morning_routine.pk %}" class="edit-btn"> Edit</a>
+            <a href="{% url 'routines:edit' morning_routine.pk %}" class="edit-btn"> Edit</a>
           {% else %}
             <button class="edit-btn" disabled style="opacity: 0.5;"> Edit</button>
           {% endif %}
@@ -61,15 +67,25 @@
         {% if morning_routine %}
           <ul>
             {% for step in morning_routine.steps.all %}
-              <li>{{ step.product.name }} – {{ step.step_type }}</li>
+              <li>
+                {% if step.product %}
+                  {{ step.product.name }} – {{ step.step_name }}
+                {% else %}
+                  {{ step.step_name }}
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
           <div class="routine-actions">
-            <button class="complete-btn"> Mark Complete</button>
+            {% if morning_routine.id %}
+              <button class="complete-btn" onclick="markRoutineComplete('{{ morning_routine.id }}', 'morning')">Mark Complete</button>
+            {% else %}
+              <button class="complete-btn" disabled>No Routine Set</button>
+            {% endif %}
           </div>
         {% else %}
           <p>No morning routine yet.</p>
-          <button class="add-routine-btn">➕ Add Morning Routine</button>
+          <a href="{% url 'routines:add' %}?type=morning" class="add-routine-btn">➕ Add Morning Routine</a>
         {% endif %}
       </div>
 
@@ -78,7 +94,7 @@
         <div class="routine-header">
           <h3>Evening Routine</h3>
           {% if evening_routine %}
-            <a href="{% url 'routines:detail' evening_routine.pk %}" class="edit-btn"> Edit</a>
+            <a href="{% url 'routines:edit' evening_routine.pk %}" class="edit-btn"> Edit</a>
           {% else %}
             <button class="edit-btn" disabled style="opacity: 0.5;"> Edit</button>
           {% endif %}
@@ -86,15 +102,25 @@
         {% if evening_routine %}
           <ul>
             {% for step in evening_routine.steps.all %}
-              <li>{{ step.product.name }} – {{ step.step_type }}</li>
+              <li>
+                {% if step.product %}
+                  {{ step.product.name }} – {{ step.step_name }}
+                {% else %}
+                  {{ step.step_name }}
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
           <div class="routine-actions">
-            <button class="complete-btn">Mark Complete</button>
+            {% if evening_routine.id %}
+              <button class="complete-btn" onclick="markRoutineComplete('{{ evening_routine.id }}', 'evening')">Mark Complete</button>
+            {% else %}
+              <button class="complete-btn" disabled>No Routine Set</button>
+            {% endif %}
           </div>
         {% else %}
           <p>No evening routine yet.</p>
-          <button class="add-routine-btn">➕ Add Evening Routine</button>
+          <a href="{% url 'routines:add' %}?type=evening" class="add-routine-btn">➕ Add Evening Routine</a>
         {% endif %}
       </div>
     </div>
@@ -142,15 +168,86 @@
 
 {% block extra_js %}
 <script>
-    // Calendar initialization
+    // === SET PROGRESS BAR WIDTH ===
+    // Set the progress bar width from data attribute to avoid CSS parsing issues
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.querySelector('.progress-fill');
+        if (progressBar) {
+            const progress = progressBar.getAttribute('data-progress') || 0;
+            progressBar.style.width = progress + '%';
+        }
+    });
+
+    // === CALENDAR INITIALIZATION ===
+    // This code sets up the calendar data for display
     if (typeof window.ROUTINE_EVENTS === 'undefined') {
         window.ROUTINE_EVENTS = {};
     }
     try {
+        // Get calendar data from Django backend
         window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}" |escapejs }}');
     } catch (e) {
         console.warn('Could not parse routine events:', e);
         window.ROUTINE_EVENTS = {};
+    }
+
+    // === MARK ROUTINE COMPLETE FUNCTION ===
+    // This function runs when user clicks "Mark Complete" button
+    function markRoutineComplete(routineId, routineType) {
+        // Basic validation - make sure we have a routine ID
+        if (!routineId) {
+            alert('Error: Routine not found');
+            return;
+        }
+
+        // Show loading state (optional - you could add a loading indicator here)
+        console.log('Marking ' + routineType + ' routine as complete...');
+
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+            alert('Error: Security token not found');
+            return;
+        }
+
+        // Send request to Django backend
+        fetch('{% url "routines:mark_complete" %}', {
+            method: 'POST',  // Use POST method
+            headers: {
+                'Content-Type': 'application/json',  // Tell server we're sending JSON
+                // Get Django's CSRF token for security
+                'X-CSRFToken': csrfToken.value
+            },
+            // Send the routine information as JSON
+            body: JSON.stringify({
+                routine_id: routineId,
+                routine_type: routineType
+            })
+        })
+        .then(function(response) {
+            // Check if response is ok
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Convert response to JSON
+            return response.json();
+        })
+        .then(function(data) {
+            // Handle the response from Django
+            if (data.success) {
+                // Success! Refresh page to show new progress
+                console.log('Success:', data.message);
+                window.location.reload();
+            } else {
+                // Show error message to user
+                alert('Error: ' + (data.error || 'Unknown error occurred'));
+            }
+        })
+        .catch(function(error) {
+            // Handle network errors or other issues
+            console.error('Network error:', error);
+            alert('Error: Could not connect to server');
+        });
     }
 </script>
 {% endblock %}

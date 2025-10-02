@@ -2,11 +2,23 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Add Routine - SKYN{% endblock %}
+{% block title %}{% if is_editing %}Edit Routine{% else %}Add Routine{% endif %} - SKYN{% endblock %}
 
 {% block content %}
 <div class="form-container">
-    <h1 class="page-title">Create New Routine</h1>
+    <div style="margin-bottom: 1rem;">
+        <a href="{% url 'routines:dashboard' %}" style="color: var(--secondary-color-darker); font-size: 0.9rem;">
+            ← Back to Dashboard
+        </a>
+    </div>
+    
+    <h1 class="page-title">
+        {% if is_editing %}
+            {{ page_title }}
+        {% else %}
+            Create New Routine
+        {% endif %}
+    </h1>
     
     <div class="form-card">
         <form method="post" class="routine-form">
@@ -15,6 +27,7 @@
             <div class="form-group">
                 <label for="routine_name">Routine Name</label>
                 <input type="text" id="routine_name" name="routine_name" 
+                       value="{{ form.routine_name.value|default:'' }}"
                        placeholder="e.g., My Morning Glow Routine" required>
             </div>
 
@@ -22,8 +35,8 @@
                 <label for="routine_type">Routine Type</label>
                 <select id="routine_type" name="routine_type" required>
                     <option value="">Choose routine type</option>
-                    <option value="morning">Morning</option>
-                    <option value="evening">Evening</option>
+                    <option value="morning" {% if form.routine_type.value == 'morning' %}selected{% endif %}>Morning</option>
+                    <option value="evening" {% if form.routine_type.value == 'evening' %}selected{% endif %}>Evening</option>
                 </select>
             </div>
 
@@ -69,7 +82,13 @@
 
             <div class="form-actions">
                 <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Create Routine</button>
+                <button type="submit" class="btn btn-primary">
+                    {% if is_editing %}
+                        Update Routine
+                    {% else %}
+                        Create Routine
+                    {% endif %}
+                </button>
             </div>
         </form>
     </div>
