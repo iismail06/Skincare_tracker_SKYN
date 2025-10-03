@@ -46,14 +46,21 @@ def dashboard(request):
     last_day = calendar.monthrange(year, month)[1]
     end_date = date(year, month, last_day)
 
-    # Get user's routines (morning and evening)
-    morning_routines = Routine.objects.filter(user=request.user, routine_type='morning')
-    evening_routines = Routine.objects.filter(user=request.user, routine_type='evening')
-    morning_routine = morning_routines.first()  # Get the first (should be only one)
-    evening_routine = evening_routines.first()  # Get the first (should be only one)
+    # Get user's routines (morning and evening) with error handling
+    try:
+        morning_routines = Routine.objects.filter(user=request.user, routine_type='morning')
+        evening_routines = Routine.objects.filter(user=request.user, routine_type='evening')
+        morning_routine = morning_routines.first()  # Get the first (should be only one)
+        evening_routine = evening_routines.first()  # Get the first (should be only one)
 
-    # Get all completion records for this month (for calendar display)
-    completions = DailyCompletion.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
+        # Get all completion records for this month (for calendar display)
+        completions = DailyCompletion.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
+    except Exception as e:
+        messages.error(request, "We're having trouble loading your routines. Please try refreshing the page.")
+        # Set safe defaults so the page still loads
+        morning_routine = None
+        evening_routine = None
+        completions = DailyCompletion.objects.none()
 
     # === CALCULATE TODAY'S PROGRESS ===
     # Get today's completed steps

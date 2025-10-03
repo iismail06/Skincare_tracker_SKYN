@@ -21,11 +21,15 @@ def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            product = form.save(commit=False)
-            product.user = request.user
-            product.save()
-            messages.success(request, f'Product "{product.name}" added successfully!')
-            return redirect('products:list')
+            try:
+                product = form.save(commit=False)
+                product.user = request.user
+                product.save()
+                messages.success(request, f'Product "{product.name}" added successfully!')
+                return redirect('products:list')
+            except Exception as e:
+                messages.error(request, "Sorry, we couldn't save your product. Please try again.")
+                # Form will be re-displayed with the user's data still filled in
     else:
         form = ProductForm()
     
