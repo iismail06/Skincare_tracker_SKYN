@@ -10,7 +10,48 @@
     </div>
 
     <div class="form-container">
-        <form method="post" enctype="multipart/form-data" class="product-form">
+        <!-- Product Suggestions Section -->
+        <div class="product-suggestions-section" style="margin-bottom: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px;">
+            <h3 style="margin-bottom: 1rem; color: #495057;">Quick Add from Popular Products</h3>
+            <p style="margin-bottom: 1rem; color: #6c757d;">Browse popular products or add your own manually below.</p>
+            
+            <div class="form-group">
+                <label for="category-browse">Choose a category to see suggestions:</label>
+                <select id="category-browse" class="form-control" style="margin-bottom: 1rem;">
+                    <option value="">Select a product type...</option>
+                    <option value="cleanser">Cleanser</option>
+                    <option value="toner">Toner</option>
+                    <option value="serum">Serum</option>
+                    <option value="moisturizer">Moisturizer</option>
+                    <option value="sunscreen">Sunscreen</option>
+                    <option value="exfoliant">Exfoliant</option>
+                    <option value="mask">Face Mask</option>
+                    <option value="eye_cream">Eye Cream</option>
+                    <option value="oil">Face Oil</option>
+                    <option value="essence">Essence</option>
+                    <option value="spot_treatment">Spot Treatment</option>
+                    <option value="retinol">Retinol/Retinoid</option>
+                    <option value="vitamin_c">Vitamin C</option>
+                </select>
+            </div>
+            
+            <!-- Loading and suggestions will appear here -->
+            <div id="suggestions-loading" style="display: none; text-align: center; padding: 1rem;">
+                <p>Loading suggestions...</p>
+            </div>
+            
+            <div id="product-suggestions" style="display: none;">
+                <h4 style="margin-bottom: 1rem;">Popular products:</h4>
+                <div id="suggestions-grid" class="suggestions-grid">
+                    <!-- Product cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manual Form Section -->
+        <div class="manual-form-section">
+            <h3 style="margin-bottom: 1rem; color: #495057;">Or Add Manually</h3>
+            <form method="post" class="product-form" id="product-form">
             {% csrf_token %}
             
             <div class="form-group">
@@ -45,20 +86,6 @@
                 {% endif %}
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.image.id_for_label }}">Product Image (Optional)</label>
-                {{ form.image }}
-                {% if form.image.errors %}
-                    <div class="error">{{ form.image.errors }}</div>
-                {% endif %}
-                {% if product and product.image %}
-                    <div class="current-image">
-                        <p>Current image:</p>
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
-                    </div>
-                {% endif %}
-            </div>
-
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
                     {% if product %}Update Product{% else %}Add Product{% endif %}
@@ -66,6 +93,59 @@
                 <a href="{% url 'products:list' %}" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
+        </div> <!-- End manual-form-section -->
     </div>
 </div>
+
+<!-- Basic CSS for suggestions -->
+<style>
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.suggestion-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.suggestion-card:hover {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.suggestion-card h5 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.suggestion-card p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.suggestion-card .product-type {
+    background-color: #17a2b8;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+</style>
+
+<!-- Include routine_form.js for product suggestions functionality -->
+<script src="{% load static %}{% static 'js/routine_form.js' %}"></script>
+
 {% endblock %}
