@@ -480,66 +480,91 @@
   <!-- Product Widgets Section -->
   <section class="product-widgets-section">
     <div class="product-widgets">
+
       <!-- Skin Type Matches Widget -->
-      {% if user_skin_type and skin_type_products %}
       <div class="product-widget skin-type-widget">
-        <h4>🎯 Perfect for {{ user_skin_type|title }} Skin</h4>
-        <div class="product-mini-cards">
-          {% for product in skin_type_products %}
-            <div class="product-mini-card" 
-                 data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
-              <span class="product-name">{{ product.name }}</span>
-              <span class="product-brand">{{ product.brand }}</span>
-              {% if product.rating %}
-                <span class="rating">{{ product.rating }}/5⭐</span>
-              {% endif %}
-            </div>
-          {% endfor %}
-        </div>
+        {% if user_skin_type and skin_type_products %}
+          <h4>🎯 Perfect for {{ user_skin_type|title }} Skin</h4>
+          <div class="product-mini-cards">
+            {% for product in skin_type_products %}
+              <div class="product-mini-card" 
+                   data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
+                <span class="product-name">{{ product.name }}</span>
+                <span class="product-brand">{{ product.brand }}</span>
+                {% if product.rating %}
+                  <span class="rating">{{ product.rating }}/5⭐</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <h4>🎯 Perfect for Your Skin Type</h4>
+          <div class="empty-widget">
+            {% if not user_skin_type %}
+              <p class="empty-message">Set your skin type in your profile to see personalized product recommendations here.</p>
+              <a href="{% url 'users:profile' %}" class="btn btn-sm btn-outline-info">Set Skin Type</a>
+            {% else %}
+              <p class="empty-message">Add products that match your {{ user_skin_type }} skin type to see recommendations here.</p>
+              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-info">Add Products</a>
+            {% endif %}
+          </div>
+        {% endif %}
       </div>
-      {% endif %}
 
       <!-- Favorites Widget -->
-      {% if favorite_products %}
       <div class="product-widget favorites-widget">
-        <h4>💖 Your Favorites</h4>
-        <div class="product-mini-cards">
-          {% for product in favorite_products %}
-            <div class="product-mini-card"
-                 data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.expiry_date %} | Expires: {{ product.expiry_date }}{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
-              <span class="product-name">{{ product.name }}</span>
-              <span class="product-brand">{{ product.brand }}</span>
-              {% if product.expiry_date %}
-                {% with days_left=product.expiry_date|timeuntil %}
-                  {% if days_left %}
-                    <span class="expiry-info">{{ days_left }} left</span>
-                  {% endif %}
-                {% endwith %}
-              {% endif %}
-            </div>
-          {% endfor %}
-        </div>
+        {% if favorite_products %}
+          <h4>💖 Your Favorites</h4>
+          <div class="product-mini-cards">
+            {% for product in favorite_products %}
+              <div class="product-mini-card"
+                   data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.expiry_date %} | Expires: {{ product.expiry_date }}{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
+                <span class="product-name">{{ product.name }}</span>
+                <span class="product-brand">{{ product.brand }}</span>
+                {% if product.expiry_date %}
+                  {% with days_left=product.expiry_date|timeuntil %}
+                    {% if days_left %}
+                      <span class="expiry-info">{{ days_left }} left</span>
+                    {% endif %}
+                  {% endwith %}
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <h4>💖 Your Favorites</h4>
+          <div class="empty-widget">
+            <p class="empty-message">Mark products as favorites with the 💖 heart to see them here for quick access.</p>
+            <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-pink">Add Favorite Product</a>
+          </div>
+        {% endif %}
       </div>
-      {% endif %}
 
       <!-- Expiring Soon Widget -->
-      {% if expiring_products %}
       <div class="product-widget expiry-widget">
-        <h4>⚠️ Expiring Soon</h4>
-        <div class="product-mini-cards">
-          {% for product in expiring_products %}
-            {% with days_left=product.expiry_date|timeuntil %}
-            <div class="product-mini-card expiry-warning"
-                 data-tooltip="Expires: {{ product.expiry_date }} | {% if product.rating %}Rating: {{ product.rating }}/5⭐{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
-              <span class="product-name">{{ product.name }}</span>
-              <span class="product-brand">{{ product.brand }}</span>
-              <span class="expiry-warning-text">{{ days_left }} left</span>
-            </div>
-            {% endwith %}
-          {% endfor %}
-        </div>
+        {% if expiring_products %}
+          <h4>⚠️ Expiring Soon</h4>
+          <div class="product-mini-cards">
+            {% for product in expiring_products %}
+              {% with days_left=product.expiry_date|timeuntil %}
+              <div class="product-mini-card expiry-warning"
+                   data-tooltip="Expires: {{ product.expiry_date }} | {% if product.rating %}Rating: {{ product.rating }}/5⭐{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
+                <span class="product-name">{{ product.name }}</span>
+                <span class="product-brand">{{ product.brand }}</span>
+                <span class="expiry-warning-text">{{ days_left }} left</span>
+              </div>
+              {% endwith %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <h4>⚠️ Expiring Soon</h4>
+          <div class="empty-widget">
+            <p class="empty-message">Products expiring in the next 90 days will appear here so you never waste anything.</p>
+            <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-warning">Add Products with Expiry</a>
+          </div>
+        {% endif %}
       </div>
-      {% endif %}
+
     </div>
   </section>
 
