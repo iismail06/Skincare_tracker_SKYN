@@ -610,241 +610,35 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Initialize calendar data from Django backend -->
 <script>
-    // === SET PROGRESS BAR WIDTH ===
-    // Set the progress bar width from data attribute to avoid CSS parsing issues
-    document.addEventListener('DOMContentLoaded', function() {
-        const progressBar = document.querySelector('.progress-fill');
-        if (progressBar) {
-            const progress = progressBar.getAttribute('data-progress') || 0;
-            progressBar.style.width = progress + '%';
-        }
-    });
-
-    // === CALENDAR INITIALIZATION ===
-    // This code sets up the calendar data for display
-    if (typeof window.ROUTINE_EVENTS === 'undefined') {
-        window.ROUTINE_EVENTS = {};
-    }
+  /**
+   * Initialize dashboard data from Django template
+   * This must stay in the template because it uses Django template variables
+   */
+  (function() {
+    // Initialize routine events data
     try {
-        // Get calendar data from Django backend
-        window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}" |escapejs }}');
+      window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}"|escapejs }}');
     } catch (e) {
-        console.warn('Could not parse routine events:', e);
-        window.ROUTINE_EVENTS = {};
+      console.warn('Could not parse routine events:', e);
+      window.ROUTINE_EVENTS = {};
     }
 
-    // === PRODUCT EXPIRY EVENTS ===
-    // Add product expiry events to calendar
-    if (typeof window.EXPIRY_EVENTS === 'undefined') {
-        window.EXPIRY_EVENTS = [];
-    }
+    // Initialize expiry events data  
     try {
-        window.EXPIRY_EVENTS = JSON.parse('{{ expiry_events_json|default:"[]" |escapejs }}');
-        console.log('Loaded expiry events:', window.EXPIRY_EVENTS);
+      window.EXPIRY_EVENTS = JSON.parse('{{ expiry_events_json|default:"[]"|escapejs }}');
+      console.log('Loaded expiry events:', window.EXPIRY_EVENTS);
     } catch (e) {
-        console.warn('Could not parse expiry events:', e);
-        window.EXPIRY_EVENTS = [];
+      console.warn('Could not parse expiry events:', e);
+      window.EXPIRY_EVENTS = [];
     }
 
-    // === TOGGLE INDIVIDUAL STEP COMPLETION ===
-    // This function runs when user clicks checkbox for individual steps
-    function toggleStepCompletion(stepId) {
-        // Basic validation
-        if (!stepId) {
-            alert('Error: Step not found');
-            return;
-        }
-
-        console.log('Toggling completion for step ID:', stepId);
-
-        // Get CSRF token
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (!csrfToken) {
-            alert('Error: Security token not found');
-            return;
-        }
-
-        // Send request to Django backend
-        fetch('{% url "routines:toggle_step" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken.value
-            },
-            body: JSON.stringify({
-                step_id: stepId
-            })
-        })
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(function(data) {
-            if (data.success) {
-                console.log('Success:', data.message);
-                // Update the progress display without full page reload
-                updateProgressDisplay();
-            } else {
-                // Show error and revert checkbox
-                alert('Error: ' + (data.error || 'Unknown error occurred'));
-                // Find the checkbox and revert its state
-                const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
-                if (checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                }
-            }
-        })
-        .catch(function(error) {
-            console.error('Network error:', error);
-            alert('Error: Could not connect to server');
-            // Revert checkbox state on error
-            const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
-            if (checkbox) {
-                checkbox.checked = !checkbox.checked;
-            }
-        });
-    }
-
-    // === UPDATE PROGRESS DISPLAY ===
-    // This function updates the progress indicators without full page reload
-    function updateProgressDisplay() {
-        // Count completed checkboxes
-        const totalCheckboxes = document.querySelectorAll('.step-checkbox').length;
-        const completedCheckboxes = document.querySelectorAll('.step-checkbox:checked').length;
-        
-        // Update progress percentage
-        const progressPercent = totalCheckboxes > 0 ? Math.round((completedCheckboxes / totalCheckboxes) * 100) : 0;
-        
-        // Update the progress display in the DOM
-        const progressElement = document.querySelector('.progress-stat h3');
-        if (progressElement) {
-            progressElement.textContent = progressPercent + '%';
-        }
-        
-        const progressText = document.querySelector('.progress-stat p');
-        if (progressText) {
-            progressText.textContent = `${completedCheckboxes} of ${totalCheckboxes} steps completed today`;
-        }
-        
-        // Update progress bar if it exists
-        const progressBar = document.querySelector('.progress-fill');
-        if (progressBar) {
-            progressBar.style.width = progressPercent + '%';
-        }
-    }
-
-    // === MARK ROUTINE COMPLETE FUNCTION ===
-    // This function runs when user clicks "Mark Complete" button
-    function markRoutineComplete(routineId, routineType) {
-        // Basic validation - make sure we have a routine ID
-        if (!routineId) {
-            alert('Error: Routine not found');
-            return;
-        }
-
-        // Show loading state (optional - you could add a loading indicator here)
-        console.log('Marking ' + routineType + ' routine as complete...');
-
-        // Get CSRF token
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (!csrfToken) {
-            alert('Error: Security token not found');
-            return;
-        }
-
-        // Send request to Django backend
-        fetch('{% url "routines:mark_complete" %}', {
-            method: 'POST',  // Use POST method
-            headers: {
-                'Content-Type': 'application/json',  // Tell server we're sending JSON
-                // Get Django's CSRF token for security
-                'X-CSRFToken': csrfToken.value
-            },
-            // Send the routine information as JSON
-            body: JSON.stringify({
-                routine_id: routineId,
-                routine_type: routineType
-            })
-        })
-        .then(function(response) {
-            // Check if response is ok
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            // Convert response to JSON
-            return response.json();
-        })
-        .then(function(data) {
-            // Handle the response from Django
-            if (data.success) {
-                // Success! Refresh page to show new progress
-                console.log('Success:', data.message);
-                window.location.reload();
-            } else {
-                // Show error message to user
-                alert('Error: ' + (data.error || 'Unknown error occurred'));
-            }
-        })
-        .catch(function(error) {
-            // Handle network errors or other issues
-            console.error('Network error:', error);
-            alert('Error: Could not connect to server');
-        });
-    }
-
-    // === INITIALIZE EVENT LISTENERS ===
-    // Set up event listeners for checkboxes when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        // Find all step checkboxes and add event listeners
-        const checkboxes = document.querySelectorAll('.step-checkbox');
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                const stepId = this.getAttribute('data-step-id');
-                toggleStepCompletion(stepId);
-            });
-        });
-    });
-
-    // Function to open edit modal and populate with routine data
-    function openEditModal(routineId, routineName, routineType) {
-        // Populate basic fields
-        document.getElementById('edit-routine-id').value = routineId;
-        document.getElementById('edit-routine-name').value = routineName;
-        document.getElementById('edit-routine-type').value = routineType;
-        
-        // Clear all step fields first
-        for (let i = 1; i <= 5; i++) {
-            document.getElementById('edit-step' + i).value = '';
-            document.getElementById('edit-product' + i).value = '';
-        }
-        
-        // Load existing steps via AJAX
-        fetch(`/routines/get-routine-data/${routineId}/`)
-            .then(response => response.json())
-            .then(data => {
-                // Populate step fields with existing data
-                data.steps.forEach((step, index) => {
-                    if (index < 5) {
-                        document.getElementById('edit-step' + (index + 1)).value = step.step_name;
-                        if (step.product_id) {
-                            document.getElementById('edit-product' + (index + 1)).value = step.product_id;
-                        }
-                    }
-                });
-            })
-            .catch(error => {
-                console.log('Could not load routine details:', error);
-                // Modal will still open with basic info
-            });
-        
-        // Show the modal
-        const modal = new bootstrap.Modal(document.getElementById('editRoutineModal'));
-        modal.show();
-    }
+    // Trigger custom event to notify main.js that data is ready
+    document.dispatchEvent(new CustomEvent('dashboardDataReady'));
+  })();
 </script>
+{% endblock %}
 
 <!-- Edit Routine Modal -->
 <div class="modal fade" id="editRoutineModal" tabindex="-1" aria-labelledby="editRoutineModalLabel" aria-hidden="true">
