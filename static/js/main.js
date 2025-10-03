@@ -30,6 +30,63 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
+ * Mobile Hamburger Menu Functionality
+ * Handles responsive navigation menu toggle
+ */
+document.addEventListener('DOMContentLoaded', function() {
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const navLinks = document.getElementById('nav-links');
+  
+  if (hamburgerMenu && navLinks) {
+    hamburgerMenu.addEventListener('click', function() {
+      // Toggle active class on hamburger button
+      hamburgerMenu.classList.toggle('active');
+      
+      // Toggle active class on nav links
+      navLinks.classList.toggle('active');
+      
+      // Prevent body scroll when menu is open
+      if (navLinks.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Close menu when clicking on nav links
+    const navLinkItems = navLinks.querySelectorAll('a');
+    navLinkItems.forEach(link => {
+      link.addEventListener('click', function() {
+        hamburgerMenu.classList.remove('active');
+        navLinks.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const isClickInsideNav = navLinks.contains(event.target) || 
+                              hamburgerMenu.contains(event.target);
+      
+      if (!isClickInsideNav && navLinks.classList.contains('active')) {
+        hamburgerMenu.classList.remove('active');
+        navLinks.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Close menu on window resize if screen becomes larger
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+        hamburgerMenu.classList.remove('active');
+        navLinks.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+});
+
+/**
  * Simple Calendar Component
  * Displays a monthly calendar with routine events and status indicators
  */

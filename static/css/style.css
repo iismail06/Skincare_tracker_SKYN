@@ -29,11 +29,14 @@ Alternative dark theme colors to try in the future:
 
 :root {
     --background-color: #e9e9e9;
+    --background-color-rgb: 233, 233, 233;
     --background-color-darker: #dddddd;
+    --background-color-darker-rgb: 221, 221, 221;
     --text: #080604;
     --secondary-color: #3a2618;
     --secondary-color-lighter: #f0d3bc;
     --secondary-color-darker: #080604;
+    --secondary-color-darker-rgb: 8, 6, 4;
     --accent-color: #969a8b;
     --accent-color-rgb: 150, 154, 139;
     --accent-color-lighter: #a0a68f;
@@ -43,11 +46,14 @@ Alternative dark theme colors to try in the future:
 
 body.dark-theme {
     --background-color: #2a2418;
+    --background-color-rgb: 42, 36, 24;
     --background-color-darker: #1f1b13;
+    --background-color-darker-rgb: 31, 27, 19;
     --text: #f0e6d2;
     --secondary-color: #d4c4a8;
     --secondary-color-lighter: #f0d3bc;
     --secondary-color-darker: #f0e6d2;
+    --secondary-color-darker-rgb: 240, 230, 210;
     --accent-color: #bfc1a0;
     --accent-color-rgb: 191, 193, 160;
     --accent-color-lighter: #b2b697;
@@ -176,76 +182,209 @@ h2 {
    5. NAVIGATION
    ========================================================================== */
 
-.navbar {
-    background-color: var(--background-color);
-    padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 1000;
+.custom-navbar {
+    background-color: rgba(var(--background-color-rgb, 233, 233, 233), 0.65) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    padding: 1rem 0 !important;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
     margin: 0 !important; /* Override Bootstrap */
     border: none !important; /* Remove any Bootstrap borders */
+    transition: all 0.3s ease !important;
+    display: block !important;
 }
 
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
-    gap: 6rem; /* BIG space between logo and navigation links */
+.custom-navbar .nav-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-.nav-brand {
-    color: var(--secondary-color-darker);
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    flex-shrink: 0; /* Prevent logo from shrinking */
+.custom-navbar .nav-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 2rem !important;
+    margin-left: auto !important;
 }
 
-.nav-brand:hover {
-    color: var(--accent-color);
+.custom-navbar .nav-brand {
+    color: var(--secondary-color-darker) !important;
+    text-decoration: none !important;
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
+    flex-shrink: 0 !important; /* Prevent logo from shrinking */
+    margin-right: auto !important;
+    display: block !important;
 }
 
-.nav-links {
-    display: flex;
-    gap: 0.5rem; /* SMALL gap between navigation links - close together */
+.custom-navbar .nav-brand:hover {
+    color: var(--accent-color) !important;
+    text-decoration: none !important;
 }
 
-.nav-links a {
-    color: var(--secondary-color-darker);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    font-size: 1.1rem;
+.custom-navbar .nav-links {
+    display: flex !important;
+    gap: 0.5rem !important; /* SMALL gap between navigation links - close together */
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-items: center !important;
 }
 
-.nav-links a:hover {
-    background-color: var(--background-color-darker);
-    color: var(--accent-color);
+.custom-navbar .nav-links a {
+    color: var(--secondary-color-darker) !important;
+    text-decoration: none !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    font-size: 1.1rem !important;
+    display: inline-block !important;
+}
+
+.custom-navbar .nav-links a:hover {
+    background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.8) !important;
+    color: var(--accent-color) !important;
+    transform: translateY(-2px) !important;
+    text-decoration: none !important;
+}
+
+/* Hamburger Menu Button */
+.custom-navbar .hamburger-menu {
+    display: none !important;
+    flex-direction: column !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0.5rem !important;
+}
+
+.custom-navbar .hamburger-line {
+    width: 25px !important;
+    height: 3px !important;
+    background-color: var(--secondary-color-darker) !important;
+    margin: 3px 0 !important;
+    transition: 0.3s !important;
+    border-radius: 2px !important;
 }
 
 /* Theme Toggle Button */
-#theme-toggle {
-    background: none;
-    border: 2px solid var(--secondary-color-darker);
-    color: var(--secondary-color-darker);
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+.custom-navbar #theme-toggle {
+    background: rgba(var(--secondary-color-darker-rgb, 8, 6, 4), 0.15) !important;
+    border: 2px solid var(--secondary-color-darker) !important;
+    color: var(--secondary-color-darker) !important;
+    padding: 0.4rem 0.8rem !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-size: 0.9rem !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    display: inline-block !important;
 }
 
-#theme-toggle:hover {
-    background: var(--accent-color);
-    color: white;
-    border-color: var(--accent-color);
+.custom-navbar #theme-toggle:hover {
+    background: var(--accent-color) !important;
+    color: white !important;
+    border-color: var(--accent-color) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 768px) {
+    .custom-navbar .nav-container {
+        padding: 0 1rem !important;
+    }
+    
+    .custom-navbar .nav-right {
+        gap: 1rem !important;
+    }
+    
+    .custom-navbar .hamburger-menu {
+        display: flex !important;
+        z-index: 1001 !important;
+    }
+    
+    .custom-navbar .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background-color: rgba(var(--background-color-rgb, 233, 233, 233), 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        transition: left 0.3s ease !important;
+        gap: 2rem !important;
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .custom-navbar .nav-links.active {
+        left: 0 !important;
+    }
+    
+    .custom-navbar .nav-links a {
+        font-size: 1.3rem !important;
+        padding: 1rem 2rem !important;
+        width: 200px !important;
+        text-align: center !important;
+        border-radius: 8px !important;
+        background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.5) !important;
+        margin: 0.5rem 0 !important;
+    }
+    
+    .custom-navbar .nav-links a:hover {
+        transform: scale(1.05) !important;
+        background-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.8) !important;
+    }
+    
+    /* Hamburger animation when active */
+    .custom-navbar .hamburger-menu.active .hamburger-line:nth-child(1) {
+        transform: rotate(-45deg) translate(-6px, 6px) !important;
+    }
+    
+    .custom-navbar .hamburger-menu.active .hamburger-line:nth-child(2) {
+        opacity: 0 !important;
+    }
+    
+    .custom-navbar .hamburger-menu.active .hamburger-line:nth-child(3) {
+        transform: rotate(45deg) translate(-6px, -6px) !important;
+    }
+    
+    .custom-navbar #theme-toggle {
+        font-size: 0.8rem !important;
+        padding: 0.3rem 0.6rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-navbar .nav-container {
+        padding: 0 0.5rem !important;
+    }
+    
+    .custom-navbar .nav-brand {
+        font-size: 1.3rem !important;
+    }
+    
+    .custom-navbar .nav-links a {
+        width: 170px !important;
+        font-size: 1.2rem !important;
+    }
 }
 
 /* ==========================================================================
@@ -776,11 +915,14 @@ main {
    ========================================================================== */
 
 .footer {
-    background-color: var(--background-color);
+    background-color: rgba(var(--background-color-rgb, 233, 233, 233), 0.65);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     color: var(--secondary-color-darker);
     padding: 2rem 0;
     margin-top: auto;
-    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
 
 .footer-content {
@@ -806,12 +948,17 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .social-link:hover {
     color: var(--accent-color);
-    background-color: var(--background-color-darker);
+    background-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.3);
     transform: translateY(-2px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .footer-copyright {
