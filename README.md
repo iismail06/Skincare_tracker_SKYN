@@ -184,6 +184,28 @@ This project was developed as a **learning exercise**. I combined ideas from mul
 - [YouTube: Django Calendar App Tutorial](https://www.youtube.com/watch?v=Q3u1n6b1xGk) — Shows how to pass data from Django to JS and display events.
 - [MDN Web Docs: Manipulating documents with JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents) — Explains how to update HTML and add interactivity.
 
+This skincare tracker demonstrates several fundamental Django concepts:
+
+### API Implemented
+
+- **REST API Endpoints** - Following [DRF Quickstart Guide](https://www.django-rest-framework.org/tutorial/quickstart/)
+- **Custom Management Commands** - Based on [Django's official documentation](https://docs.djangoproject.com/en/5.2/howto/custom-management-commands/)
+- **External API Integration** - Using patterns from [Real Python's API Integration Guide](https://realpython.com/api-integration-in-python/)
+- **Model Extensions** - Standard Django model fields as shown in [Django Models Tutorial](https://docs.djangoproject.com/en/5.2/topics/db/models/)
+
+### Learning Resources
+
+If you want to understand or extend this code, these tutorials cover all the concepts used:
+
+1. [Django REST Framework Tutorial Series](https://www.django-rest-framework.org/tutorial/1-serialization/) - For API development
+2. [Real Python Django Series](https://realpython.com/get-started-with-django-1/) - For Django fundamentals
+3. [Python Requests Documentation](https://requests.readthedocs.io/en/latest/) - For API calls
+
+### Open Beauty Facts API
+
+- [Open Beauty Facts API Documentation](https://world.openbeautyfacts.org/data)
+- [API Usage Examples](https://wiki.openbeautyfacts.org/API)
+
 ## 🤖 AI Contribution  
 
 - **Automated Testing**: AI was used to help structure and organize the test cases into logical sections.  
