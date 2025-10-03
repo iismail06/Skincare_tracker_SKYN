@@ -22,7 +22,7 @@ class ProductForm(forms.ModelForm):
             }),
             'notes': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 3,
+                'rows': 2,
                 'placeholder': 'Add any notes about this product (optional)'
             }),
         }
