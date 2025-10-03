@@ -6,7 +6,7 @@ class ProductForm(forms.ModelForm):
     
     class Meta:
         model = Product
-        fields = ['name', 'brand', 'product_type', 'notes', 'image']
+        fields = ['name', 'brand', 'product_type', 'notes']
         
         widgets = {
             'name': forms.TextInput(attrs={
@@ -25,8 +25,4 @@ class ProductForm(forms.ModelForm):
                 'rows': 3,
                 'placeholder': 'Add any notes about this product (optional)'
             }),
-            'image': forms.FileInput(attrs={
-                'class': 'form-control',
-                'accept': 'image/*'
-            })
         }

@@ -96,3 +96,18 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     def get_queryset(self):
         # Only return products for the authenticated user
         return Product.objects.filter(user=self.request.user)
+
+
+class ProductBrowseByCategoryAPIView(generics.ListAPIView):
+    """API endpoint for browsing products by category (for suggestions)"""
+    serializer_class = ProductSerializer
+    permission_classes = []  # No authentication required for browsing
+    
+    def get_queryset(self):
+        category = self.kwargs.get('category', 'moisturizer')
+        
+        # Return products from this category, regardless of user
+        # This gives suggestions from all imported products
+        return Product.objects.filter(
+            product_type=category
+        ).distinct('name', 'brand')[:10]  # Limit to 10 unique suggestions
