@@ -1,0 +1,96 @@
+{# routines/add_routine.html - create a new routine and steps #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if is_editing %}Edit Routine{% else %}Add Routine{% endif %} - SKYN{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div style="margin-bottom: 1rem;">
+        <a href="{% url 'routines:dashboard' %}" style="color: var(--secondary-color-darker); font-size: 0.9rem;">
+            ← Back to Dashboard
+        </a>
+    </div>
+    
+    <h1 class="page-title">
+        {% if is_editing %}
+            {{ page_title }}
+        {% else %}
+            Create New Routine
+        {% endif %}
+    </h1>
+    
+    <div class="form-card">
+        <form method="post" class="routine-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="routine_name">Routine Name</label>
+                <input type="text" id="routine_name" name="routine_name" 
+                       value="{{ form.routine_name.value|default:'' }}"
+                       placeholder="e.g., My Morning Glow Routine" required>
+            </div>
+
+            <div class="form-group">
+                <label for="routine_type">Routine Type</label>
+                <select id="routine_type" name="routine_type" required>
+                    <option value="">Choose routine type</option>
+                    <option value="morning" {% if form.routine_type.value == 'morning' %}selected{% endif %}>Morning</option>
+                    <option value="evening" {% if form.routine_type.value == 'evening' %}selected{% endif %}>Evening</option>
+                </select>
+            </div>
+
+            <div class="steps-section">
+                <h3>Routine Steps</h3>
+                <p class="steps-help">Add up to 5 steps for your routine (leave blank if not needed)</p>
+
+                <div class="form-group">
+                    <label for="step1">Step 1</label>
+                    {{ form.step1 }}
+                    <label for="product1">Product</label>
+                    {{ form.product1 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step2">Step 2</label>
+                    {{ form.step2 }}
+                    <label for="product2">Product</label>
+                    {{ form.product2 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step3">Step 3</label>
+                    {{ form.step3 }}
+                    <label for="product3">Product</label>
+                    {{ form.product3 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step4">Step 4</label>
+                    {{ form.step4 }}
+                    <label for="product4">Product</label>
+                    {{ form.product4 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step5">Step 5</label>
+                    {{ form.step5 }}
+                    <label for="product5">Product</label>
+                    {{ form.product5 }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    {% if is_editing %}
+                        Update Routine
+                    {% else %}
+                        Create Routine
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

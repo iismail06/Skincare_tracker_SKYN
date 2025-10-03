@@ -1,0 +1,799 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+
+{% block title %}My Routines - SKYN{% endblock %}
+
+
+{% block content %}
+{% csrf_token %}
+<div class="dashboard-container">
+
+  <!-- Header -->
+  <h1 class="page-title">Your Dashboard</h1>
+  
+  <!-- Progress Section -->
+  <section class="progress-section">
+    <div class="progress-cards">
+      <div class="progress-card">
+        <h4>Today's Progress</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" data-progress="{{ today_progress|default:0 }}"></div>
+        </div>
+        <span class="progress-text">{{ completed_steps_today|default:0 }} of {{ total_steps_today|default:0 }} steps completed</span>
+      </div>
+      <div class="progress-card">
+        <h4>Current Streak</h4>
+        <div class="streak-counter">🔥 {{ current_streak|default:0 }} day{{ current_streak|pluralize }}</div>
+        {% if milestone_message %}
+          <div class="milestone-message">
+            <span class="milestone-emoji">{{ milestone_emoji }}</span>
+            <span class="milestone-text">{{ milestone_message }}</span>
+          </div>
+        {% endif %}
+      </div>
+      <div class="progress-card">
+        <h4>This Week</h4>
+        <div class="week-progress">
+          {% for day in week_progress %}
+            <span class="week-day {% if day.status == 'completed' %}completed{% elif day.status == 'current' %}current{% endif %}">{{ day.day }}</span>
+          {% empty %}
+            <!-- Fallback if week_progress is empty -->
+            <span class="week-day">M</span>
+            <span class="week-day">T</span>
+            <span class="week-day">W</span>
+            <span class="week-day">T</span>
+            <span class="week-day">F</span>
+            <span class="week-day">S</span>
+            <span class="week-day">S</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Routines Section -->
+  <section class="routines-section">
+    <h2 class="section-title">Your Routines</h2>
+    <div class="routine-cards">
+      <!-- Morning Routine -->
+      <div class="routine-card morning">
+        <div class="routine-header">
+          <h3>Morning Routine</h3>
+          {% if morning_routine %}
+            <button type="button" class="edit-btn" onclick="openEditModal('{{ morning_routine.pk }}', '{{ morning_routine.name|escapejs }}', '{{ morning_routine.routine_type }}')">Edit</button>
+          {% else %}
+            <button class="edit-btn" disabled>Edit</button>
+          {% endif %}
+        </div>
+        {% if morning_routine %}
+          <ul class="routine-steps">
+            {% for step in morning_routine.steps.all %}
+              <li class="routine-step">
+                <label class="step-label">
+                  <input type="checkbox" 
+                         class="step-checkbox" 
+                         data-step-id="{{ step.id }}"
+                         {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                  <span class="step-text">
+                    {% if step.product %}
+                      {{ step.product.name }} – {{ step.step_name }}
+                    {% else %}
+                      {{ step.step_name }}
+                    {% endif %}
+                  </span>
+                </label>
+              </li>
+            {% endfor %}
+          </ul>
+          <div class="routine-actions">
+            {% if morning_routine.id %}
+              <button class="complete-btn" onclick="markRoutineComplete('{{ morning_routine.id }}', 'morning')">Mark Complete</button>
+            {% else %}
+              <button class="complete-btn" disabled>No Routine Set</button>
+            {% endif %}
+          </div>
+        {% else %}
+          <p>No morning routine yet.</p>
+          <a href="{% url 'routines:add' %}?type=morning" class="add-routine-btn">➕ Add Morning Routine</a>
+        {% endif %}
+      </div>
+
+      <!-- Evening Routine -->
+      <div class="routine-card evening">
+        <div class="routine-header">
+          <h3>Evening Routine</h3>
+          {% if evening_routine %}
+            <button type="button" class="edit-btn" onclick="openEditModal('{{ evening_routine.pk }}', '{{ evening_routine.name|escapejs }}', '{{ evening_routine.routine_type }}')">Edit</button>
+          {% else %}
+            <button class="edit-btn" disabled>Edit</button>
+          {% endif %}
+        </div>
+        {% if evening_routine %}
+          <ul class="routine-steps">
+            {% for step in evening_routine.steps.all %}
+              <li class="routine-step">
+                <label class="step-label">
+                  <input type="checkbox" 
+                         class="step-checkbox" 
+                         data-step-id="{{ step.id }}"
+                         {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                  <span class="step-text">
+                    {% if step.product %}
+                      {{ step.product.name }} – {{ step.step_name }}
+                    {% else %}
+                      {{ step.step_name }}
+                    {% endif %}
+                  </span>
+                </label>
+              </li>
+            {% endfor %}
+          </ul>
+          <div class="routine-actions">
+            {% if evening_routine.id %}
+              <button class="complete-btn" onclick="markRoutineComplete('{{ evening_routine.id }}', 'evening')">Mark Complete</button>
+            {% else %}
+              <button class="complete-btn" disabled>No Routine Set</button>
+            {% endif %}
+          </div>
+        {% else %}
+          <p>No evening routine yet.</p>
+          <a href="{% url 'routines:add' %}?type=evening" class="add-routine-btn">➕ Add Evening Routine</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Accordion Section for other routines -->
+    <div class="accordion mt-4" id="routineAccordion">
+      <!-- Weekly Routine -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingWeekly">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWeekly" aria-expanded="false" aria-controls="collapseWeekly">
+            Weekly Routine
+          </button>
+        </h2>
+        <div id="collapseWeekly" class="accordion-collapse collapse" aria-labelledby="headingWeekly" data-bs-parent="#routineAccordion">
+          <div class="accordion-body">
+            <div class="routine-card weekly">
+              <div class="routine-header">
+                <h3>Weekly Routine</h3>
+                {% if weekly_routine %}
+                  <button type="button" class="edit-btn" onclick="openEditModal('{{ weekly_routine.pk }}', '{{ weekly_routine.name|escapejs }}', 'weekly')">Edit</button>
+                {% else %}
+                  <button class="edit-btn" disabled>Edit</button>
+                {% endif %}
+              </div>
+              {% if weekly_routine %}
+                <ul class="routine-steps">
+                  {% for step in weekly_routine.steps.all %}
+                    <li class="routine-step">
+                      <label class="step-label">
+                        <input type="checkbox" class="step-checkbox" data-step-id="{{ step.id }}" {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                        <span class="step-text">
+                          {% if step.product %}
+                            {{ step.product.name }} – {{ step.step_name }}
+                          {% else %}
+                            {{ step.step_name }}
+                          {% endif %}
+                        </span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="routine-actions">
+                  <button class="complete-btn" onclick="markRoutineComplete('{{ weekly_routine.id }}', 'weekly')">Mark Complete</button>
+                </div>
+              {% else %}
+                <ul class="routine-steps">
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Exfoliation (scrub / AHA/BHA)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Hydrating face mask</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Clay/charcoal mask</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Facial massage or gua sha</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Scalp scrub or mask</span></label></li>
+                </ul>
+                <a href="{% url 'routines:add' %}?type=weekly" class="add-routine-btn">➕ Add Weekly Routine</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Routine -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingMonthly">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonthly" aria-expanded="false" aria-controls="collapseMonthly">
+            Monthly Routine
+          </button>
+        </h2>
+        <div id="collapseMonthly" class="accordion-collapse collapse" aria-labelledby="headingMonthly" data-bs-parent="#routineAccordion">
+          <div class="accordion-body">
+            <div class="routine-card monthly">
+              <div class="routine-header">
+                <h3>Monthly Routine</h3>
+                {% if monthly_routine %}
+                  <button type="button" class="edit-btn" onclick="openEditModal('{{ monthly_routine.pk }}', '{{ monthly_routine.name|escapejs }}', 'monthly')">Edit</button>
+                {% else %}
+                  <button class="edit-btn" disabled>Edit</button>
+                {% endif %}
+              </div>
+              {% if monthly_routine %}
+                <ul class="routine-steps">
+                  {% for step in monthly_routine.steps.all %}
+                    <li class="routine-step">
+                      <label class="step-label">
+                        <input type="checkbox" class="step-checkbox" data-step-id="{{ step.id }}" {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                        <span class="step-text">
+                          {% if step.product %}
+                            {{ step.product.name }} – {{ step.step_name }}
+                          {% else %}
+                            {{ step.step_name }}
+                          {% endif %}
+                        </span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="routine-actions">
+                  <button class="complete-btn" onclick="markRoutineComplete('{{ monthly_routine.id }}', 'monthly')">Mark Complete</button>
+                </div>
+              {% else %}
+                <ul class="routine-steps">
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">At-home peel (stronger exfoliation)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Professional facial / spa treatment</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Skin reset (skip actives for barrier care)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Replace / clean tools (brushes, sponges, rollers)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Dermaplaning / face shaving</span></label></li>
+                </ul>
+                <a href="{% url 'routines:add' %}?type=monthly" class="add-routine-btn">➕ Add Monthly Routine</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hair Care -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingHair">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHair" aria-expanded="false" aria-controls="collapseHair">
+            Hair Care
+          </button>
+        </h2>
+        <div id="collapseHair" class="accordion-collapse collapse" aria-labelledby="headingHair" data-bs-parent="#routineAccordion">
+          <div class="accordion-body">
+            <div class="routine-card hair">
+              <div class="routine-header">
+                <h3>Hair Care</h3>
+                {% if hair_routine %}
+                  <button type="button" class="edit-btn" onclick="openEditModal('{{ hair_routine.pk }}', '{{ hair_routine.name|escapejs }}', 'hair')">Edit</button>
+                {% else %}
+                  <button class="edit-btn" disabled>Edit</button>
+                {% endif %}
+              </div>
+              {% if hair_routine %}
+                <ul class="routine-steps">
+                  {% for step in hair_routine.steps.all %}
+                    <li class="routine-step">
+                      <label class="step-label">
+                        <input type="checkbox" class="step-checkbox" data-step-id="{{ step.id }}" {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                        <span class="step-text">
+                          {% if step.product %}
+                            {{ step.product.name }} – {{ step.step_name }}
+                          {% else %}
+                            {{ step.step_name }}
+                          {% endif %}
+                        </span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="routine-actions">
+                  <button class="complete-btn" onclick="markRoutineComplete('{{ hair_routine.id }}', 'hair')">Mark Complete</button>
+                </div>
+              {% else %}
+                <ul class="routine-steps">
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Oil treatment (scalp or ends)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Deep conditioning mask</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Protein treatment (every few weeks)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Clarifying shampoo (remove buildup)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Scalp massage with serum</span></label></li>
+                </ul>
+                <a href="{% url 'routines:add' %}?type=hair" class="add-routine-btn">➕ Add Hair Care Routine</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body Care -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingBody">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBody" aria-expanded="false" aria-controls="collapseBody">
+            Body Care
+          </button>
+        </h2>
+        <div id="collapseBody" class="accordion-collapse collapse" aria-labelledby="headingBody" data-bs-parent="#routineAccordion">
+          <div class="accordion-body">
+            <div class="routine-card body">
+              <div class="routine-header">
+                <h3>Body Care</h3>
+                {% if body_routine %}
+                  <button type="button" class="edit-btn" onclick="openEditModal('{{ body_routine.pk }}', '{{ body_routine.name|escapejs }}', 'body')">Edit</button>
+                {% else %}
+                  <button class="edit-btn" disabled>Edit</button>
+                {% endif %}
+              </div>
+              {% if body_routine %}
+                <ul class="routine-steps">
+                  {% for step in body_routine.steps.all %}
+                    <li class="routine-step">
+                      <label class="step-label">
+                        <input type="checkbox" class="step-checkbox" data-step-id="{{ step.id }}" {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                        <span class="step-text">
+                          {% if step.product %}
+                            {{ step.product.name }} – {{ step.step_name }}
+                          {% else %}
+                            {{ step.step_name }}
+                          {% endif %}
+                        </span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="routine-actions">
+                  <button class="complete-btn" onclick="markRoutineComplete('{{ body_routine.id }}', 'body')">Mark Complete</button>
+                </div>
+              {% else %}
+                <ul class="routine-steps">
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Body exfoliation (scrub, dry brushing)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Hydrating body mask / moisturising soak</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Hand and foot masks (paraffin, shea butter, etc.)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Body peel (AHA/BHA for rough patches)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Targeted treatments (stretch marks, cellulite, cracked heels)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Massage (home or professional)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Self-tan / reset (if used)</span></label></li>
+                </ul>
+                <a href="{% url 'routines:add' %}?type=body" class="add-routine-btn">➕ Add Body Care Routine</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special Treatments -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSpecial">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSpecial" aria-expanded="false" aria-controls="collapseSpecial">
+            Special Treatments
+          </button>
+        </h2>
+        <div id="collapseSpecial" class="accordion-collapse collapse" aria-labelledby="headingSpecial" data-bs-parent="#routineAccordion">
+          <div class="accordion-body">
+            <div class="routine-card special">
+              <div class="routine-header">
+                <h3>Special Treatments</h3>
+                {% if special_routine %}
+                  <button type="button" class="edit-btn" onclick="openEditModal('{{ special_routine.pk }}', '{{ special_routine.name|escapejs }}', 'special')">Edit</button>
+                {% else %}
+                  <button class="edit-btn" disabled>Edit</button>
+                {% endif %}
+              </div>
+              {% if special_routine %}
+                <ul class="routine-steps">
+                  {% for step in special_routine.steps.all %}
+                    <li class="routine-step">
+                      <label class="step-label">
+                        <input type="checkbox" class="step-checkbox" data-step-id="{{ step.id }}" {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                        <span class="step-text">
+                          {% if step.product %}
+                            {{ step.product.name }} – {{ step.step_name }}
+                          {% else %}
+                            {{ step.step_name }}
+                          {% endif %}
+                        </span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="routine-actions">
+                  <button class="complete-btn" onclick="markRoutineComplete('{{ special_routine.id }}', 'special')">Mark Complete</button>
+                </div>
+              {% else %}
+                <ul class="routine-steps">
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Retinol night (track frequency)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">LED mask or light therapy</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Microneedling / derma roller</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Spot treatments (acne patches, sulfur mask)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Under-eye masks / treatments</span></label></li>
+                </ul>
+                <a href="{% url 'routines:add' %}?type=special" class="add-routine-btn">➕ Add Special Treatments</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seasonal Treatments -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSeasonal">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeasonal" aria-expanded="false" aria-controls="collapseSeasonal">
+            Seasonal Treatments
+          </button>
+        </h2>
+        <div id="collapseSeasonal" class="accordion-collapse collapse" aria-labelledby="headingSeasonal" data-bs-parent="#routineAccordion">
+          <div class="accordion-body">
+            <div class="routine-card seasonal">
+              <div class="routine-header">
+                <h3>Seasonal Treatments</h3>
+                {% if seasonal_routine %}
+                  <button type="button" class="edit-btn" onclick="openEditModal('{{ seasonal_routine.pk }}', '{{ seasonal_routine.name|escapejs }}', 'seasonal')">Edit</button>
+                {% else %}
+                  <button class="edit-btn" disabled>Edit</button>
+                {% endif %}
+              </div>
+              {% if seasonal_routine %}
+                <ul class="routine-steps">
+                  {% for step in seasonal_routine.steps.all %}
+                    <li class="routine-step">
+                      <label class="step-label">
+                        <input type="checkbox" class="step-checkbox" data-step-id="{{ step.id }}" {% if step.id in today_completed_step_ids %}checked{% endif %}>
+                        <span class="step-text">
+                          {% if step.product %}
+                            {{ step.product.name }} – {{ step.step_name }}
+                          {% else %}
+                            {{ step.step_name }}
+                          {% endif %}
+                        </span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="routine-actions">
+                  <button class="complete-btn" onclick="markRoutineComplete('{{ seasonal_routine.id }}', 'seasonal')">Mark Complete</button>
+                </div>
+              {% else %}
+                <ul class="routine-steps">
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Switch moisturiser (light in summer, rich in winter)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Lip care (extra balm in winter, exfoliate in summer)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Adjust body lotions (butters for winter, gels for summer)</span></label></li>
+                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Allergy season soothing (calming creams, eye drops)</span></label></li>
+                </ul>
+                <a href="{% url 'routines:add' %}?type=seasonal" class="add-routine-btn">➕ Add Seasonal Treatments</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tips Section -->
+  <section class="dashboard-section">
+    <h2 class="section-title">💡 Skincare Tips</h2>
+    <div class="tips-container">
+      <div class="tip-card">
+        <h4>💧 Hydration Tip</h4>
+        <p>Apply moisturizer to slightly damp skin to lock in extra hydration.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🌙 Evening Care</h4>
+        <p>Remove makeup thoroughly before starting your evening routine for best results.</p>
+      </div>
+      <div class="tip-card">
+        <h4>☀️ Morning Protection</h4>
+        <p>Always finish your morning routine with SPF, even on cloudy days.</p>
+      </div>
+      <div class="tip-card">
+        <h4>😴 Beauty Sleep</h4>
+        <p>Get 7-8 hours of quality sleep - it's when your skin repairs and regenerates itself.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🌱 Ingredient Order</h4>
+        <p>Apply thinnest to thickest consistency: serums before moisturizers, oils last.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🔄 Product Rotation</h4>
+        <p>Introduce new active ingredients gradually, one at a time every 2-3 weeks.</p>
+      </div>
+    </div>
+    <!-- Placeholder for future dynamic tips functionality -->
+  </section>
+
+  <!-- Calendar Section with isolated styling -->
+  <section class="calendar-section" id="calendar-wrapper">
+    <h2 class="section-title">Calendar Overview</h2>
+    <div id="calendar"></div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // === SET PROGRESS BAR WIDTH ===
+    // Set the progress bar width from data attribute to avoid CSS parsing issues
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.querySelector('.progress-fill');
+        if (progressBar) {
+            const progress = progressBar.getAttribute('data-progress') || 0;
+            progressBar.style.width = progress + '%';
+        }
+    });
+
+    // === CALENDAR INITIALIZATION ===
+    // This code sets up the calendar data for display
+    if (typeof window.ROUTINE_EVENTS === 'undefined') {
+        window.ROUTINE_EVENTS = {};
+    }
+    try {
+        // Get calendar data from Django backend
+        window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}" |escapejs }}');
+    } catch (e) {
+        console.warn('Could not parse routine events:', e);
+        window.ROUTINE_EVENTS = {};
+    }
+
+    // === TOGGLE INDIVIDUAL STEP COMPLETION ===
+    // This function runs when user clicks checkbox for individual steps
+    function toggleStepCompletion(stepId) {
+        // Basic validation
+        if (!stepId) {
+            alert('Error: Step not found');
+            return;
+        }
+
+        console.log('Toggling completion for step ID:', stepId);
+
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+            alert('Error: Security token not found');
+            return;
+        }
+
+        // Send request to Django backend
+        fetch('{% url "routines:toggle_step" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken.value
+            },
+            body: JSON.stringify({
+                step_id: stepId
+            })
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                console.log('Success:', data.message);
+                // Update the progress display without full page reload
+                updateProgressDisplay();
+            } else {
+                // Show error and revert checkbox
+                alert('Error: ' + (data.error || 'Unknown error occurred'));
+                // Find the checkbox and revert its state
+                const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+            }
+        })
+        .catch(function(error) {
+            console.error('Network error:', error);
+            alert('Error: Could not connect to server');
+            // Revert checkbox state on error
+            const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+        });
+    }
+
+    // === UPDATE PROGRESS DISPLAY ===
+    // This function updates the progress indicators without full page reload
+    function updateProgressDisplay() {
+        // Count completed checkboxes
+        const totalCheckboxes = document.querySelectorAll('.step-checkbox').length;
+        const completedCheckboxes = document.querySelectorAll('.step-checkbox:checked').length;
+        
+        // Update progress percentage
+        const progressPercent = totalCheckboxes > 0 ? Math.round((completedCheckboxes / totalCheckboxes) * 100) : 0;
+        
+        // Update the progress display in the DOM
+        const progressElement = document.querySelector('.progress-stat h3');
+        if (progressElement) {
+            progressElement.textContent = progressPercent + '%';
+        }
+        
+        const progressText = document.querySelector('.progress-stat p');
+        if (progressText) {
+            progressText.textContent = `${completedCheckboxes} of ${totalCheckboxes} steps completed today`;
+        }
+        
+        // Update progress bar if it exists
+        const progressBar = document.querySelector('.progress-fill');
+        if (progressBar) {
+            progressBar.style.width = progressPercent + '%';
+        }
+    }
+
+    // === MARK ROUTINE COMPLETE FUNCTION ===
+    // This function runs when user clicks "Mark Complete" button
+    function markRoutineComplete(routineId, routineType) {
+        // Basic validation - make sure we have a routine ID
+        if (!routineId) {
+            alert('Error: Routine not found');
+            return;
+        }
+
+        // Show loading state (optional - you could add a loading indicator here)
+        console.log('Marking ' + routineType + ' routine as complete...');
+
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+            alert('Error: Security token not found');
+            return;
+        }
+
+        // Send request to Django backend
+        fetch('{% url "routines:mark_complete" %}', {
+            method: 'POST',  // Use POST method
+            headers: {
+                'Content-Type': 'application/json',  // Tell server we're sending JSON
+                // Get Django's CSRF token for security
+                'X-CSRFToken': csrfToken.value
+            },
+            // Send the routine information as JSON
+            body: JSON.stringify({
+                routine_id: routineId,
+                routine_type: routineType
+            })
+        })
+        .then(function(response) {
+            // Check if response is ok
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Convert response to JSON
+            return response.json();
+        })
+        .then(function(data) {
+            // Handle the response from Django
+            if (data.success) {
+                // Success! Refresh page to show new progress
+                console.log('Success:', data.message);
+                window.location.reload();
+            } else {
+                // Show error message to user
+                alert('Error: ' + (data.error || 'Unknown error occurred'));
+            }
+        })
+        .catch(function(error) {
+            // Handle network errors or other issues
+            console.error('Network error:', error);
+            alert('Error: Could not connect to server');
+        });
+    }
+
+    // === INITIALIZE EVENT LISTENERS ===
+    // Set up event listeners for checkboxes when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all step checkboxes and add event listeners
+        const checkboxes = document.querySelectorAll('.step-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const stepId = this.getAttribute('data-step-id');
+                toggleStepCompletion(stepId);
+            });
+        });
+    });
+
+    // Function to open edit modal and populate with routine data
+    function openEditModal(routineId, routineName, routineType) {
+        // Populate basic fields
+        document.getElementById('edit-routine-id').value = routineId;
+        document.getElementById('edit-routine-name').value = routineName;
+        document.getElementById('edit-routine-type').value = routineType;
+        
+        // Clear all step fields first
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById('edit-step' + i).value = '';
+            document.getElementById('edit-product' + i).value = '';
+        }
+        
+        // Load existing steps via AJAX
+        fetch(`/routines/get-routine-data/${routineId}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Populate step fields with existing data
+                data.steps.forEach((step, index) => {
+                    if (index < 5) {
+                        document.getElementById('edit-step' + (index + 1)).value = step.step_name;
+                        if (step.product_id) {
+                            document.getElementById('edit-product' + (index + 1)).value = step.product_id;
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.log('Could not load routine details:', error);
+                // Modal will still open with basic info
+            });
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('editRoutineModal'));
+        modal.show();
+    }
+</script>
+
+<!-- Edit Routine Modal -->
+<div class="modal fade" id="editRoutineModal" tabindex="-1" aria-labelledby="editRoutineModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editRoutineModalLabel">Edit Routine</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post" id="editRoutineForm">
+        {% csrf_token %}
+        <input type="hidden" id="edit-routine-id" name="routine_id" value="">
+        <input type="hidden" name="action" value="edit_routine">
+        
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="edit-routine-name" class="form-label">Routine Name</label>
+            <input type="text" class="form-control" id="edit-routine-name" name="routine_name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit-routine-type" class="form-label">Routine Type</label>
+            <select class="form-select" id="edit-routine-type" name="routine_type" required>
+              <option value="">Choose routine type</option>
+              <option value="morning">Morning</option>
+              <option value="evening">Evening</option>
+            </select>
+          </div>
+
+          <div class="steps-section">
+            <h6>Routine Steps</h6>
+            <p class="text-muted small">Add up to 5 steps for your routine (leave blank if not needed)</p>
+
+            {% for i in "12345" %}
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <label for="edit-step{{ i }}" class="form-label">Step {{ i }}</label>
+                  <input type="text" class="form-control" id="edit-step{{ i }}" name="step{{ i }}" placeholder="Step description">
+                </div>
+                <div class="col-md-6">
+                  <label for="edit-product{{ i }}" class="form-label">Product (optional)</label>
+                  <select class="form-select" id="edit-product{{ i }}" name="product{{ i }}">
+                    <option value="">-- No product selected --</option>
+                    {% for product in user.products.all %}
+                      <option value="{{ product.id }}">{{ product.brand }} - {{ product.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

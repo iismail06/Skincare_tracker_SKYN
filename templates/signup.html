@@ -1,0 +1,18 @@
+{# signup.html - user registration page #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Join SKYN</h1>
+    <p>Create your account to start tracking your skincare routine 🌿</p>
+
+    <form id="signup-form" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Sign Up</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+</div>
+{% endblock %}

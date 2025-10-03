@@ -1,0 +1,51 @@
+{# home.html - app landing page and quick links for logged-in users #}
+{% extends "base.html" %}
+
+{% block title %}Home - SKYN{% endblock %}
+
+{% block content %}
+<!-- Hero Header -->
+{% block main_class %}{% endblock %}
+<header class="hero-header">
+    <div class="hero-content">
+        <h1 class="hero-title"><span class="brand-highlight">SKYN</span></h1>
+        <p class="hero-subtitle">Your personalized skincare journey starts here</p>
+        
+        {% if user.is_authenticated %}
+            <div class="hero-actions">
+                <h2>Welcome back, {{ user.username }}! </h2>
+                <p>Ready to check your skincare routines?</p>
+                <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">My Routines</a>
+            </div>
+        {% else %}
+            <div class="hero-actions">
+                <p class="hero-description">Track your skincare routine and see your progress over time with our intelligent skincare tracker.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'signup' %}" class="btn btn-primary">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Sign In</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</header>
+
+<div class="features-section">
+    <div class="section-content">
+        <div class="features-list">
+            <div class="feature-item">
+                <h3>Track Your Routine</h3>
+                <p>Log your daily skincare products and monitor your skin's response over time.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Get Personalized Insights</h3>
+                <p>Receive tailored recommendations based on your skin type and concerns.</p>
+            </div>
+            <div class="feature-item">
+                <h3>See Your Progress</h3>
+                <p>Visualize your skincare journey with detailed analytics and progress tracking.</p>
+            </div>
+        </div>
+    </div>
+    <div class="section-image"></div>
+</div>
+{% endblock %}

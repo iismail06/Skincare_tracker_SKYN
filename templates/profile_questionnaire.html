@@ -1,0 +1,70 @@
+{# profile_questionnaire.html - onboarding questionnaire shown after signup #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Welcome to SKYN! </h1>
+    <p class="welcome-text">Let's set up your skincare profile to get personalized recommendations.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="skin_type">What's your skin type?</label>
+            <select name="skin_type" id="skin_type" class="form-control" required>
+                <option value="">Select your skin type</option>
+                <option value="oily">Oily</option>
+                <option value="dry">Dry</option>
+                <option value="combination">Combination</option>
+                <option value="sensitive">Sensitive</option>
+                <option value="normal">Normal</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="main_concern">What's your main skin concern?</label>
+            <select name="main_concern" id="main_concern" class="form-control" required>
+                <option value="">Select your main concern</option>
+                <option value="acne">Acne</option>
+                <option value="dryness">Dryness</option>
+                <option value="aging">Anti-aging</option>
+                <option value="sensitivity">Sensitivity</option>
+                <option value="oiliness">Excess oil</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="current_routine">Do you currently have a skincare routine?</label>
+            <select name="current_routine" id="current_routine" class="form-control" required>
+                <option value="">Select one</option>
+                <option value="none">No routine</option>
+                <option value="basic">Basic (cleanser + moisturizer)</option>
+                <option value="moderate">Moderate (3-5 products)</option>
+                <option value="extensive">Extensive (5+ products)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="main_goal">What's your primary skincare goal?</label>
+            <select name="main_goal" id="main_goal" class="form-control" required>
+                <option value="">Select your main goal</option>
+                <option value="clear_skin">Clear skin</option>
+                <option value="moisturized">Better hydration</option>
+                <option value="anti_aging">Anti-aging</option>
+                <option value="simple_routine">Simple routine</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="prefers_natural" id="prefers_natural"> 
+                I prefer natural/organic products
+            </label>
+        </div>
+
+        <button type="submit" class="btn">Complete Profile</button>
+        <a href="{% url 'home' %}" class="btn-secondary">Skip for Now</a>
+    </form>
+</div>
+{% endblock %}

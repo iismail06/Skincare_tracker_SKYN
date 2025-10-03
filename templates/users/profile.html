@@ -1,0 +1,142 @@
+{# users/profile.html - main user profile page, shows account info and routines #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile | SKYN{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+    <h1 class="page-title">My Profile</h1>
+    <div class="profile-info">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+        
+        {% if profile %}
+            {% if profile.date_of_birth %}
+                <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
+            {% endif %}
+            {% if profile.skin_type %}
+                <p><strong>Skin Type:</strong> {{ profile.get_skin_type_display }}</p>
+            {% endif %}
+            {% if profile.skin_concerns %}
+                <p><strong>Skin Concerns:</strong> {{ profile.skin_concerns }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+    <div class="profile-actions">
+        <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'home' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <div class="profile-routines u-margin-top-xl">
+            <h2>My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
+                {% if last_added_routine %}
+                    <div id="inline-success" class="inline-success">
+                        <div>
+                            <small class="muted-success">Added</small>
+                            <div><strong id="inline-success-name">{{ last_added_routine.name }}</strong></div>
+                            {# timestamp intentionally hidden from inline success per user preference #}
+                        </div>
+                        <div class="inline-success-actions">
+                            <a id="inline-success-view" href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
+                            <button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>
+                        </div>
+                    </div>
+                {% endif %}
+            <!-- Inline add-routine form (consolidated) -->
+            <div class="form-card">
+                <form id="add-routine-form" method="post" action="{% url 'routines:add' %}" class="routine-form" data-ajax-url="{% url 'routines:add' %}">
+                    {% csrf_token %}
+                    {% comment %} If the view attached a form (`added_routine_form`), use it to show errors. Otherwise show blank inputs. {% endcomment %}
+                    {% if added_routine_form %}
+                        {% with form=added_routine_form %}
+                            {% if form.non_field_errors %}
+                                <div class="form-errors non-field-errors">
+                                    {% for err in form.non_field_errors %}
+                                        <div class="error">{{ err }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="form-group">
+                                <label for="routine_name">Routine name</label>
+                                <input type="text" id="routine_name" name="routine_name" value="{{ added_routine_form.data.routine_name|default_if_none:'' }}">
+                                {% if form.errors.routine_name %}
+                                    <div class="error">{{ form.errors.routine_name|join:", " }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="routine_type">Type</label>
+                                <select id="routine_type" name="routine_type">
+                                    <option value="">Choose</option>
+                                    <option value="morning" {% if added_routine_form.data.routine_type == 'morning' %}selected{% endif %}>Morning</option>
+                                    <option value="evening" {% if added_routine_form.data.routine_type == 'evening' %}selected{% endif %}>Evening</option>
+                                </select>
+                                {% if form.errors.routine_type %}
+                                    <div class="error">{{ form.errors.routine_type|join:", " }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="steps-section">
+                                <label>Steps (up to 5)</label>
+                                <input type="text" name="step1" value="{{ added_routine_form.data.step1|default_if_none:'' }}" placeholder="Step 1">
+                                <input type="text" name="step2" value="{{ added_routine_form.data.step2|default_if_none:'' }}" placeholder="Step 2">
+                                <input type="text" name="step3" value="{{ added_routine_form.data.step3|default_if_none:'' }}" placeholder="Step 3">
+                                <input type="text" name="step4" value="{{ added_routine_form.data.step4|default_if_none:'' }}" placeholder="Step 4">
+                                <input type="text" name="step5" value="{{ added_routine_form.data.step5|default_if_none:'' }}" placeholder="Step 5">
+                            </div>
+
+                                <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
+                            </div>
+                        {% endwith %}
+                    {% else %}
+                        <div class="form-group">
+                            <label for="routine_name">Routine name</label>
+                            <input type="text" id="routine_name" name="routine_name" placeholder="e.g., Morning Glow" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="routine_type">Type</label>
+                            <select id="routine_type" name="routine_type" required>
+                                <option value="">Choose</option>
+                                <option value="morning">Morning</option>
+                                <option value="evening">Evening</option>
+                            </select>
+                        </div>
+                        <div class="steps-section" id="steps-container">
+                            <label>Steps (up to 5)</label>
+                            <input type="text" name="step1" placeholder="Step 1">
+                            <input type="text" name="step2" placeholder="Step 2">
+                            <input type="text" name="step3" placeholder="Step 3">
+                            <input type="text" name="step4" placeholder="Step 4">
+                            <input type="text" name="step5" placeholder="Step 5">
+                        </div>
+                        <div class="form-actions u-margin-top-sm">
+                            <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+            {% if routines %}
+                <ul class="routines-list">
+                    {% for routine in routines %}
+                        <li>
+                            <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}
+                            <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No routines found. <a href="#" class="btn btn-secondary add-routine-cta">Add a Routine</a></p>
+            {% endif %}
+    </div>
+    </div> <!-- /.profile-container -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/routine_form.js' %}"></script>
+{% endblock %}
