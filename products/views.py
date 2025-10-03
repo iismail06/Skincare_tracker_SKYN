@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from rest_framework import generics, permissions
+from rest_framework.response import Response
 from .models import Product
 from .forms import ProductForm
+from .serializers import ProductSerializer, ProductCreateSerializer
 
 # Create your views here.
 
@@ -63,3 +66,33 @@ def product_delete(request, pk):
         return redirect('products:list')
     
     return render(request, 'products/product_delete.html', {'product': product})
+
+
+# API Views for REST endpoints
+
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    """API endpoint for listing and creating products"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Only return products for the authenticated user
+        return Product.objects.filter(user=self.request.user)
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ProductCreateSerializer
+        return ProductSerializer
+    
+    def perform_create(self, serializer):
+        # Automatically set the user when creating a product
+        serializer.save(user=self.request.user)
+
+
+class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """API endpoint for retrieving, updating, and deleting a specific product"""
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Only return products for the authenticated user
+        return Product.objects.filter(user=self.request.user)
