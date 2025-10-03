@@ -39,7 +39,45 @@ A Django-based web application for tracking and managing skincare routines. SKYN
 - As a returning user, I want to quickly access my existing routines
 - As a user, I want to see my progress and skin improvements over time
 
-## 🛠️ Technologies Used
+## � Agile Development
+
+This project was developed using Agile methodology with continuous iteration and user feedback integration.
+
+### Project Management
+
+- **GitHub Project Board**: [View Project Board](https://github.com/users/iismail06/projects/5/views/1)
+- **Board Visibility**: Set to public for transparency and collaboration
+- **Workflow Columns**: Backlog → Todo → In Progress → Done
+
+### User Story Mapping
+
+All user stories from the above section have been mapped to the GitHub project board as individual issues/items:
+
+- ✅ **First-time visitor stories** - Mapped to onboarding and homepage features
+- ✅ **Registered user stories** - Mapped to core CRUD functionality
+- ✅ **Returning user stories** - Mapped to dashboard and progress tracking features
+
+### Development Task Breakdown
+
+Each user story has been broken down into specific development tasks:
+
+- Database model design and implementation
+- View and URL configuration
+- Template creation and styling
+- Form handling and validation
+- Authentication and authorization
+- API integration and testing
+
+### Prioritization System (MoSCoW)
+
+Features were prioritized using the MoSCoW method:
+
+- **Must Have**: User authentication, basic CRUD operations, responsive design
+- **Should Have**: Product search, routine tracking, user profiles
+- **Could Have**: Progress analytics, social features, API integrations
+- **Won't Have**: Advanced AI recommendations, mobile app (for this iteration)
+
+## �🛠️ Technologies Used
 
 - **Backend**: Django, Python
 - **Frontend**: HTML5, CSS3, JavaScript
