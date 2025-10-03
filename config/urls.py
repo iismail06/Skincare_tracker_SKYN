@@ -15,6 +15,7 @@ urlpatterns = [
     path('profile/', include('users.urls')),                   # Profile pages
     path('routines/', include('routines.urls')),               # Routine functionality
     path('products/', include('products.urls')),               # Product management
+    path('api/products/', include('products.urls')),           # API endpoints
 ]
 
 # Serve media files in development
