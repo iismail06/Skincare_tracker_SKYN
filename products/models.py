@@ -58,12 +58,6 @@ class Product(models.Model):
         null=True,
         help_text="Personal notes about this product (ingredients, effects, etc.)"
     )
-    image = models.ImageField(
-        upload_to='products/',
-        blank=True,
-        null=True,
-        help_text="Product image (optional)"
-    )
     
     # Open Beauty Facts data
     ingredients = models.TextField(
