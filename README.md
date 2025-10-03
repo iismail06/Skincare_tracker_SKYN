@@ -141,7 +141,8 @@ Features were prioritized using the MoSCoW method:
 Skincare_tracker_SKYN/
 ├── config/                 # Django project settings
 ├── users/                  # User authentication app
-├── routines/              # Skincare routines app (coming soon)
+├── routines/              # Skincare routines management
+├── products/              # Product tracking and management
 ├── static/                # Static files (CSS, JS, images)
 ├── templates/             # HTML templates
 ├── requirements.txt       # Python dependencies

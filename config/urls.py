@@ -3,8 +3,6 @@ URL configuration for config project.
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
 from users import views as user_views
 
 urlpatterns = [
@@ -17,7 +15,3 @@ urlpatterns = [
     path('products/', include('products.urls')),               # Product management
     path('api/products/', include('products.urls')),           # API endpoints
 ]
-
-# Serve media files in development
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
