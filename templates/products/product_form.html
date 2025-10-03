@@ -79,6 +79,48 @@
             </div>
 
             <div class="form-group">
+                <label for="{{ form.rating.id_for_label }}">Rating</label>
+                {{ form.rating }}
+                {% if form.rating.errors %}
+                    <div class="error">{{ form.rating.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.expiry_date.id_for_label }}">Expiry Date (Optional)</label>
+                {{ form.expiry_date }}
+                {% if form.expiry_date.errors %}
+                    <div class="error">{{ form.expiry_date.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group form-check">
+                {{ form.is_favorite }}
+                <label class="form-check-label" for="{{ form.is_favorite.id_for_label }}">
+                    💖 Mark as Favorite
+                </label>
+                {% if form.is_favorite.errors %}
+                    <div class="error">{{ form.is_favorite.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.skin_type.id_for_label }}">Best for Skin Type</label>
+                {{ form.skin_type }}
+                {% if form.skin_type.errors %}
+                    <div class="error">{{ form.skin_type.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.ingredients.id_for_label }}">Key Ingredients (Optional)</label>
+                {{ form.ingredients }}
+                {% if form.ingredients.errors %}
+                    <div class="error">{{ form.ingredients.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
                 <label for="{{ form.notes.id_for_label }}">Notes (Optional)</label>
                 {{ form.notes }}
                 {% if form.notes.errors %}

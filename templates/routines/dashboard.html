@@ -81,7 +81,14 @@
                          {% if step.id in today_completed_step_ids %}checked{% endif %}>
                   <span class="step-text">
                     {% if step.product %}
-                      {{ step.product.name }} – {{ step.step_name }}
+                      <span class="product-step" 
+                            data-tooltip="{% if step.product.rating %}Rating: {{ step.product.rating }}/5⭐{% endif %}{% if step.product.expiry_date %} | Expires: {{ step.product.expiry_date }}{% endif %}{% if step.product.ingredients %} | Ingredients: {{ step.product.ingredients|truncatewords:8 }}{% endif %}{% if step.product.skin_type %} | Best for: {{ step.product.get_skin_type_display }}{% endif %}">
+                        {% if step.product.is_favorite %}💖{% endif %}
+                        {{ step.product.name }} – {{ step.step_name }}
+                        {% if step.product.rating %}
+                          <span class="inline-rating">{{ step.product.rating }}⭐</span>
+                        {% endif %}
+                      </span>
                     {% else %}
                       {{ step.step_name }}
                     {% endif %}
@@ -470,6 +477,72 @@
     </div>
   </section>
 
+  <!-- Product Widgets Section -->
+  <section class="product-widgets-section">
+    <div class="product-widgets">
+      <!-- Skin Type Matches Widget -->
+      {% if user_skin_type and skin_type_products %}
+      <div class="product-widget skin-type-widget">
+        <h4>🎯 Perfect for {{ user_skin_type|title }} Skin</h4>
+        <div class="product-mini-cards">
+          {% for product in skin_type_products %}
+            <div class="product-mini-card" 
+                 data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
+              <span class="product-name">{{ product.name }}</span>
+              <span class="product-brand">{{ product.brand }}</span>
+              {% if product.rating %}
+                <span class="rating">{{ product.rating }}/5⭐</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Favorites Widget -->
+      {% if favorite_products %}
+      <div class="product-widget favorites-widget">
+        <h4>💖 Your Favorites</h4>
+        <div class="product-mini-cards">
+          {% for product in favorite_products %}
+            <div class="product-mini-card"
+                 data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.expiry_date %} | Expires: {{ product.expiry_date }}{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
+              <span class="product-name">{{ product.name }}</span>
+              <span class="product-brand">{{ product.brand }}</span>
+              {% if product.expiry_date %}
+                {% with days_left=product.expiry_date|timeuntil %}
+                  {% if days_left %}
+                    <span class="expiry-info">{{ days_left }} left</span>
+                  {% endif %}
+                {% endwith %}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Expiring Soon Widget -->
+      {% if expiring_products %}
+      <div class="product-widget expiry-widget">
+        <h4>⚠️ Expiring Soon</h4>
+        <div class="product-mini-cards">
+          {% for product in expiring_products %}
+            {% with days_left=product.expiry_date|timeuntil %}
+            <div class="product-mini-card expiry-warning"
+                 data-tooltip="Expires: {{ product.expiry_date }} | {% if product.rating %}Rating: {{ product.rating }}/5⭐{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
+              <span class="product-name">{{ product.name }}</span>
+              <span class="product-brand">{{ product.brand }}</span>
+              <span class="expiry-warning-text">{{ days_left }} left</span>
+            </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
   <!-- Tips Section -->
   <section class="dashboard-section">
     <h2 class="section-title">💡 Skincare Tips</h2>
@@ -534,6 +607,19 @@
     } catch (e) {
         console.warn('Could not parse routine events:', e);
         window.ROUTINE_EVENTS = {};
+    }
+
+    // === PRODUCT EXPIRY EVENTS ===
+    // Add product expiry events to calendar
+    if (typeof window.EXPIRY_EVENTS === 'undefined') {
+        window.EXPIRY_EVENTS = [];
+    }
+    try {
+        window.EXPIRY_EVENTS = JSON.parse('{{ expiry_events_json|default:"[]" |escapejs }}');
+        console.log('Loaded expiry events:', window.EXPIRY_EVENTS);
+    } catch (e) {
+        console.warn('Could not parse expiry events:', e);
+        window.EXPIRY_EVENTS = [];
     }
 
     // === TOGGLE INDIVIDUAL STEP COMPLETION ===
@@ -795,5 +881,7 @@
     </div>
   </div>
 </div>
+
+
 
 {% endblock %}

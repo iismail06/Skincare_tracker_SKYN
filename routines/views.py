@@ -9,6 +9,7 @@ import json
 from .forms import RoutineCreateForm
 from django.contrib.auth.decorators import login_required
 from .models import Routine, RoutineStep, DailyCompletion
+from products.models import Product
 from datetime import date
 
 
@@ -317,6 +318,58 @@ def dashboard(request):
         today_completions.filter(completed=True).values_list('routine_step_id', flat=True)
     )
 
+    # === SKIN TYPE WIDGET DATA ===
+    # Get user's skin type from their profile (if available)
+    user_skin_type = None
+    if hasattr(request.user, 'profile') and hasattr(request.user.profile, 'skin_type'):
+        user_skin_type = request.user.profile.skin_type
+    
+    # Get products that match user's skin type and are favorites
+    skin_type_products = Product.objects.filter(
+        user=request.user,
+        skin_type=user_skin_type
+    ).exclude(skin_type__isnull=True).exclude(skin_type='')[:5] if user_skin_type else []
+    
+    favorite_products = Product.objects.filter(
+        user=request.user,
+        is_favorite=True
+    )[:5]
+
+    # === PRODUCT EXPIRY DATA FOR CALENDAR ===
+    # Get products expiring in the next 90 days
+    from datetime import timedelta
+    expiry_threshold = today + timedelta(days=90)
+    expiring_products = Product.objects.filter(
+        user=request.user,
+        expiry_date__lte=expiry_threshold,
+        expiry_date__gte=today
+    ).order_by('expiry_date')
+
+    # Create expiry events for calendar
+    expiry_events = []
+    for product in expiring_products:
+        days_until_expiry = (product.expiry_date - today).days
+        status = 'expired' if days_until_expiry < 0 else 'warning' if days_until_expiry <= 30 else 'info'
+        
+        expiry_events.append({
+            'date': product.expiry_date.strftime('%Y-%m-%d'),
+            'title': f'{product.name} expires',
+            'type': 'expiry',
+            'status': status,
+            'product_name': product.name,
+            'brand': product.brand,
+            'days_until': days_until_expiry
+        })
+
+    # === FAVORITE PRODUCT USAGE IN CALENDAR ===
+    # Add favorite product usage to calendar events
+    for event in routine_events:
+        event_date = event.get('date')
+        if event_date and event.get('status') in ['completed', 'morning', 'evening']:
+            # Check if favorite products were used on this date
+            # This is a simplified version - you could enhance to track actual usage
+            event['favorite_used'] = favorite_products.exists()
+
     # === SEND DATA TO TEMPLATE ===
     # Pass all calculated data to the HTML template
     return render(request, 'routines/dashboard.html', {
@@ -339,6 +392,12 @@ def dashboard(request):
         'milestone_emoji': milestone_emoji,
         'week_progress': week_progress,
         'today_completed_step_ids': today_completed_step_ids,
+        # New product-related data
+        'user_skin_type': user_skin_type,
+        'skin_type_products': skin_type_products,
+        'favorite_products': favorite_products,
+        'expiring_products': expiring_products,
+        'expiry_events_json': json.dumps(expiry_events),
     })
 
 
