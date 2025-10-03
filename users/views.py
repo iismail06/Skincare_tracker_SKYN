@@ -38,17 +38,29 @@ def signup(request):
 def profile_questionnaire(request):
     """Handle profile questionnaire"""
     if request.method == 'POST':
-        # For now, just redirect to home after submission
-        # Later we can save this data to a UserProfile model
-        skin_type = request.POST.get('skin_type')
-        skin_concerns = request.POST.getlist('skin_concerns')
-        current_routine = request.POST.get('current_routine')
-        goals = request.POST.get('goals')
+        # Get or create user profile
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
         
-        messages.success(request, 'Profile completed! You can update it anytime.')
-        return redirect('home')
+        # Create form with existing profile data and POST data
+        from .forms import ProfileQuestionnaireForm
+        form = ProfileQuestionnaireForm(request.POST, instance=profile)
+        
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            messages.success(request, 'Profile completed! You can update it anytime.')
+            return redirect('home')
+        else:
+            # If form is invalid, render with errors
+            return render(request, 'profile_questionnaire.html', {'form': form})
+    else:
+        # GET request - show empty form or pre-filled if profile exists
+        profile = UserProfile.objects.filter(user=request.user).first()
+        from .forms import ProfileQuestionnaireForm
+        form = ProfileQuestionnaireForm(instance=profile)
     
-    return render(request, 'profile_questionnaire.html')
+    return render(request, 'profile_questionnaire.html', {'form': form})
 
 def simple_logout(request):
     """Handle user logout"""
