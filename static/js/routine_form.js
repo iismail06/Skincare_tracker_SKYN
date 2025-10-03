@@ -166,3 +166,132 @@
     }
   });
 })();
+
+// Product Suggestions for Add Product Form
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var categorySelect = document.getElementById('category-browse');
+    var loadingDiv = document.getElementById('suggestions-loading');
+    var suggestionsDiv = document.getElementById('product-suggestions');
+    var suggestionsGrid = document.getElementById('suggestions-grid');
+    var productForm = document.getElementById('product-form');
+    
+    // Only run if we're on the product form page
+    if (!categorySelect || !productForm) return;
+    
+    // Handle category selection
+    categorySelect.addEventListener('change', function() {
+      var category = this.value;
+      
+      if (!category) {
+        suggestionsDiv.style.display = 'none';
+        return;
+      }
+      
+      // Show loading
+      loadingDiv.style.display = 'block';
+      suggestionsDiv.style.display = 'none';
+      suggestionsGrid.innerHTML = '';
+      
+      // Fetch products from our API
+      fetch('/api/products/api/browse/' + category + '/')
+        .then(function(response) {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(function(products) {
+          loadingDiv.style.display = 'none';
+          
+          if (products.length === 0) {
+            suggestionsGrid.innerHTML = '<p style="text-align: center; color: #6c757d; grid-column: 1 / -1;">No products found for this category. Try importing some first!</p>';
+          } else {
+            // Create product cards
+            products.forEach(function(product) {
+              var card = createProductCard(product);
+              suggestionsGrid.appendChild(card);
+            });
+          }
+          
+          suggestionsDiv.style.display = 'block';
+        })
+        .catch(function(error) {
+          console.error('Error fetching products:', error);
+          loadingDiv.style.display = 'none';
+          suggestionsGrid.innerHTML = '<p style="text-align: center; color: #dc3545; grid-column: 1 / -1;">Error loading suggestions. Please try again.</p>';
+          suggestionsDiv.style.display = 'block';
+        });
+    });
+    
+    // Create a product card element
+    function createProductCard(product) {
+      var card = document.createElement('div');
+      card.className = 'suggestion-card';
+      card.style.cursor = 'pointer';
+      
+      var productTypeDisplay = product.product_type_display || product.product_type;
+      
+      card.innerHTML = 
+        '<h5>' + escapeHtml(product.name) + '</h5>' +
+        '<p><strong>Brand:</strong> ' + escapeHtml(product.brand) + '</p>' +
+        (product.ingredients ? '<p><strong>Key ingredients:</strong> ' + escapeHtml(product.ingredients.substring(0, 100)) + (product.ingredients.length > 100 ? '...' : '') + '</p>' : '') +
+        '<div class="product-type">' + escapeHtml(productTypeDisplay) + '</div>';
+      
+      // Add click handler to auto-fill form
+      card.addEventListener('click', function() {
+        fillProductForm(product);
+        
+        // Scroll to form and highlight it briefly
+        productForm.scrollIntoView({behavior: 'smooth', block: 'center'});
+        productForm.style.backgroundColor = '#e3f2fd';
+        setTimeout(function() {
+          productForm.style.backgroundColor = '';
+        }, 2000);
+      });
+      
+      return card;
+    }
+    
+    // Fill the product form with selected product data
+    function fillProductForm(product) {
+      // Fill basic fields
+      setFormField('name', product.name);
+      setFormField('brand', product.brand);
+      setFormField('product_type', product.product_type);
+      
+      // Fill optional fields if they exist
+      if (product.ingredients) {
+        setFormField('ingredients', product.ingredients);
+      }
+      if (product.description) {
+        setFormField('description', product.description);
+      }
+      
+      // Reset category dropdown
+      categorySelect.value = '';
+      suggestionsDiv.style.display = 'none';
+      
+      // Focus on the first form field
+      var nameField = document.querySelector('input[name="name"]');
+      if (nameField) nameField.focus();
+    }
+    
+    // Helper to set form field values
+    function setFormField(fieldName, value) {
+      var field = document.querySelector('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+      if (field) {
+        field.value = value;
+        
+        // Trigger change event for any listeners
+        var event = new Event('change', { bubbles: true });
+        field.dispatchEvent(event);
+      }
+    }
+    
+    // Simple HTML escaping
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  });
+})();
