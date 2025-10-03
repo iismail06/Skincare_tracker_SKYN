@@ -502,7 +502,7 @@
           <div class="empty-widget">
             {% if not user_skin_type %}
               <p class="empty-message">Set your skin type in your profile to see personalized product recommendations here.</p>
-              <a href="{% url 'users:profile' %}" class="btn btn-sm btn-outline-info">Set Skin Type</a>
+              <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-info">Set Skin Type</a>
             {% else %}
               <p class="empty-message">Add products that match your {{ user_skin_type }} skin type to see recommendations here.</p>
               <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-info">Add Products</a>

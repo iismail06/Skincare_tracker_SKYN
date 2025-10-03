@@ -147,7 +147,7 @@ def profile_edit(request):
             prof.user = request.user
             prof.save()
             messages.success(request, 'Profile updated successfully.')
-            return redirect('users:profile')
+            return redirect('routines:dashboard')
     else:
         form = ProfileQuestionnaireForm(instance=profile)
 
