@@ -221,3 +221,6 @@ products/tests/test_no_hardcoded_colors.py
 .tools/
 .tools
 
+# Test CI workflow
+.github/workflows/ci.yml
+
