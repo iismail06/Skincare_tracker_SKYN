@@ -36,6 +36,15 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
 
+      - name: Generate temporary SECRET_KEY for PRs
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Generating temporary SECRET_KEY for PR run"
+          python - <<'PY' >> $GITHUB_ENV
+from django.core.management.utils import get_random_secret_key
+print('SECRET_KEY=' + get_random_secret_key())
+PY
+
       - name: Fail early if SECRET_KEY missing
         run: |
           if [ -z "${SECRET_KEY}" ]; then
