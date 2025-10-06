@@ -1,3 +1,87 @@
+body.dark-theme .calendar-section, body.dark-theme #calendar-wrapper {
+  border: 3px solid #231815 !important;
+  border-radius: 12px;
+}
+body.dark-theme .calendar-section, body.dark-theme #calendar-wrapper {
+  border: 3px solid #231815 !important;
+  border-radius: 12px;
+}
+body.dark-theme .tip-card {
+  background: #A89F91 !important;
+  color: #231815 !important;
+}
+body.dark-theme .tips-card,
+body.dark-theme .progress-card,
+body.dark-theme .calendar-card,
+body.dark-theme .routine-card,
+body.dark-theme .product-card {
+  background: #A89F91 !important;
+  color: #231815 !important;
+}
+body.dark-theme .dashboard-widget,
+body.dark-theme .tips-widget,
+body.dark-theme .calendar-widget,
+body.dark-theme .routine-widget,
+body.dark-theme .product-widget {
+  background: #A89F91 !important;
+  color: #231815 !important;
+}
+/* Force all dashboard widgets to taupe in dark mode */
+body.dark-theme .product-widget,
+body.dark-theme .dashboard-widget,
+body.dark-theme .widget,
+body.dark-theme .expiry-widget {
+  background: #A89F91 !important;
+  color: #231815 !important;
+}
+/* Replace green and grey with dark brown shades in dark mode */
+body.dark-theme .accordion-header,
+body.dark-theme .accordion-button,
+body.dark-theme .btn,
+body.dark-theme .edit-btn,
+body.dark-theme .complete-btn,
+body.dark-theme .add-routine-btn {
+  background: #231815 !important;
+  color: #fff !important;
+  border-color: #A89F91 !important;
+}
+
+body.dark-theme .card, body.dark-theme .modal {
+  background: #A89F91 !important; /* Taupe */
+  color: #fff;
+}
+
+/* Dark mode brown theme for dashboard */
+body.dark-theme .dashboard-container {
+  background: #231815 !important;
+}
+
+body.dark-theme .card, body.dark-theme .modal {
+  background: #A89F91 !important; /* Taupe */
+  color: #fff;
+}
+body.dark-theme .section-header, body.dark-theme .accordion-header {
+  background: #231815 !important;
+  color: #fff;
+}
+
+body.dark-theme .routine-card, body.dark-theme .routine-card.seasonal {
+  background: #231815 !important;
+  color: #fff;
+}
+
+body.dark-theme .add-routine-btn {
+  background: #231815 !important;
+  color: #fff !important;
+  border-color: #A89F91 !important;
+}
+
+/* Force modal button text to white for dark mode */
+.modal button,
+.modal .btn,
+.modal .add-routine-btn {
+  color: #fff !important;
+}
 
 /* ==========================================================================
    1. DASHBOARD VARIABLES & ROOT
@@ -95,7 +179,7 @@ p {
   transition: all 0.2s ease;
   backdrop-filter: blur(2px);
   text-decoration: none;
-  color: inherit;
+  color: #fff;
   display: inline-block;
 }
 
@@ -115,7 +199,7 @@ p {
   cursor: pointer;
   transition: all 0.2s ease;
   backdrop-filter: blur(2px);
-  color: #222;
+  color: #fff;
 }
 
 .edit-btn:hover {
@@ -127,7 +211,7 @@ p {
 .complete-btn {
   background: rgba(8, 7, 7, 0.2);
   border-color: rgba(var(--accent-color-rgb), 0.4);
-  color: var(--accent-color-text);
+  color: #fff;
   font-weight: bold;
 }
 
@@ -755,7 +839,7 @@ body.dark-theme .step-checkbox {
 /* Dark mode body - only applies when body has dark-theme class */
 body.dark-theme {
   background-color: #121212;
-  color: #e0e0e0;
+  color: #A89F91;
   font-family: 'Arial', sans-serif;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -779,7 +863,7 @@ body.dark-theme h4, body.dark-theme h5, body.dark-theme h6 {
 /* Buttons */
 body.dark-theme button {
   background-color: var(--accent-color-bg);
-  color: #e0e0e0;
+  color: #fff;
   border: 1px solid #333;
   padding: 8px 16px;
   border-radius: 6px;
