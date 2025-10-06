@@ -766,13 +766,18 @@ label {
 .btn-primary {
     padding: 0.8rem 1.8rem;
     background: linear-gradient(180deg, var(--accent-color-bg) 0%, var(--accent-color-bg-lighter) 100%);
-    color: #fff !important;
+    color: var(--text) !important;
     border: 0;
     box-shadow: 0 8px 20px rgba(16, 24, 40, 0.12);
 }
 
 .btn-primary:hover {
     box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
+}
+
+/* Dark theme: ensure primary buttons show with light foreground */
+body.dark-theme .btn-primary {
+    color: var(--background-color) !important;
 }
 
 /* Secondary: outline or muted alternate */
