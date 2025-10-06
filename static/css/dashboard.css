@@ -1,11 +1,8 @@
 body.dark-theme .calendar-section, body.dark-theme #calendar-wrapper {
-  border: 3px solid #231815 !important;
+  border: 3px solid #A89F91 !important;
   border-radius: 12px;
 }
-body.dark-theme .calendar-section, body.dark-theme #calendar-wrapper {
-  border: 3px solid #231815 !important;
-  border-radius: 12px;
-}
+/* duplicate calendar selector removed to avoid conflicts */
 body.dark-theme .tip-card {
   background: #A89F91 !important;
   color: #231815 !important;
@@ -92,6 +89,10 @@ body.dark-theme .add-routine-btn {
   --text-light: #666;
   --border-color: var(--accent-color-bg);
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Dashboard local color tokens */
+  --db-brown: #A89F91;
+  --db-brown-rgb: 168, 159, 145;
+  --db-contrast: #231815;
 }
 
 /* ==========================================================================
@@ -113,6 +114,11 @@ body {
 }
 
 .dashboard-container {
+  /* Dashboard theme tokens (local to the dashboard) */
+  --db-brown: #A89F91;
+  --db-brown-rgb: 168, 159, 145;
+  --db-contrast: #231815;
+
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem;
@@ -171,7 +177,7 @@ p {
    ========================================================================== */
 .edit-btn, .add-routine-btn, .complete-btn {
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   border-radius: 8px;
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
@@ -192,7 +198,7 @@ p {
 
 .edit-btn {
   background: rgba(9, 9, 9, 0.8);
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   border-radius: 8px;
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
@@ -241,7 +247,7 @@ p {
   padding: 1.5rem;
   box-shadow: var(--shadow);
   margin-bottom: 2rem;
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
 }
 
 /* ==========================================================================
@@ -259,7 +265,7 @@ p {
   padding: 1.5rem;
   box-shadow: var(--shadow);
   margin-bottom: 2rem;
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
@@ -299,7 +305,7 @@ p {
   border-radius: 8px;
   padding: 0.75rem 1rem;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(200,200,200,0.5);
+  border: 1px solid rgba(var(--db-brown-rgb),0.5);
   margin-top: 0.5rem;
 }
 
@@ -311,7 +317,7 @@ p {
   border-radius: 8px;
   padding: 0.75rem 1rem;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(200,200,200,0.5);
+  border: 1px solid rgba(var(--db-brown-rgb),0.5);
   margin-top: 0.5rem;
 }
 
@@ -382,7 +388,7 @@ body.dark-theme .routine-step:hover {
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(1px);
   border-radius: 12px;
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   box-shadow: var(--shadow);
   margin-bottom: 1rem;
   overflow: hidden;
@@ -434,7 +440,7 @@ body.dark-theme .routine-step:hover {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
 }
 
 /* Accordion routine headers specific styling */
@@ -444,7 +450,7 @@ body.dark-theme .routine-step:hover {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   margin-bottom: 1rem;
 }
 
@@ -476,7 +482,7 @@ body.dark-theme .step-checkbox {
   backdrop-filter: blur(1px);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -496,7 +502,7 @@ body.dark-theme .step-checkbox {
 
 /* Progress Bar */
 .progress-bar {
-  background: rgba(200, 200, 200, 0.3);
+  background: rgba(var(--db-brown-rgb), 0.3);
   border-radius: 10px;
   height: 8px;
   margin: 1rem 0;
@@ -584,7 +590,7 @@ body.dark-theme .step-checkbox {
   justify-content: center;
   font-size: 0.8rem;
   font-weight: bold;
-  background: rgba(200, 200, 200, 0.3);
+  background: rgba(var(--db-brown-rgb), 0.3);
   color: var(--text-light);
 }
 
@@ -614,7 +620,7 @@ body.dark-theme .step-checkbox {
   backdrop-filter: blur(1px);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(var(--db-brown-rgb), 0.8);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -750,7 +756,7 @@ body.dark-theme .step-checkbox {
 
 .sc-cell.sc-other {
   color: var(--accent-color-text) !important;
-  background-color: rgba(240, 240, 240, 0.5) !important;
+  background-color: rgba(var(--db-brown-rgb), 0.5) !important;
   cursor: default !important;
 }
 
@@ -793,7 +799,7 @@ body.dark-theme .step-checkbox {
 /* Future day styling - Option 1: Blank/Neutral */
 .sc-day-future {
   background-color: rgba(255, 255, 255, 0.4) !important;
-  border: 1px solid rgba(200, 200, 200, 0.3) !important;
+  border: 1px solid rgba(var(--db-brown-rgb), 0.3) !important;
 }
 
 .sc-day-morning {
@@ -1061,7 +1067,7 @@ body.dark-theme ::-webkit-scrollbar-thumb {
 .empty-widget {
     text-align: center;
     padding: 2rem 1rem;
-    color: #6c757d;
+  color: var(--db-brown);
 }
 
 .empty-message {
