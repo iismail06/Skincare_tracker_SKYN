@@ -23,6 +23,11 @@
     --accent-color-bg: #727667; /* accessible background for white text */
     --error-color: #d32f2f;
     --success-color: #2e7d32;
+    /* UI font and glass tokens */
+    --ui-font: 'Dock', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-border: rgba(255,255,255,0.25);
+    --glass-blur: 10px;
 }
 
 body.dark-theme {
@@ -57,7 +62,7 @@ body.dark-theme {
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--ui-font);
     background-color: var(--background-color);
     color: var(--text);
     line-height: 1.6;
@@ -67,6 +72,27 @@ body {
     overflow-x: hidden;
     padding-top: 80px;
     margin: 0 !important; /* Override Bootstrap */
+}
+
+/* Glass UI utility */
+.glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 12px;
+}
+
+/* Apply glass to common components */
+.card, .product-card, .form-card, .dashboard-section, .site-hero-bg .container, .message, .footer, .preview .card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.btn, .btn-primary, .btn-secondary, .badge {
+    border-radius: 10px;
 }
 
 main {
