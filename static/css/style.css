@@ -111,9 +111,8 @@ main {
 }
 
 /* Remove any Bootstrap-added spacing around page elements */
-* {
-    box-sizing: border-box !important;
-}
+/* The global box-sizing is already set above in the basic reset; avoid duplicate rules */
+/* ...existing code... */
 
 html, body {
     margin: 0 !important;
