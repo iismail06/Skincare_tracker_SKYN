@@ -16,6 +16,9 @@
 :root {
   --accent-color: #FF6B35;
   --accent-color-rgb: 255, 107, 53; /* RGB values of #FF6B35 */
+  /* Accessible tokens for dashboard-specific accent usage */
+  --accent-color-text: #7a361f; /* darker text variant */
+  --accent-color-bg: #ff6b35; /* used as background with white text */
   --text-color: #333;
   --text-light: #666;
   --border-color: #ddd;
@@ -292,7 +295,7 @@ p {
 .step-checkbox:checked + .step-text {
   text-decoration: line-through;
   opacity: 0.7;
-  color: var(--accent-color);
+  color: var(--accent-color-text);
 }
 
 .step-text {
@@ -429,7 +432,7 @@ body.dark-theme .step-checkbox {
 }
 
 .progress-fill {
-  background: linear-gradient(90deg, var(--accent-color), #c6502d);
+  background: linear-gradient(90deg, var(--accent-color-bg), #c6502d);
   height: 100%;
   border-radius: 10px;
   transition: width 0.3s ease;
@@ -496,14 +499,14 @@ body.dark-theme .step-checkbox {
 }
 
 .week-day.completed {
-  background: var(--accent-color);
+  background: var(--accent-color-bg);
   color: white;
 }
 
 .week-day.current {
-  background: var(--accent-color);
+  background: var(--accent-color-bg);
   color: white;
-  border: 2px solid #FF6B35;
+  border: 2px solid var(--accent-color-bg);
 }
 
 /* =========================
@@ -583,7 +586,7 @@ body.dark-theme .step-checkbox {
   justify-content: space-between !important;
   align-items: center !important;
   padding: 1rem !important;
-  background: var(--accent-color) !important;
+  background: var(--accent-color-bg) !important;
   color: white !important;
 }
 

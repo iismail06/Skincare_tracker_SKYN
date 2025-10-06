@@ -207,7 +207,7 @@ h2 {
 }
 
 .custom-navbar .nav-brand:hover {
-    color: var(--accent-color) !important;
+    color: var(--accent-color-text) !important;
     text-decoration: none !important;
 }
 
@@ -232,7 +232,7 @@ h2 {
 
 .custom-navbar .nav-links a:hover {
     background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.8) !important;
-    color: var(--accent-color) !important;
+    color: var(--accent-color-text) !important;
     transform: translateY(-2px) !important;
     text-decoration: none !important;
 }
@@ -272,9 +272,9 @@ h2 {
 }
 
 .custom-navbar #theme-toggle:hover {
-    background: var(--accent-color) !important;
+    background: var(--accent-color-bg) !important;
     color: white !important;
-    border-color: var(--accent-color) !important;
+    border-color: var(--accent-color-bg) !important;
     transform: translateY(-2px) !important;
 }
 
@@ -479,7 +479,7 @@ h2 {
 .hero-title:hover:after {
     border-right: 0.15em solid var(--background-color);
     content: "care";
-    color: var(--accent-color);
+    color: var(--accent-color-text);
     animation: blink 0.85s step-end infinite;
 }
 
@@ -649,7 +649,7 @@ h2 {
 }
 
 .section-content h2 .accent {
-    color: var(--accent-color);
+    color: var(--accent-color-text);
 }
 
 .features-list {
@@ -674,7 +674,7 @@ h2 {
 .feature-item h3 {
     font-size: 1.3rem;
     margin-bottom: 1rem;
-    color: var(--accent-color);
+    color: var(--accent-color-text);
 }
 
 .feature-item p {
@@ -763,7 +763,7 @@ label {
 /* Primary: the prominent filled button used on the home "My Routines" action */
 .btn-primary {
     padding: 0.8rem 1.8rem;
-    background: linear-gradient(180deg, var(--accent-color) 0%, var(--accent-color-lighter) 100%);
+    background: linear-gradient(180deg, var(--accent-color-bg) 0%, var(--accent-color-lighter) 100%);
     color: #fff !important;
     border: 0;
     box-shadow: 0 8px 20px rgba(16, 24, 40, 0.12);
@@ -776,8 +776,8 @@ label {
 /* Secondary: outline or muted alternate */
 .btn-secondary {
     background: transparent;
-    color: var(--accent-color) !important;
-    border: 2px solid var(--accent-color);
+    color: var(--accent-color-text) !important;
+    border: 2px solid var(--accent-color-bg);
     padding: 0.6rem 1rem;
 }
 
@@ -880,7 +880,7 @@ main {
 }
 
 .message {
-    background: var(--accent-color);
+    background: var(--accent-color-bg);
     color: white;
     padding: 1rem;
     border-radius: 4px;
@@ -932,7 +932,7 @@ main {
 }
 
 .social-link:hover {
-    color: var(--accent-color);
+    color: var(--accent-color-text);
     background-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.3);
     transform: translateY(-2px);
     backdrop-filter: blur(10px);
@@ -985,7 +985,7 @@ main {
 }
 
 .step-number {
-    background: var(--accent-color);
+    background: var(--accent-color-bg);
     color: white;
     width: 24px;
     height: 24px;
@@ -1057,7 +1057,7 @@ main {
 .form-group select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(150, 154, 139, 0.1);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 150, 154, 139), 0.1);
 }
 
 .form-group input::placeholder {
@@ -1127,7 +1127,7 @@ main {
 }
 
 .product-info .brand {
-    color: var(--accent-color);
+    color: var(--accent-color-text);
     font-weight: 500;
     font-size: 1rem;
     margin-bottom: 0.5rem;
@@ -1172,7 +1172,7 @@ main {
 .empty-state i {
     font-size: 4rem;
     margin-bottom: 1rem;
-    color: var(--accent-color);
+    color: var(--accent-color-text);
 }
 
 .empty-state h3 {
@@ -1229,7 +1229,7 @@ main {
 }
 
 .product-details .brand {
-    color: var(--accent-color);
+    color: var(--accent-color-text);
     margin-bottom: 0.5rem;
 }
 
@@ -1272,7 +1272,7 @@ body.dark-theme .warning-message {
 
 /* Product Info in Routine Steps */
 .product-info {
-    color: var(--accent-color);
+    color: var(--accent-color-text);
     font-size: 0.9rem;
     font-weight: 500;
     margin-left: 0.5rem;
