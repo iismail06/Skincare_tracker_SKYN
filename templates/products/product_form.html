@@ -4,6 +4,7 @@
 {% block title %}{{ title }} - SKYN{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 <div class="container">
     <div class="page-header">
         <h1>{{ title }}</h1>
@@ -12,13 +13,13 @@
 
     <div class="form-container">
         <!-- Product Suggestions Section -->
-        <div class="product-suggestions-section" style="margin-bottom: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px;">
-            <h3 style="margin-bottom: 1rem; color: #495057;">Quick Add from Popular Products</h3>
-            <p style="margin-bottom: 1rem; color: #6c757d;">Browse popular products or add your own manually below.</p>
+    <div class="product-suggestions-section glass">
+            <h3 class="suggestions-title">Quick Add from Popular Products</h3>
+            <p class="suggestions-desc">Browse popular products or add your own manually below.</p>
             
             <div class="form-group">
                 <label for="category-browse">Choose a category to see suggestions:</label>
-                <select id="category-browse" class="form-control" style="margin-bottom: 1rem;">
+                <select id="category-browse" class="form-control">
                     <option value="">Select a product type...</option>
                     <option value="cleanser">Cleanser</option>
                     <option value="toner">Toner</option>
@@ -37,12 +38,11 @@
             </div>
             
             <!-- Loading and suggestions will appear here -->
-            <div id="suggestions-loading" style="display: none; text-align: center; padding: 1rem;">
+            <div id="suggestions-loading" class="suggestions-loading" aria-hidden="true">
                 <p>Loading suggestions...</p>
             </div>
-            
-            <div id="product-suggestions" style="display: none;">
-                <h4 style="margin-bottom: 1rem;">Popular products:</h4>
+            <div id="product-suggestions" class="product-suggestions" aria-hidden="true">
+                <h4 class="suggestions-heading">Popular products:</h4>
                 <div id="suggestions-grid" class="suggestions-grid">
                     <!-- Product cards will be inserted here by JavaScript -->
                 </div>
@@ -51,7 +51,7 @@
         
         <!-- Manual Form Section -->
         <div class="manual-form-section">
-            <h3 style="margin-bottom: 1rem; color: #495057;">Or Add Manually</h3>
+            <h3>Or Add Manually</h3>
             <form method="post" class="product-form" id="product-form">
             {% csrf_token %}
             
@@ -84,24 +84,6 @@
                 {{ form.rating }}
                 {% if form.rating.errors %}
                     <div class="error">{{ form.rating.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.expiry_date.id_for_label }}">Expiry Date (Optional)</label>
-                {{ form.expiry_date }}
-                {% if form.expiry_date.errors %}
-                    <div class="error">{{ form.expiry_date.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="form-group form-check">
-                {{ form.is_favorite }}
-                <label class="form-check-label" for="{{ form.is_favorite.id_for_label }}">
-                    💖 Mark as Favorite
-                </label>
-                {% if form.is_favorite.errors %}
-                    <div class="error">{{ form.is_favorite.errors }}</div>
                 {% endif %}
             </div>
 
@@ -140,53 +122,7 @@
     </div>
 </div>
 
-<!-- Basic CSS for suggestions -->
-<style>
-.suggestions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
 
-.suggestion-card {
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.suggestion-card:hover {
-    background-color: #e3f2fd;
-    border-color: #2196f3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.suggestion-card h5 {
-    margin: 0 0 0.5rem 0;
-    color: #2c3e50;
-    font-size: 1.1rem;
-}
-
-.suggestion-card p {
-    margin: 0;
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.suggestion-card .product-type {
-    background-color: #17a2b8;
-    color: white;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
-    display: inline-block;
-}
-</style>
 
 <!-- Include main.js for product suggestions and form functionality -->
 <script src="{% static 'js/main.js' %}"></script>

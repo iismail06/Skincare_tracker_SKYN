@@ -1,8 +1,18 @@
-/* 
-   DASHBOARD CSS STYLESHEET
-*/
 
-/* Base reset to prevent conflicts */
+/* ==========================================================================
+   1. DASHBOARD VARIABLES & ROOT
+   ========================================================================== */
+:root {
+  /* Accent tokens are defined in style.css; only keep dashboard-specific tokens here */
+  --text-color: #222;
+  --text-light: #666;
+  --border-color: var(--accent-color-bg);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   2. BASIC RESET & LAYOUT
+   ========================================================================== */
 #calendar * {
   box-sizing: border-box;
   margin: 0;
@@ -10,39 +20,14 @@
   font-family: "Inter", Arial, sans-serif;
 }
 
-/* =========================
-   CSS Variables
-   ========================= */
-:root {
-  /* Use the project's unified accent tokens (green) */
-  --accent-color: var(--accent-color);
-  --accent-color-rgb: 150, 154, 139; /* fallback to main accent RGB */
-  --accent-color-text: var(--accent-color-text);
-  --accent-color-bg: var(--accent-color-bg);
-  --text-color: #333;
-  --text-light: #666;
-  --border-color: #ddd;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  /* glass UI tokens */
-  --glass-bg: rgba(255,255,255,0.55);
-  --glass-border: rgba(255,255,255,0.25);
-  --glass-blur: 10px;
-}
-
-/* =========================
-   Global Styles
-   ========================= */
 body {
   font-family: "Inter", Arial, sans-serif;
-  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  background: var(--background-color);
   color: var(--text-color);
   margin: 0;
   padding: 0;
 }
 
-/* =========================
-   Layout Containers
-   ========================= */
 .dashboard-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -59,21 +44,14 @@ body {
   cursor: pointer;
 }
 
-.calendar-container {
-  width: 100%;
-  max-width: 100%;
-  padding: 1.5rem;
-  box-sizing: border-box;
-}
-
 .dashboard-section:hover, .calendar-section:hover {
   transform: scale(1.02);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* =========================
-   Page Title & Headings
-   ========================= */
+/* ==========================================================================
+   3. TYPOGRAPHY & HEADINGS
+   ========================================================================== */
 .page-title {
   text-align: center;
   background: transparent;
@@ -104,9 +82,9 @@ p {
   color: var(--text-light);
 }
 
-/* =========================
-   Action Buttons
-   ========================= */
+/* ==========================================================================
+   4. BUTTONS & ACTIONS
+   ========================================================================== */
 .edit-btn, .add-routine-btn, .complete-btn {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(200, 200, 200, 0.8);
@@ -137,7 +115,7 @@ p {
   cursor: pointer;
   transition: all 0.2s ease;
   backdrop-filter: blur(2px);
-  color: #fff;
+  color: #222;
 }
 
 .edit-btn:hover {
@@ -149,7 +127,7 @@ p {
 .complete-btn {
   background: rgba(8, 7, 7, 0.2);
   border-color: rgba(var(--accent-color-rgb), 0.4);
-  color: #0b0b0b;
+  color: var(--accent-color-text);
   font-weight: bold;
 }
 
@@ -158,20 +136,20 @@ p {
 }
 
 .add-routine-btn {
-  background: rgba(33, 150, 243, 0.2);
-  border-color: rgba(33, 150, 243, 0.4);
-  color: #1565C0;
+  background: var(--accent-color-bg);
+  border-color: var(--accent-color-bg);
+  color: var(--accent-color-text);
   font-weight: bold;
   margin-top: 1rem;
 }
 
 .add-routine-btn:hover {
-  background: rgba(33, 150, 243, 0.3);
+  background: var(--accent-color-bg-lighter);
 }
 
-/* =========================
-   Card Components
-   ========================= */
+/* ==========================================================================
+   5. CARD COMPONENTS
+   ========================================================================== */
 .card {
   background: rgba(255, 255, 255, 0.35); 
   backdrop-filter: blur(1px);
@@ -182,16 +160,16 @@ p {
   border: 1px solid rgba(200, 200, 200, 0.8);
 }
 
-/* =========================
-   Routine Cards
-   ========================= */
+/* ==========================================================================
+   6. ROUTINE CARDS
+   ========================================================================== */
 .routines-section {
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .routine-card {
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--glass-bg);
   backdrop-filter: blur(1px);
   border-radius: 12px;
   padding: 1.5rem;
@@ -253,9 +231,9 @@ p {
   margin-top: 0.5rem;
 }
 
-/* =========================
-   Routine Steps & Checkboxes
-   ========================= */
+/* ==========================================================================
+   7. ROUTINE STEPS & CHECKBOXES
+   ========================================================================== */
 .routine-steps {
   list-style: none;
   padding: 0;
@@ -313,9 +291,9 @@ body.dark-theme .routine-step:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* =========================
-   Bootstrap Accordion Styling to Match Cards
-   ========================= */
+/* ==========================================================================
+   8. ACCORDION STYLING
+   ========================================================================== */
 .accordion-item {
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(1px);
@@ -390,14 +368,20 @@ body.dark-theme .step-checkbox {
   accent-color: var(--accent-color);
 }
 
-/* =========================
-   Progress Section
-   ========================= */
+/* ==========================================================================
+   9. PROGRESS SECTION
+   ========================================================================== */
 .progress-section {
   margin-bottom: 2rem;
 }
 
 .progress-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.progress-card {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
@@ -437,15 +421,24 @@ body.dark-theme .step-checkbox {
 
 /* glass utility classes */
 .glass {
-  background: var(--glass-bg);
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+  background: var(--accent-color-bg);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: background 0.2s, color 0.2s;
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-radius: 12px;
 }
 
+
 .progress-fill {
-  background: linear-gradient(90deg, var(--accent-color-bg), #c6502d);
+  background: linear-gradient(90deg, var(--accent-color-bg), var(--accent-color-strong));
   height: 100%;
   border-radius: 10px;
   transition: width 0.3s ease;
@@ -555,7 +548,7 @@ body.dark-theme .step-checkbox {
 
 .tip-card p {
   margin: 0;
-  color: var(--text-light);
+  color: #222;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -576,7 +569,7 @@ body.dark-theme .step-checkbox {
 #calendar-wrapper .section-title {
   text-align: center;
   margin-bottom: 1rem;
-  color: #333;
+  color: #222;
   font-size: 1.5rem;
 }
 
@@ -600,7 +593,7 @@ body.dark-theme .step-checkbox {
   align-items: center !important;
   padding: 1rem !important;
   background: var(--accent-color-bg) !important;
-  color: white !important;
+  color: #222 !important;
 }
 
 .sc-title {
@@ -640,6 +633,7 @@ body.dark-theme .step-checkbox {
 }
 
 .sc-dow-cell {
+  color: #222 !important;
   padding: 0.5rem 0 !important;
 }
 
@@ -653,6 +647,7 @@ body.dark-theme .step-checkbox {
 
 /* Calendar cells */
 .sc-cell {
+  color: #222 !important;
   aspect-ratio: 1 !important;
   border: 1px solid var(--border-color) !important;
   padding: 0.5rem !important;
@@ -670,7 +665,7 @@ body.dark-theme .step-checkbox {
 }
 
 .sc-cell.sc-other {
-  color: #aaa !important;
+  color: var(--accent-color-text) !important;
   background-color: rgba(240, 240, 240, 0.5) !important;
   cursor: default !important;
 }
@@ -697,16 +692,16 @@ body.dark-theme .step-checkbox {
 
 /* Cell status styles */
 .sc-day-completed {
-  background-color: rgba(40, 167, 69, 0.1) !important;
+  background-color: rgba(var(--accent-color-strong-rgb), 0.1) !important;
 }
 
 .sc-day-not-done {
-  background-color: rgba(220, 53, 69, 0.1) !important;
+  background-color: rgba(var(--accent-color-rgb), 0.1) !important;
 }
 
 /* Fix for the red cross issue */
 .sc-day-not-done .sc-day-icon {
-  color: #dc3545 !important;
+  color: #222 !important;
   font-size: 1.5rem !important;
   content: "•" !important;
 }
@@ -718,7 +713,7 @@ body.dark-theme .step-checkbox {
 }
 
 .sc-day-morning {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.1) 50%, transparent 50%) !important;
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.12) 0%, rgba(var(--accent-color-rgb), 0.12) 50%, transparent 50%) !important;
 }
 
 .sc-day-evening {
@@ -747,11 +742,11 @@ body.dark-theme .step-checkbox {
 }
 
 .sc-ok {
-  color: #28a745 !important;
+  color: var(--accent-color-bg) !important;
 }
 
 .sc-miss {
-  color: #dc3545 !important;
+  color: var(--accent-color-bg) !important;
 }
 
 /* =========================
@@ -767,12 +762,12 @@ body.dark-theme {
 
 /* Links */
 body.dark-theme a {
-  color: #bb86fc;
+  color: var(--accent-color-bg);
   text-decoration: none;
 }
 
 body.dark-theme a:hover {
-  color: #ffffff;
+  color: var(--accent-color-bg);
 }
 
 /* Headers */
@@ -783,7 +778,7 @@ body.dark-theme h4, body.dark-theme h5, body.dark-theme h6 {
 
 /* Buttons */
 body.dark-theme button {
-  background-color: #1f1f1f;
+  background-color: var(--accent-color-bg);
   color: #e0e0e0;
   border: 1px solid #333;
   padding: 8px 16px;
@@ -793,12 +788,12 @@ body.dark-theme button {
 }
 
 body.dark-theme button:hover {
-  background-color: #333;
+  background-color: var(--accent-color-bg);
 }
 
 /* Inputs and textareas */
 body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
-  background-color: #1e1e1e;
+  background-color: var(--accent-color-bg);
   color: #e0e0e0;
   border: 1px solid #333;
   padding: 6px 10px;
@@ -836,16 +831,16 @@ body.dark-theme th, body.dark-theme td {
   border: 1px solid #333;
   padding: 8px;
   text-align: left;
-  color: #e0e0e0;
+  color: var(--accent-color-text);
 }
 
 body.dark-theme th {
-  background-color: #1f1f1f;
+  background-color: var(--accent-color-bg);
 }
 
 /* Cards / sections */
 body.dark-theme .card {
-  background-color: #1e1e1e;
+  background-color: var(--accent-color-bg);
   border-radius: 10px;
   padding: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
@@ -857,11 +852,11 @@ body.dark-theme ::-webkit-scrollbar {
 }
 
 body.dark-theme ::-webkit-scrollbar-track {
-  background: #121212;
+  background: var(--accent-color-bg);
 }
 
 body.dark-theme ::-webkit-scrollbar-thumb {
-  background-color: #444;
+  background-color: var(--accent-color-bg);
   border-radius: 4px;
 }
 
@@ -898,19 +893,22 @@ body.dark-theme ::-webkit-scrollbar-thumb {
     margin-bottom: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #2c3e50;
+  color: #fff;
+  }
+  .product-widget p {
+    color: #fff;
 }
 
 .skin-type-widget {
-    border-left: 4px solid #17a2b8;
+  border-left: 4px solid var(--accent-color-bg);
 }
 
 .favorites-widget {
-    border-left: 4px solid #e91e63;
+  border-left: 4px solid var(--accent-color-bg);
 }
 
 .expiry-widget {
-    border-left: 4px solid #ff9800;
+  border-left: 4px solid var(--accent-color-bg);
 }
 
 .product-mini-cards {
@@ -941,13 +939,13 @@ body.dark-theme ::-webkit-scrollbar-thumb {
 
 .product-name {
     font-weight: 500;
-    color: #2c3e50;
+  color: #fff;
     flex: 1;
 }
 
 .product-brand {
     font-size: 0.85rem;
-    color: #6c757d;
+  color: #fff;
     margin-left: 0.5rem;
 }
 
@@ -959,18 +957,18 @@ body.dark-theme ::-webkit-scrollbar-thumb {
 }
 
 .rating {
-    background: #fff3cd;
-    color: #856404;
+  background: var(--accent-color-bg-lighter);
+  color: #fff;
 }
 
 .expiry-info {
-    background: #d1ecf1;
-    color: #0c5460;
+  background: var(--accent-color-bg);
+  color: #fff;
 }
 
 .expiry-warning-text {
-    background: #f8d7da;
-    color: #721c24;
+  background: var(--accent-color-bg);
+  color: #fff;
 }
 
 /* =========================
@@ -989,17 +987,16 @@ body.dark-theme ::-webkit-scrollbar-thumb {
 }
 
 .btn-outline-pink {
-  /* use site accent tokens and glass border to match theme */
   color: var(--accent-color-text);
-  border-color: rgba(var(--accent-color-rgb), 0.95);
+  border-color: var(--accent-color-bg);
   background: transparent;
   border-width: 1.5px;
 }
 
 .btn-outline-pink:hover {
   color: white;
-  background: rgba(var(--accent-color-rgb), 0.12);
-  border-color: rgba(var(--accent-color-rgb), 1);
+  background: var(--accent-color-bg);
+  border-color: var(--accent-color-bg);
 }
 
 /* =========================
@@ -1011,9 +1008,9 @@ body.dark-theme ::-webkit-scrollbar-thumb {
 }
 
 .inline-rating {
-    font-size: 0.8rem;
-    color: #ffc107;
-    margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--accent-color-bg);
+  margin-left: 0.5rem;
 }
 
 /* Tooltip styling */
@@ -1054,15 +1051,15 @@ body.dark-theme ::-webkit-scrollbar-thumb {
    CALENDAR ENHANCEMENTS
    ========================= */
 .calendar-expiry-event {
-    background: #ff9800 !important;
-    color: white !important;
-    border-radius: 4px;
-    padding: 2px 4px;
+  background: var(--accent-color-bg) !important;
+  color: white !important;
+  border-radius: 4px;
+  padding: 2px 4px;
     font-size: 0.7rem;
 }
 
 .calendar-favorite-day {
-    border: 2px solid #e91e63 !important;
+  border: 2px solid var(--accent-color-bg) !important;
     border-radius: 50%;
 }
 

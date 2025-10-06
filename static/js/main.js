@@ -30,6 +30,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
+ * Helper to read CSS custom properties from the document root
+ * Returns the value as a string (raw), or null if not found
+ */
+function getCssVar(name) {
+  try {
+    const val = getComputedStyle(document.documentElement).getPropertyValue(name);
+    return val ? val.trim().replace(/^"|"$/g, '') : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Mobile Hamburger Menu Functionality
  * Handles responsive navigation menu toggle
  */
@@ -191,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const isFutureDay = cellDate > today;
       
       // Set status indicators based on event data
-      if (ev) {
+        if (ev) {
         if (ev.status === 'completed') {
           icon.textContent = '🟢';
           cell.classList.add('sc-day-completed');
@@ -203,7 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
           } else {
             // Past missed days - red dot
             icon.textContent = '•';
-            icon.style.color = '#dc3545';
+            const errorColor = getCssVar('--error-color');
+            if (errorColor) icon.style.color = errorColor;
             icon.style.fontSize = '2rem';
             cell.classList.add('sc-day-not-done');
           }
@@ -259,7 +273,9 @@ document.addEventListener('DOMContentLoaded', function() {
     weeklyDueDates.forEach(function(item) {
       const dayElem = document.getElementById('calendar-day-' + item.date);
       if (dayElem) {
-        dayElem.style.border = '2px solid #ffc107'; // yellow border for weekly step
+        const weeklyRgb = getCssVar('--accent-color-bg-lighter-rgb');
+        const weeklyBorder = weeklyRgb ? ('rgb(' + weeklyRgb + ')') : getCssVar('--accent-step-weekly');
+        if (weeklyBorder) dayElem.style.border = '2px solid ' + weeklyBorder;
         dayElem.title = 'Weekly step: ' + item.step_name + ' (' + item.routine_type + ')';
       }
     });
@@ -275,7 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
     monthlyDueDates.forEach(function(item) {
       const dayElem = document.getElementById('calendar-day-' + item.date);
       if (dayElem) {
-        dayElem.style.border = '2px solid #17a2b8'; // blue border for monthly step
+        const monthlyBorder = getCssVar('--accent-step-monthly');
+        if (monthlyBorder) dayElem.style.border = '2px solid ' + monthlyBorder;
         dayElem.title = 'Monthly step: ' + item.step_name + ' (' + item.routine_type + ')';
       }
     });
@@ -322,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const div = document.createElement('div');
           div.className = 'sc-event';
           div.innerHTML = '<b>Weekly Routine Step:</b> ' + item.step_name + 
-                         ' <span style="color:#ffc107">(' + item.routine_type + ')</span>';
+                        ' <span class="badge badge-warning">(' + item.routine_type + ')</span>';
           details.appendChild(div);
           found = true;
         }
@@ -336,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const div = document.createElement('div');
           div.className = 'sc-event';
           div.innerHTML = '<b>Monthly Routine Step:</b> ' + item.step_name + 
-                         ' <span style="color:#17a2b8">(' + item.routine_type + ')</span>';
+                        ' <span class="badge badge-info">(' + item.routine_type + ')</span>';
           details.appendChild(div);
           found = true;
         }
@@ -440,8 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(function(products) {
           loadingDiv.style.display = 'none';
           
-          if (products.length === 0) {
-            suggestionsGrid.innerHTML = '<p style="text-align: center; color: #6c757d; grid-column: 1 / -1;">' +
+            if (products.length === 0) {
+            suggestionsGrid.innerHTML = '<p class="muted-message">' +
               'No products found for this category. Try importing some first!</p>';
           } else {
             // Create product cards
@@ -456,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(function(error) {
           console.error('Error fetching products:', error);
           loadingDiv.style.display = 'none';
-          suggestionsGrid.innerHTML = '<p style="text-align: center; color: #dc3545; grid-column: 1 / -1;">' +
+          suggestionsGrid.innerHTML = '<p class="error-message">' +
             'Error loading suggestions. Please try again.</p>';
           suggestionsDiv.style.display = 'block';
         });
@@ -488,10 +505,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Scroll to form and highlight it briefly
         productForm.scrollIntoView({behavior: 'smooth', block: 'center'});
-        productForm.style.backgroundColor = '#e3f2fd';
-        setTimeout(function() {
-          productForm.style.backgroundColor = '';
-        }, 2000);
+        var highlightColor = getCssVar('--accent-color-bg-lighter');
+        if (highlightColor) {
+          productForm.style.backgroundColor = highlightColor;
+          setTimeout(function() { productForm.style.backgroundColor = ''; }, 2000);
+        }
       });
       
       return card;

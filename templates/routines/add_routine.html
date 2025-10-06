@@ -6,10 +6,8 @@
 
 {% block content %}
 <div class="form-container">
-    <div style="margin-bottom: 1rem;">
-        <a href="{% url 'routines:dashboard' %}" style="color: var(--secondary-color-darker); font-size: 0.9rem;">
-            ← Back to Dashboard
-        </a>
+    <div class="back-link-wrap">
+        <a href="{% url 'routines:dashboard' %}" class="back-link">← Back to Dashboard</a>
     </div>
     
     <h1 class="page-title">
