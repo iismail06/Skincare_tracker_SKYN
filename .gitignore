@@ -212,3 +212,12 @@ __marimo__/
 dashboard_render.html
 home_render.html
 
+# Preview and testing files
+static/preview.html
+preview.html
+products/tests/test_no_hardcoded_colors.py
+
+# Development tools
+.tools/
+.tools
+
