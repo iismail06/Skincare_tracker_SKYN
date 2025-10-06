@@ -722,7 +722,8 @@ body.dark-theme .step-checkbox {
 }
 
 .sc-day-evening {
-  background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(13, 110, 253, 0.1) 50%) !important;
+  /* use site accent (dark green) for evening marker instead of blue */
+  background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(var(--accent-color-strong-rgb), 0.08) 50%) !important;
 }
 
 /* Details section */
