@@ -224,3 +224,9 @@ products/tests/test_no_hardcoded_colors.py
 # Test CI workflow
 .github/workflows/ci.yml
 
+# Local backups and temporary test files (user requested)
+/static/css/dashboard.css.bak
+/static/css/dashboard.css.bal
+ci_test.tex
+ci_test.txt
+

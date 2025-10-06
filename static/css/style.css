@@ -91,13 +91,13 @@ body.dark-theme {
     --secondary-color-lighter: #f0d3bc;
     --secondary-color-darker: #f0e6d2;
     --secondary-color-darker-rgb: 240, 230, 210;
-    --accent-color: #bfc1a0;
-    --accent-color-rgb: 191, 193, 160;
-    --accent-color-lighter: #b2b697;
-    --accent-color-bg-lighter: #b2b697; /* dark theme lighter bg variant */
+    --accent-color: #35552a; /* darker green */
+    --accent-color-rgb: 53, 85, 42;
+    --accent-color-lighter: #4a6b3d;
+    --accent-color-bg-lighter: #4a6b3d; /* darker but slightly lighter bg variant */
     /* Dark theme accessible tokens */
-    --accent-color-text: #bcbe9c; /* readable as accent text against dark bg */
-    --accent-color-bg: #bfc1a0; /* accent background in dark mode */
+    --accent-color-text: #e6e8de; /* readable accent text against dark bg */
+    --accent-color-bg: #35552a; /* darker accent background in dark mode */
     --error-color: #d32f2f;
     --success-color: #2e7d32;
     /* Dark theme glass overrides */

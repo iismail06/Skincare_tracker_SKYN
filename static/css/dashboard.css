@@ -1,35 +1,35 @@
-body.dark-theme .calendar-section, body.dark-theme #calendar-wrapper {
-  border: 3px solid #A89F91 !important;
+body.dark-theme .calendar-section {
+  border: 3px solid var(--db-brown) !important;
   border-radius: 12px;
 }
 /* duplicate calendar selector removed to avoid conflicts */
 body.dark-theme .tip-card {
-  background: #A89F91 !important;
-  color: #231815 !important;
+  background: var(--db-brown) !important;
+  color: var(--db-contrast) !important;
 }
 body.dark-theme .tips-card,
 body.dark-theme .progress-card,
 body.dark-theme .calendar-card,
 body.dark-theme .routine-card,
 body.dark-theme .product-card {
-  background: #A89F91 !important;
-  color: #231815 !important;
+  background: var(--db-brown) !important;
+  color: var(--db-contrast) !important;
 }
 body.dark-theme .dashboard-widget,
 body.dark-theme .tips-widget,
 body.dark-theme .calendar-widget,
 body.dark-theme .routine-widget,
 body.dark-theme .product-widget {
-  background: #A89F91 !important;
-  color: #231815 !important;
+  background: var(--db-brown) !important;
+  color: var(--db-contrast) !important;
 }
 /* Force all dashboard widgets to taupe in dark mode */
 body.dark-theme .product-widget,
 body.dark-theme .dashboard-widget,
 body.dark-theme .widget,
 body.dark-theme .expiry-widget {
-  background: #A89F91 !important;
-  color: #231815 !important;
+  background: var(--db-brown) !important;
+  color: var(--db-contrast) !important;
 }
 /* Replace green and grey with dark brown shades in dark mode */
 body.dark-theme .accordion-header,
@@ -40,11 +40,11 @@ body.dark-theme .complete-btn,
 body.dark-theme .add-routine-btn {
   background: #231815 !important;
   color: #fff !important;
-  border-color: #A89F91 !important;
+  border-color: var(--db-brown) !important;
 }
 
 body.dark-theme .card, body.dark-theme .modal {
-  background: #A89F91 !important; /* Taupe */
+  background: var(--db-brown) !important;
   color: #fff;
 }
 
@@ -54,7 +54,7 @@ body.dark-theme .dashboard-container {
 }
 
 body.dark-theme .card, body.dark-theme .modal {
-  background: #A89F91 !important; /* Taupe */
+  background: var(--db-brown) !important;
   color: #fff;
 }
 body.dark-theme .section-header, body.dark-theme .accordion-header {
@@ -70,7 +70,7 @@ body.dark-theme .routine-card, body.dark-theme .routine-card.seasonal {
 body.dark-theme .add-routine-btn {
   background: #231815 !important;
   color: #fff !important;
-  border-color: #A89F91 !important;
+  border-color: var(--db-brown) !important;
 }
 
 /* Force modal button text to white for dark mode */
@@ -89,9 +89,9 @@ body.dark-theme .add-routine-btn {
   --text-light: #666;
   --border-color: var(--accent-color-bg);
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  /* Dashboard local color tokens */
-  --db-brown: #A89F91;
-  --db-brown-rgb: 168, 159, 145;
+  /* Dashboard local color tokens - use darker brown to match card/routine colors */
+  --db-brown: #3a2618; /* darker brown */
+  --db-brown-rgb: 58, 38, 24;
   --db-contrast: #231815;
 }
 
@@ -115,9 +115,18 @@ body {
 
 .dashboard-container {
   /* Dashboard theme tokens (local to the dashboard) */
-  --db-brown: #A89F91;
-  --db-brown-rgb: 168, 159, 145;
+  --db-brown: #3a2618;
+  --db-brown-rgb: 58, 38, 24;
   --db-contrast: #231815;
+  /* Dashboard-local accent tokens (darker green for dashboard only) */
+  --accent-color: #35552a;
+  --accent-color-rgb: 53, 85, 42;
+  --accent-color-strong: #2b401f;
+  --accent-color-bg: #35552a;
+  --accent-color-bg-lighter: #4a6b3d;
+  --accent-color-bg-lighter-rgb: 74,107,61;
+  --accent-color-strong-rgb: 43,64,31;
+  --accent-color-text: #e6e8de;
 
   max-width: 1100px;
   margin: 0 auto;
@@ -355,7 +364,8 @@ p {
   height: 18px;
   margin-right: 0;
   cursor: pointer;
-  accent-color: var(--accent-color);
+  /* Ensure checkbox/tick uses dashboard-local accent color */
+  accent-color: var(--accent-color, #35552a);
   transform: scale(1.1);
   transition: transform 0.2s ease;
 }
@@ -374,6 +384,111 @@ p {
   flex: 1;
   transition: all 0.2s ease;
   line-height: 1.4;
+}
+
+/* Dashboard-scoped custom checkbox rendering to avoid native purple on some browsers */
+.dashboard-container .step-label input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: transparent;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  margin-right: 0.8rem;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.dashboard-container .step-label input[type="checkbox"]:hover {
+  border-color: rgba(var(--accent-color-rgb, 53,85,42), 0.9);
+}
+
+.dashboard-container .step-label input[type="checkbox"]:checked {
+  background: var(--accent-color-bg);
+  border-color: var(--accent-color-bg);
+}
+
+/* white checkmark */
+.dashboard-container .step-label input[type="checkbox"]:checked::after {
+  content: '\2713'; /* checkmark */
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  line-height: 1;
+}
+
+/* Defensive: ensure any native form elements inside dashboard use dashboard accent */
+.dashboard-container input[type="checkbox"],
+.dashboard-container input[type="radio"],
+.dashboard-container input[type="checkbox"]::before,
+.dashboard-container input[type="radio"]::before {
+  /* explicit accent color fallback for browsers that support it */
+  accent-color: var(--accent-color, #35552a);
+  -webkit-appearance: none; /* reset native appearance just in case */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.dashboard-container input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: transparent;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dashboard-container input[type="radio"]:checked {
+  background: var(--accent-color-bg);
+  border-color: var(--accent-color-bg);
+}
+
+/* Strong override: force dashboard inputs to our green (covers browser native accents) */
+.dashboard-container input.step-checkbox,
+.dashboard-container .step-label input[type="checkbox"],
+.dashboard-container input[type="checkbox"].step-checkbox {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 4px !important;
+  border: 2px solid rgba(255,255,255,0.12) !important;
+  background: transparent !important;
+  display: inline-block !important;
+  position: relative !important;
+  vertical-align: middle !important;
+  margin-right: 0.8rem !important;
+  box-shadow: none !important;
+}
+
+.dashboard-container input.step-checkbox:checked,
+.dashboard-container .step-label input[type="checkbox"]:checked,
+.dashboard-container input[type="checkbox"].step-checkbox:checked {
+  background: var(--accent-color-bg) !important;
+  border-color: var(--accent-color-bg) !important;
+  accent-color: var(--accent-color) !important;
+}
+
+.dashboard-container input.step-checkbox:checked::after,
+.dashboard-container .step-label input[type="checkbox"]:checked::after,
+.dashboard-container input[type="checkbox"].step-checkbox:checked::after {
+  content: '\2713' !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -58%) !important;
+  line-height: 1 !important;
 }
 
 /* Dark theme adjustments for steps */
@@ -534,6 +649,11 @@ body.dark-theme .step-checkbox {
   transition: width 0.3s ease;
 }
 
+/* Ensure dashboard progress fill uses dashboard-scoped accent tokens */
+.dashboard-container .progress-fill {
+  background: linear-gradient(90deg, var(--accent-color, #35552a), var(--accent-color-strong, #35552a));
+}
+
 .progress-text {
   font-size: 0.8rem;
   color: var(--text-light);
@@ -605,6 +725,14 @@ body.dark-theme .step-checkbox {
   border: 2px solid var(--accent-color-bg);
 }
 
+/* Dashboard-scoped week-day colors to ensure dashboard-local accent is used */
+.dashboard-container .week-day.completed,
+.dashboard-container .week-day.current {
+  background: var(--accent-color, #35552a);
+  color: #fff;
+  border-color: var(--accent-color, #35552a);
+}
+
 /* =========================
    Tips Section
    ========================= */
@@ -648,7 +776,9 @@ body.dark-theme .step-checkbox {
    ========================= */
 /* Calendar wrapper */
 #calendar-wrapper {
-  background: rgba(255, 255, 255, 0.35);
+  /* Use the shared glass background variable so the calendar matches other dashboard sections
+     and avoids the lone gray look. Falls back to a translucent white if the variable is not set. */
+  background: var(--glass-bg, rgba(255, 255, 255, 0.0));
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -659,8 +789,9 @@ body.dark-theme .step-checkbox {
 #calendar-wrapper .section-title {
   text-align: center;
   margin-bottom: 1rem;
-  color: #222;
+  color: #ffffff; /* make 'Calendar Overview' heading white */
   font-size: 1.5rem;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35); /* subtle shadow for contrast */
 }
 
 /* Calendar container */
@@ -682,8 +813,9 @@ body.dark-theme .step-checkbox {
   justify-content: space-between !important;
   align-items: center !important;
   padding: 1rem !important;
+  /* Use dashboard-local accent background for header */
   background: var(--accent-color-bg) !important;
-  color: #222 !important;
+  color: var(--accent-color-text, #222) !important;
 }
 
 .sc-title {
@@ -723,7 +855,7 @@ body.dark-theme .step-checkbox {
 }
 
 .sc-dow-cell {
-  color: #222 !important;
+  color: var(--accent-color-text, #222) !important;
   padding: 0.5rem 0 !important;
 }
 
@@ -737,7 +869,7 @@ body.dark-theme .step-checkbox {
 
 /* Calendar cells */
 .sc-cell {
-  color: #222 !important;
+  color: var(--accent-color-text, #222) !important;
   aspect-ratio: 1 !important;
   border: 1px solid var(--border-color) !important;
   padding: 0.5rem !important;
@@ -746,12 +878,12 @@ body.dark-theme .step-checkbox {
   transition: background-color 0.2s ease !important;
   cursor: pointer !important;
   min-height: 60px !important;
-  background-color: rgba(255, 255, 255, 0.4) !important;
+  background-color: var(--card-bg, rgba(255,255,255,0.4)) !important;
   border-radius: 6px !important;
 }
 
 .sc-cell:hover {
-  background-color: rgba(var(--accent-color-rgb), 0.05) !important;
+  background-color: rgba(var(--accent-color-rgb, 53,85,42), 0.05) !important;
 }
 
 .sc-cell.sc-other {
@@ -782,11 +914,11 @@ body.dark-theme .step-checkbox {
 
 /* Cell status styles */
 .sc-day-completed {
-  background-color: rgba(var(--accent-color-strong-rgb), 0.1) !important;
+  background-color: rgba(var(--accent-color-strong-rgb, 53,85,42), 0.12) !important;
 }
 
 .sc-day-not-done {
-  background-color: rgba(var(--accent-color-rgb), 0.1) !important;
+  background-color: rgba(var(--accent-color-rgb, 53,85,42), 0.08) !important;
 }
 
 /* Fix for the red cross issue */
@@ -798,7 +930,7 @@ body.dark-theme .step-checkbox {
 
 /* Future day styling - Option 1: Blank/Neutral */
 .sc-day-future {
-  background-color: rgba(255, 255, 255, 0.4) !important;
+  background-color: var(--card-bg, rgba(255,255,255,0.4)) !important;
   border: 1px solid rgba(var(--db-brown-rgb), 0.3) !important;
 }
 
@@ -845,7 +977,8 @@ body.dark-theme .step-checkbox {
 /* Dark mode body - only applies when body has dark-theme class */
 body.dark-theme {
   background-color: #121212;
-  color: #A89F91;
+  /* Use dashboard contrast color for readable text in dark mode */
+  color: var(--db-contrast);
   font-family: 'Arial', sans-serif;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -895,7 +1028,12 @@ body.dark-theme input::placeholder, body.dark-theme textarea::placeholder {
 }
 
 /* Calendar / Dashboard container */
+/* Calendar / Dashboard container */
 body.dark-theme .dashboard-container, body.dark-theme .calendar-section {
+  /* ensure dashboard uses the dashboard-local darker accent tokens */
+  --accent-color: var(--accent-color, #35552a);
+  --accent-color-rgb: var(--accent-color-rgb, 53, 85, 42);
+  --accent-color-bg: var(--accent-color-bg, #35552a);
   background-color: rgba(30, 30, 30, 0.9); /* translucent dark background */
   padding: 20px;
   border-radius: 10px;
@@ -1192,4 +1330,33 @@ body.dark-theme ::-webkit-scrollbar-thumb {
   [data-tooltip]:hover::before {
     display: none;
   }
+}
+
+/* Dashboard-scoped visual tweaks requested by user */
+/* 1) Calendar border in dashboard should use dark green */
+.dashboard-container #calendar-wrapper {
+  border: 2px solid var(--accent-color-bg);
+}
+
+/* 2) Morning and evening routine checkboxes should appear green */
+.dashboard-container .routine-card.morning .step-checkbox,
+.dashboard-container .routine-card.evening .step-checkbox {
+  accent-color: var(--accent-color);
+  outline-color: var(--accent-color);
+}
+
+/* 3) Make a few dashboard buttons green (complete/edit/add) */
+.dashboard-container .complete-btn,
+.dashboard-container .edit-btn,
+.dashboard-container .add-routine-btn {
+  background: var(--accent-color-bg);
+  color: #fff;
+  border-color: var(--accent-color-bg);
+}
+
+.dashboard-container .complete-btn:hover,
+.dashboard-container .edit-btn:hover,
+.dashboard-container .add-routine-btn:hover {
+  background: var(--accent-color-strong);
+  border-color: var(--accent-color-strong);
 }
