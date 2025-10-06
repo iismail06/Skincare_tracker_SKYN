@@ -24,7 +24,7 @@ jobs:
 
       - name: Cache pip
         uses: actions/cache@v4
-        with:
+          - name: Checkout
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
