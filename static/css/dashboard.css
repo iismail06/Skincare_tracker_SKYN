@@ -14,11 +14,11 @@
    CSS Variables
    ========================= */
 :root {
-  --accent-color: #FF6B35;
-  --accent-color-rgb: 255, 107, 53; /* RGB values of #FF6B35 */
-  /* Accessible tokens for dashboard-specific accent usage */
-  --accent-color-text: #7a361f; /* darker text variant */
-  --accent-color-bg: #ff6b35; /* used as background with white text */
+  /* Use the project's unified accent tokens (green) */
+  --accent-color: var(--accent-color);
+  --accent-color-rgb: 150, 154, 139; /* fallback to main accent RGB */
+  --accent-color-text: var(--accent-color-text);
+  --accent-color-bg: var(--accent-color-bg);
   --text-color: #333;
   --text-light: #666;
   --border-color: #ddd;
@@ -144,13 +144,13 @@ p {
 
 .complete-btn {
   background: rgba(8, 7, 7, 0.2);
-  border-color: rgba(255, 107, 53, 0.4);
+  border-color: rgba(var(--accent-color-rgb), 0.4);
   color: #0b0b0b;
   font-weight: bold;
 }
 
 .complete-btn:hover {
-  background: rgba(255, 107, 53, 0.3);
+  background: rgba(var(--accent-color-rgb), 0.3);
 }
 
 .add-routine-btn {
@@ -447,15 +447,15 @@ body.dark-theme .step-checkbox {
 .streak-counter {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #FF6B35;
+  color: var(--accent-color-text);
 }
 
 /* Milestone Message */
 .milestone-message {
   margin-top: 0.75rem;
   padding: 0.6rem;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
-  border: 1px solid rgba(255, 107, 53, 0.2);
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.1), rgba(var(--accent-color-rgb), 0.05));
+  border: 1px solid rgba(var(--accent-color-rgb), 0.2);
   border-radius: 8px;
   text-align: center;
   animation: milestone-pulse 2s ease-in-out;
@@ -469,7 +469,7 @@ body.dark-theme .step-checkbox {
 .milestone-text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #FF6B35;
+  color: var(--accent-color-text);
 }
 
 @keyframes milestone-pulse {
