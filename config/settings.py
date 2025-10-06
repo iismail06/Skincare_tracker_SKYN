@@ -17,9 +17,10 @@ from django.contrib.messages import constants as messages
 import dj_database_url
 
 if os.path.isfile('env.py'):
+    # Local env.py support (development only). Keep this file out of VCS.
     import env
 
-# Import env.py if it exists (local only)
+# Import env.py if it exists in parent dir (older projects)
 if os.path.exists(os.path.join(os.path.dirname(__file__), '..', 'env.py')):
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     import env
@@ -31,16 +32,32 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY: read secret key from environment. In production this MUST be set.
 SECRET_KEY = os.environ.get('SECRET_KEY')
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if 'DEBUG' in os.environ else False
-# Only enforce these security settings if DEBUG is False (i.e., in production)
+def str_to_bool(val):
+    if isinstance(val, bool):
+        return val
+    if not val:
+        return False
+    return str(val).strip().lower() in ('1', 'true', 'yes', 'on')
 
-ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = str_to_bool(os.environ.get('DEBUG', 'False'))
+
+# Fail fast if SECRET_KEY is missing in production
+if not DEBUG and not SECRET_KEY:
+    raise RuntimeError('The SECRET_KEY environment variable is required in production.')
+
+# ALLOWED_HOSTS can be provided as a comma-separated environment variable
+
+raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
+if raw_allowed_hosts:
+    ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -173,3 +190,17 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Production hardening (only enabled when DEBUG is False)
+if not DEBUG:
+    # Redirect HTTP to HTTPS
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # HSTS (short value to start; increase after testing)
+    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 60))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    # Other recommended settings
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True

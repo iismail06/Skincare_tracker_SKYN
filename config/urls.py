@@ -13,5 +13,5 @@ urlpatterns = [
     path('profile/', include('users.urls')),                   # Profile pages
     path('routines/', include('routines.urls')),               # Routine functionality
     path('products/', include('products.urls')),               # Product management
-    path('api/products/', include('products.urls')),           # API endpoints
+    path('api/products/', include('products.api_urls')),       # API endpoints (separate module)
 ]
