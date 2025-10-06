@@ -2,7 +2,7 @@
 
 A Django-based web application for tracking and managing skincare routines. SKYN helps users monitor their daily skincare products, track their skin's response over time, and receive personalized insights for better skincare management.
 
-![SKYN Homepage](static/images/homepage-screenshot.png) <!-- Add screenshot later -->
+<!-- Screenshot removed --><!-- Images removed from project -->
 
 ## 🌟 Features
 
@@ -171,9 +171,7 @@ Testing documentation will be completed during the development phase.
 
 ### Images & Assets
 
-- Hero section background image: [Pexels - Photo by Author Name](image-url)
-- Features section image: [Pexels - Photo by Author Name](image-url)
-- Favicon generated using: [Favicon.io](https://favicon.io/)
+This project no longer stores project images in the repository. Favicons and small assets may still be present in `static/images/favicon`.
 
 ### Code Resources
 
