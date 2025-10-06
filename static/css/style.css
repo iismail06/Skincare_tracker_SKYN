@@ -788,10 +788,7 @@ label {
 .btn {
     display: inline-block;
     padding: 0.6rem 1rem;
-    background-color: var(--accent-color-bg-lighter);
-    color: #ffffff !important;
-    border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -799,23 +796,32 @@ label {
     text-align: center;
     text-decoration: none;
     margin: 0.25rem 0;
+    /* glass base: semi-transparent panel */
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.15));
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .btn:hover {
     transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
 
 /* Primary: the prominent filled button used on the home "My Routines" action */
 .btn-primary {
     padding: 0.8rem 1.8rem;
-    background: linear-gradient(180deg, var(--accent-color-bg) 0%, var(--accent-color-bg-lighter) 100%);
-    color: var(--text) !important;
-    border: 0;
-    box-shadow: 0 8px 20px rgba(16, 24, 40, 0.12);
+    /* transparent glass with accent border/text */
+    background: transparent;
+    color: var(--accent-color-text) !important;
+    border: 1.5px solid var(--accent-color-bg);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
 .btn-primary:hover {
-    box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+    background: rgba(var(--accent-color-rgb), 0.03);
 }
 
 /* Dark theme: ensure primary buttons show with light foreground */
@@ -825,10 +831,15 @@ body.dark-theme .btn-primary {
 
 /* Secondary: outline or muted alternate */
 .btn-secondary {
-    background: transparent;
-    color: var(--accent-color-text) !important;
-    border: 2px solid var(--accent-color-bg);
+    background: rgba(255,255,255,0.9);
+    color: var(--text) !important;
+    border: 1px solid rgba(0,0,0,0.06);
     padding: 0.6rem 1rem;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
 
 /* Small button variant for inline controls */
