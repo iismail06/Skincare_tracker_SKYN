@@ -49,6 +49,10 @@ body.dark-theme {
     --accent-color-bg: #bfc1a0; /* accent background in dark mode */
     --error-color: #d32f2f;
     --success-color: #2e7d32;
+    /* Dark theme glass overrides */
+    --glass-bg: rgba(20,20,20,0.45);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-blur: 8px;
 }
 
 /* ==========================================================================
@@ -205,6 +209,19 @@ h2 {
     transition: all 0.3s ease !important;
     display: block !important;
 }
+
+/* Apply glass to navbar and form containers for uniform look */
+.custom-navbar, .form-card, .form-container, .auth-container {
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        backdrop-filter: blur(var(--glass-blur)) !important;
+        -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+}
+
+/* Font loading note:
+     - 'Dock' is the preferred UI font; if you want it embedded, add a font file under static/fonts
+         and include via @font-face. For now we fall back to Inter and system fonts.
+*/
 
 .custom-navbar .nav-container {
     max-width: 1200px !important;
