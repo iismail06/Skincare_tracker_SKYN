@@ -21,6 +21,7 @@
     /* Accessible tokens: use separate colors for accent text and accent backgrounds */
     --accent-color-text: #676b5d; /* accessible ~4.5:1 on light background */
     --accent-color-bg: #727667; /* accessible background for white text */
+    --accent-color-strong: #35552a; /* darker green for hover/active states */
     --error-color: #d32f2f;
     --success-color: #2e7d32;
     /* UI font and glass tokens */
@@ -821,7 +822,8 @@ label {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-    background: rgba(var(--accent-color-rgb), 0.03);
+    /* darker green hover, avoid any blue tones */
+    background: rgba(53,85,42,0.12); /* rgba of --accent-color-strong */
 }
 
 /* Dark theme: ensure primary buttons show with light foreground */
@@ -840,6 +842,7 @@ body.dark-theme .btn-primary {
 .btn-secondary:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    background: rgba(53,85,42,0.06);
 }
 
 /* Small button variant for inline controls */
