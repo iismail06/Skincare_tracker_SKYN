@@ -57,6 +57,20 @@ PY
             exit 1;
           fi
 
+      - name: Debug: print non-secret env indicators
+        run: |
+          echo "DEBUG=${DEBUG}"
+          if [ -z "${SECRET_KEY}" ]; then
+            echo "SECRET_KEY is not set"
+          else
+            echo "SECRET_KEY is set (value withheld)"
+          fi
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "DATABASE_URL is not set"
+          else
+            echo "DATABASE_URL is set (value withheld)"
+          fi
+
       - name: Run migrations
         run: python manage.py migrate --noinput
 
