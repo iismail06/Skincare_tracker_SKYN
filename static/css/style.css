@@ -220,6 +220,39 @@ h2 {
         -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
 }
 
+/* Dark theme: stronger glass contrast on key containers */
+body.dark-theme .custom-navbar,
+body.dark-theme .form-card,
+body.dark-theme .form-container,
+body.dark-theme .auth-container,
+body.dark-theme .card,
+body.dark-theme .product-card,
+body.dark-theme .dashboard-section {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+}
+
+/* Dark theme nav links & form inputs: subtle glass accents */
+body.dark-theme .custom-navbar .nav-links a {
+    background: transparent !important;
+    color: var(--text) !important;
+    border-radius: 8px !important;
+}
+
+body.dark-theme .form-control,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="password"],
+body.dark-theme input[type="email"],
+body.dark-theme select {
+    background-color: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    color: var(--text) !important;
+}
+
+/* Note on embedding Dock: To include the Dock font file, place the font under static/fonts
+   and add an @font-face entry in this file, then ensure the path is correct. */
+
 /* Font loading note:
      - 'Dock' is the preferred UI font; if you want it embedded, add a font file under static/fonts
          and include via @font-face. For now we fall back to Inter and system fonts.
