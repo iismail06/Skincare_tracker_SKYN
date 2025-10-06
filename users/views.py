@@ -16,6 +16,10 @@ def home(request):
 
 def signup(request):
     """Handle user registration with custom form"""
+    # If a logged-in user visits signup, redirect them home
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -35,6 +39,7 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
+@login_required
 def profile_questionnaire(request):
     """Handle profile questionnaire"""
     if request.method == 'POST':

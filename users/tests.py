@@ -133,9 +133,11 @@ class BeginnerQuestionnaireTests(TestCase):
     def test_can_see_questionnaire_page(self):
         """Test #5: Check if questionnaire page loads"""
         # Go to questionnaire page
+        # Login first (questionnaire requires login)
+        self.fake_browser.login(username='skincare_lover', password='test123')
         response = self.fake_browser.get(self.questionnaire_page)
-        
-        # Should load successfully
+
+        # Should load successfully for logged-in user
         self.assertEqual(response.status_code, 200)
         
         print("✅ Test passed: Questionnaire page loads!")
@@ -217,6 +219,50 @@ class BeginnerLoginLogoutTests(TestCase):
         self.assertEqual(response.status_code, 302)
         
         print("✅ Test passed: User can logout successfully!")
+
+
+# =============================================================================
+# ADDITIONAL POLISH TESTS
+# =============================================================================
+class SignupAndQuestionnaireFlowTests(TestCase):
+    """Tests for post-signup redirect and access control on questionnaire"""
+
+    def setUp(self):
+        self.client = Client()
+        self.signup_url = reverse('signup')
+        self.questionnaire_url = reverse('users:profile_questionnaire')
+        self.home_url = reverse('home')
+
+    def test_authenticated_user_redirected_from_signup(self):
+        """If already logged in, visiting signup should redirect home"""
+        # create and login a user
+        user = User.objects.create_user(username='already', password='pw12345')
+        self.client.login(username='already', password='pw12345')
+
+        resp = self.client.get(self.signup_url)
+        # Should redirect (302) to home
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn(self.home_url, resp['Location'])
+
+    def test_signup_redirects_to_questionnaire(self):
+        """Successful signup should redirect user to profile questionnaire"""
+        signup_info = {
+            'username': 'new_user_for_flow',
+            'password1': 'ComplexPass!123',
+            'password2': 'ComplexPass!123'
+        }
+        resp = self.client.post(self.signup_url, signup_info)
+        # After signup, we expect a redirect (302) to questionnaire
+        self.assertEqual(resp.status_code, 302)
+        # Location header should contain the profile questionnaire URL name reverse
+        self.assertIn(reverse('users:profile_questionnaire'), resp['Location'])
+
+    def test_questionnaire_requires_login(self):
+        """Anonymous users should be redirected to login when accessing questionnaire"""
+        resp = self.client.get(self.questionnaire_url)
+        # Should redirect to login page (Django's auth uses /accounts/login/?next=...)
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn(reverse('login'), resp['Location'])
 
 # =============================================================================
 # HOW TO RUN THESE TESTS:
