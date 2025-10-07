@@ -1,42 +1,3 @@
-/* Custom Modal Styles */
-.modal-content {
-    background: var(--card-bg) !important;
-    color: var(--text) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
-}
-.modal-header, .modal-footer {
-    background: transparent !important;
-    border: none !important;
-}
-.modal-title {
-    color: var(--text) !important;
-    font-weight: bold !important;
-}
-.modal-body label, .modal-body input, .modal-body select, .modal-body option, .modal-body p {
-    color: var(--text) !important;
-}
-.modal-footer .btn, .modal-footer .btn-primary, .modal-footer .btn-secondary {
-    color: #fff !important;
-    font-weight: bold !important;
-    background: var(--accent-color-bg) !important;
-    border: none !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-}
-body.dark-theme .modal-content {
-    background: var(--glass-bg) !important;
-    color: #fff !important;
-}
-body.dark-theme .modal-title,
-body.dark-theme .modal-body label,
-body.dark-theme .modal-body input,
-body.dark-theme .modal-body select,
-body.dark-theme .modal-body option,
-body.dark-theme .modal-body p {
-    color: #fff !important;
-}
-
 
 /* ==========================================================================
    1. CSS VARIABLES & ROOT
@@ -79,38 +40,6 @@ body.dark-theme .modal-body p {
     --card-bg: #ffffff;
     --gray: #6c757d;
     --card-shadow-color: rgba(0,0,0,0.04);
-}
-
-body.dark-theme {
-    --background-color: #2a2418;
-    --background-color-rgb: 42, 36, 24;
-    --background-color-darker: #1f1b13;
-    --background-color-darker-rgb: 31, 27, 19;
-    --text: #f0e6d2;
-    --secondary-color: #d4c4a8;
-    --secondary-color-lighter: #f0d3bc;
-    --secondary-color-darker: #f0e6d2;
-    --secondary-color-darker-rgb: 240, 230, 210;
-    --accent-color: #35552a; /* darker green */
-    --accent-color-rgb: 53, 85, 42;
-    --accent-color-lighter: #4a6b3d;
-    --accent-color-bg-lighter: #4a6b3d; /* darker but slightly lighter bg variant */
-    /* Dark theme accessible tokens */
-    --accent-color-text: #e6e8de; /* readable accent text against dark bg */
-    --accent-color-bg: #35552a; /* darker accent background in dark mode */
-    --error-color: #d32f2f;
-    --success-color: #2e7d32;
-    /* Dark theme glass overrides */
-    --glass-bg: rgba(20,20,20,0.45);
-    --glass-border: rgba(255,255,255,0.06);
-    --glass-blur: 8px;
-    /* dark theme token overrides */
-    --border: rgba(255,255,255,0.04);
-    --glass-gradient-top: rgba(255,255,255,0.15);
-    --glass-gradient-bottom: rgba(255,255,255,0.08);
-    --glass-bg-subtle: rgba(255,255,255,0.02);
-    --card-bg: rgba(255,255,255,0.02);
-    --gray: #bdb6a6;
 }
 
 /* ==========================================================================
@@ -164,10 +93,6 @@ main {
     margin: 0 auto;
 }
 
-/* ==========================================================================
-   5A. BOOTSTRAP OVERRIDES - Fix conflicts with our custom design
-   ========================================================================== */
-
 /* Prevent Bootstrap from adding unwanted margins/padding */
 .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
     padding-left: 0 !important;
@@ -186,14 +111,6 @@ main {
 html, body {
     margin: 0 !important;
     padding: 0 !important;
-}
-
-/* Dark theme hero section text colors */
-body.dark-theme .hero-title,
-body.dark-theme .hero-subtitle,
-body.dark-theme .hero-description,
-body.dark-theme .brand-highlight {
-    color: var(--secondary-color-darker);
 }
 
 /* ==========================================================================
@@ -276,43 +193,7 @@ h2 {
         -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
 }
 
-/* Dark theme: stronger glass contrast on key containers */
-body.dark-theme .custom-navbar,
-body.dark-theme .form-card,
-body.dark-theme .form-container,
-body.dark-theme .auth-container,
-body.dark-theme .card,
-body.dark-theme .product-card,
-body.dark-theme .dashboard-section {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
-}
 
-/* Dark theme nav links & form inputs: subtle glass accents */
-body.dark-theme .custom-navbar .nav-links a {
-    background: transparent !important;
-    color: var(--text) !important;
-    border-radius: 8px !important;
-}
-
-body.dark-theme .form-control,
-body.dark-theme input[type="text"],
-body.dark-theme input[type="password"],
-body.dark-theme input[type="email"],
-body.dark-theme select {
-    background-color: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
-
-/* Note on embedding Dock: To include the Dock font file, place the font under static/fonts
-   and add an @font-face entry in this file, then ensure the path is correct. */
-
-/* Font loading note:
-     - 'Dock' is the preferred UI font; if you want it embedded, add a font file under static/fonts
-         and include via @font-face. For now we fall back to Inter and system fonts.
-*/
 
 .custom-navbar .nav-container {
     max-width: 1200px !important;
@@ -911,14 +792,7 @@ body.dark-theme .auth-container {
     margin-bottom: 1.5rem;
     color: var(--gray);
 }
-/* --- Dark mode override for signup form fields --- */
-body.dark-theme #signup-form input,
-body.dark-theme #signup-form textarea,
-body.dark-theme #signup-form select {
-    background: #fff !important;
-    color: #222 !important;
-    border: 1.5px solid var(--accent-color, #6c63ff);
-}
+
 /* ==========================================================================
    10. MAIN CONTENT LAYOUT
    ========================================================================== */
@@ -926,8 +800,6 @@ body.dark-theme #signup-form select {
 main {
     flex: 1;
 }
-
-
 
 .container {
     max-width: 1200px;
@@ -1282,7 +1154,6 @@ main {
 }
 
 
-
 /* Delete Confirmation */
 .delete-confirmation {
     max-width: 500px;
@@ -1300,8 +1171,6 @@ main {
     margin-bottom: 2rem;
     border: 1px solid var(--border);
 }
-
-
 
 .product-details {
     text-align: left;
@@ -1330,13 +1199,6 @@ main {
 .warning-message i {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-}
-
-/* Dark theme warning message */
-body.dark-theme .warning-message {
-    background: #3a3124;
-    color: var(--accent-color-lighter);
-    border-color: var(--border);
 }
 
 /* Page Header */
@@ -1379,11 +1241,6 @@ body.dark-theme .warning-message {
     color: #fff;
 }
 
-/* Dark mode: make danger buttons readable on dark bg */
-body.dark-theme .btn-danger {
-    color: #fff;
-    border-color: rgba(220,53,69,0.85);
-}
 /* ==========================================================================
    16. PRODUCT FORM STYLES
    ========================================================================== */
@@ -1455,9 +1312,151 @@ body.dark-theme .btn-danger {
 .back-link-wrap { margin-bottom: 1rem; }
 .back-link { color: var(--secondary-color-darker); font-size: 0.9rem; text-decoration: none; }
 
+/*---------------------------------------------------------------
+   17. custom modal styles
+   ========================================================================== */
+.modal-content {
+    background: var(--card-bg) !important;
+    color: var(--text) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
+}
+.modal-header, .modal-footer {
+    background: transparent !important;
+    border: none !important;
+}
+.modal-title {
+    color: var(--text) !important;
+    font-weight: bold !important;
+}
+.modal-body label, .modal-body input, .modal-body select, .modal-body option, .modal-body p {
+    color: var(--text) !important;
+}
+.modal-footer .btn, .modal-footer .btn-primary, .modal-footer .btn-secondary {
+    color: #fff !important;
+    font-weight: bold !important;
+    background: var(--accent-color-bg) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+}
+
 
 /* ==========================================================================
-   17. RESPONSIVE DESIGN - ALL MEDIA QUERIES
+   18.  Dark Mode Styles
+   ========================================================================== */
+body.dark-theme {
+    --background-color: #2a2418;
+    --background-color-rgb: 42, 36, 24;
+    --background-color-darker: #1f1b13;
+    --background-color-darker-rgb: 31, 27, 19;
+    --text: #f0e6d2;
+    --secondary-color: #d4c4a8;
+    --secondary-color-lighter: #f0d3bc;
+    --secondary-color-darker: #f0e6d2;
+    --secondary-color-darker-rgb: 240, 230, 210;
+    --accent-color: #35552a; /* darker green */
+    --accent-color-rgb: 53, 85, 42;
+    --accent-color-lighter: #4a6b3d;
+    --accent-color-bg-lighter: #4a6b3d; /* darker but slightly lighter bg variant */
+    /* Dark theme accessible tokens */
+    --accent-color-text: #e6e8de; /* readable accent text against dark bg */
+    --accent-color-bg: #35552a; /* darker accent background in dark mode */
+    --error-color: #d32f2f;
+    --success-color: #2e7d32;
+    /* Dark theme glass overrides */
+    --glass-bg: rgba(20,20,20,0.45);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-blur: 8px;
+    /* dark theme token overrides */
+    --border: rgba(255,255,255,0.04);
+    --glass-gradient-top: rgba(255,255,255,0.15);
+    --glass-gradient-bottom: rgba(255,255,255,0.08);
+    --glass-bg-subtle: rgba(255,255,255,0.02);
+    --card-bg: rgba(255,255,255,0.02);
+    --gray: #bdb6a6;
+}
+/* Dark theme hero section text colors */
+body.dark-theme .hero-title,
+body.dark-theme .hero-subtitle,
+body.dark-theme .hero-description,
+body.dark-theme .brand-highlight {
+    color: var(--secondary-color-darker);
+}
+
+/* Dark mode adjustments for Navbar */
+
+/* Dark theme nav links & form inputs: subtle glass accents */
+body.dark-theme .custom-navbar .nav-links a {
+    background: transparent !important;
+    color: var(--text) !important;
+    border-radius: 8px !important;
+}
+
+body.dark-theme .form-control,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="password"],
+body.dark-theme input[type="email"],
+body.dark-theme select {
+    background-color: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
+/* Dark theme: stronger glass contrast on key containers */
+body.dark-theme .custom-navbar,
+body.dark-theme .form-card,
+body.dark-theme .form-container,
+body.dark-theme .auth-container,
+body.dark-theme .card,
+body.dark-theme .product-card,
+body.dark-theme .dashboard-section {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+}
+
+
+/* --- Dark mode override for signup form fields --- */
+body.dark-theme #signup-form input,
+body.dark-theme #signup-form textarea,
+body.dark-theme #signup-form select {
+    background: #fff !important;
+    color: #222 !important;
+    border: 1.5px solid var(--accent-color, #6c63ff);
+}
+
+/* Dark mode adjustments for Buttons */
+
+/* Dark mode: make danger buttons readable on dark bg */
+body.dark-theme .btn-danger {
+    color: #fff;
+    border-color: rgba(220,53,69,0.85);
+}
+/* Dark mode: message */
+
+/* Dark theme warning message */
+body.dark-theme .warning-message {
+    background: #3a3124;
+    color: var(--accent-color-lighter);
+    border-color: var(--border);
+}
+
+/* Dark mode adjustments for specific modal styles */
+body.dark-theme .modal-content {
+    background: var(--glass-bg) !important;
+    color: #fff !important;
+}
+body.dark-theme .modal-title,
+body.dark-theme .modal-body label,
+body.dark-theme .modal-body input,
+body.dark-theme .modal-body select,
+body.dark-theme .modal-body option,
+body.dark-theme .modal-body p {
+    color: #fff !important;
+}
+
+/* ==========================================================================
+   19. RESPONSIVE DESIGN - ALL MEDIA QUERIES
    ========================================================================== */
 
 /* Mobile Navigation Styles */
@@ -1719,8 +1718,6 @@ body.dark-theme .btn-danger {
     .features-section .section-content {
         padding: 5vw;
     }
-    
-
     
     /* Typography */
     h2 {
