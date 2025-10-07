@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
       suggestionsGrid.innerHTML = '';
       
       // Fetch products from API
-      fetch('/api/products/api/browse/' + category + '/')
+  fetch('/products/api/browse/' + category + '/')
         .then(function(response) {
           if (!response.ok) throw new Error('Network response was not ok');
           return response.json();
@@ -818,6 +818,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize event listeners when page loads
   document.addEventListener('DOMContentLoaded', function() {
+    // Delegated event listener for edit buttons
+    document.body.addEventListener('click', function(e) {
+      const btn = e.target.closest('.edit-btn');
+      if (btn && !btn.disabled) {
+        console.log('Edit button clicked:', btn);
+        const routineId = btn.getAttribute('data-routine-id');
+        const routineName = btn.getAttribute('data-routine-name');
+        const routineType = btn.getAttribute('data-routine-type');
+        if (routineId && routineName && routineType) {
+          console.log('Calling openEditModal with:', routineId, routineName, routineType);
+          window.openEditModal(routineId, routineName, routineType);
+        } else {
+          console.warn('Missing routine data attributes');
+        }
+      }
+    });
     // Find all step checkboxes and add event listeners
     const checkboxes = document.querySelectorAll('.step-checkbox');
     checkboxes.forEach(function(checkbox) {
