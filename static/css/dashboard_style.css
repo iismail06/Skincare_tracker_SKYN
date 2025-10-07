@@ -12,6 +12,9 @@
 }
 
 
+
+
+
 /* =========================
   2. Global Styles
    ========================= */
@@ -323,7 +326,7 @@ body.dark-theme .routine-step:hover {
   border: 1px solid rgba(200, 200, 200, 0.8);
   box-shadow: var(--shadow);
   margin-bottom: 1rem;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .accordion-button {
@@ -432,7 +435,7 @@ body.dark-theme .step-checkbox {
   border-radius: 10px;
   height: 8px;
   margin: 1rem 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .progress-fill {
@@ -676,7 +679,7 @@ body.dark-theme .step-checkbox {
   left: 5px !important;
   font-size: 0.8rem !important;
   font-weight: 600 !important;
-  z-index: 1 !important;
+  /* z-index: 1 !important; */
 }
 
 /* Icons in days */
@@ -830,7 +833,7 @@ body.dark-theme .step-checkbox {
     align-items: center;
     transition: all 0.2s ease;
     cursor: pointer;
-    position: relative;
+  position: relative;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -926,7 +929,7 @@ body.dark-theme .step-checkbox {
     border-radius: 6px;
     font-size: 0.8rem;
     white-space: nowrap;
-    z-index: 1000;
+    /* z-index: 1000; */
     max-width: 300px;
     white-space: normal;
     width: max-content;
@@ -940,7 +943,7 @@ body.dark-theme .step-checkbox {
     transform: translateX(-50%);
     border: 5px solid transparent;
     border-top-color: rgba(0, 0, 0, 0.9);
-    z-index: 1000;
+    /* z-index: 1000; */
 }
 
 /* =========================
@@ -1221,3 +1224,19 @@ body.dark-theme footer a:hover {
       display: none;
     }
   }
+
+
+
+  /* Performance: reduce heavy backdrop-filter effects while modal is open */
+body.modal-open *:not(.modal):not(.modal *) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+}
+
+/* Also temporarily disable transitions/animations/shadows during modal open to reduce paint cost */
+body.modal-open *:not(.modal):not(.modal *) {
+  transition: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
