@@ -29,8 +29,6 @@
 
     <div class="profile-routines u-margin-top-xl">
             <h2 style="color:#fff;">My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
-            <!-- ...existing code... -->
-            <!-- Move inline-success notification to the bottom of the profile page -->
     </div> <!-- /.profile-routines -->
     {% if last_added_routine %}
         <div id="inline-success" class="inline-success inline-success-bottom">
@@ -166,7 +164,7 @@
                 <p>No routines found. <a href="#" class="btn btn-secondary add-routine-cta">Add a Routine</a></p>
             {% endif %}
     </div>
-    </div> <!-- /.profile-container -->
+    </div> 
 </div>
 {% endblock %}
 
