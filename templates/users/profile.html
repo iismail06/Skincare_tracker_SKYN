@@ -7,11 +7,8 @@
 {% block content %}
 <div class="container">
     <div class="profile-container">
-    <h1 class="page-title">My Profile</h1>
+    <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
     <div class="profile-info">
-        <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
-        
         {% if profile %}
             {% if profile.date_of_birth %}
                 <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
@@ -26,25 +23,27 @@
     </div>
     
     <div class="profile-actions">
-        <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">Edit Profile</a>
-        <a href="{% url 'home' %}" class="btn btn-primary">Back to Dashboard</a>
+    <a href="{% url 'users:profile_edit' %}" class="btn btn-secondary">Edit Profile</a>
+    <a href="{% url 'routines:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 
     <div class="profile-routines u-margin-top-xl">
-            <h2>My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
-                {% if last_added_routine %}
-                    <div id="inline-success" class="inline-success">
-                        <div>
-                            <small class="muted-success">Added</small>
-                            <div><strong id="inline-success-name">{{ last_added_routine.name }}</strong></div>
-                            {# timestamp intentionally hidden from inline success per user preference #}
-                        </div>
-                        <div class="inline-success-actions">
-                            <a id="inline-success-view" href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
-                            <button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>
-                        </div>
-                    </div>
-                {% endif %}
+            <h2 style="color:#fff;">My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
+            <!-- ...existing code... -->
+            <!-- Move inline-success notification to the bottom of the profile page -->
+    </div> <!-- /.profile-routines -->
+    {% if last_added_routine %}
+        <div id="inline-success" class="inline-success inline-success-bottom">
+            <div>
+                <small class="muted-success">Added</small>
+                <div><strong id="inline-success-name">{{ last_added_routine.name }}</strong></div>
+            </div>
+            <div class="inline-success-actions">
+                <a id="inline-success-view" href="{% url 'routines:dashboard' %}" class="btn btn-secondary">View</a>
+                <button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>
+            </div>
+        </div>
+    {% endif %}
             <!-- Inline add-routine form (consolidated) -->
             <div class="form-card">
                 <form id="add-routine-form" method="post" action="{% url 'routines:add' %}" class="routine-form" data-ajax-url="{% url 'routines:add' %}">
@@ -62,7 +61,24 @@
 
                             <div class="form-group">
                                 <label for="routine_name">Routine name</label>
-                                <input type="text" id="routine_name" name="routine_name" value="{{ added_routine_form.data.routine_name|default_if_none:'' }}">
+                                <div class="dropdown-input-wrap">
+                                    <input type="text" id="routine_name" name="routine_name" value="{{ added_routine_form.data.routine_name|default_if_none:'' }}" list="routine-name-options" autocomplete="off" required>
+                                    <span class="dropdown-arrow">&#9662;</span>
+                                </div>
+                                <datalist id="routine-name-options">
+                                    <option value="Busy Morning">
+                                    <option value="Morning Routine for Work">
+                                    <option value="Morning Routine for School">
+                                    <option value="Morning Shift">
+                                    <option value="Busy Night">
+                                    <option value="Weekend Glow">
+                                    <option value="Holiday Routine">
+                                    <option value="Night Shift">
+                                    <option value="Quick Refresh">
+                                    <option value="Self-Care Sunday">
+                                    <option value="After Workout">
+                                    <option value="Travel Mode">
+                                </datalist>
                                 {% if form.errors.routine_name %}
                                     <div class="error">{{ form.errors.routine_name|join:", " }}</div>
                                 {% endif %}
@@ -70,7 +86,7 @@
 
                             <div class="form-group">
                                 <label for="routine_type">Type</label>
-                                <select id="routine_type" name="routine_type">
+                                <select id="routine_type" name="routine_type" required>
                                     <option value="">Choose</option>
                                     <option value="morning" {% if added_routine_form.data.routine_type == 'morning' %}selected{% endif %}>Morning</option>
                                     <option value="evening" {% if added_routine_form.data.routine_type == 'evening' %}selected{% endif %}>Evening</option>
@@ -82,21 +98,38 @@
 
                             <div class="steps-section">
                                 <label>Steps (up to 5)</label>
-                                <input type="text" name="step1" value="{{ added_routine_form.data.step1|default_if_none:'' }}" placeholder="Step 1">
-                                <input type="text" name="step2" value="{{ added_routine_form.data.step2|default_if_none:'' }}" placeholder="Step 2">
-                                <input type="text" name="step3" value="{{ added_routine_form.data.step3|default_if_none:'' }}" placeholder="Step 3">
-                                <input type="text" name="step4" value="{{ added_routine_form.data.step4|default_if_none:'' }}" placeholder="Step 4">
-                                <input type="text" name="step5" value="{{ added_routine_form.data.step5|default_if_none:'' }}" placeholder="Step 5">
+                                <select id="step1" name="step1" class="step-select"></select>
+                                <select id="step2" name="step2" class="step-select"></select>
+                                <select id="step3" name="step3" class="step-select"></select>
+                                <select id="step4" name="step4" class="step-select"></select>
+                                <select id="step5" name="step5" class="step-select"></select>
                             </div>
 
                                 <div class="form-actions">
-                                <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
+                                <button type="submit" class="btn btn-secondary" id="add-routine-submit">Add Routine</button>
                             </div>
                         {% endwith %}
                     {% else %}
                         <div class="form-group">
                             <label for="routine_name">Routine name</label>
-                            <input type="text" id="routine_name" name="routine_name" placeholder="e.g., Morning Glow" required>
+                            <div class="dropdown-input-wrap">
+                                <input type="text" id="routine_name" name="routine_name" placeholder="e.g., Morning Glow" required list="routine-name-options" autocomplete="off">
+                                <span class="dropdown-arrow">&#9662;</span>
+                            </div>
+                            <datalist id="routine-name-options">
+                                <option value="Busy Morning">
+                                <option value="Morning Routine for Work">
+                                <option value="Morning Routine for School">
+                                <option value="Morning Shift">
+                                <option value="Busy Night">
+                                <option value="Weekend Glow">
+                                <option value="Holiday Routine">
+                                <option value="Night Shift">
+                                <option value="Quick Refresh">
+                                <option value="Self-Care Sunday">
+                                <option value="After Workout">
+                                <option value="Travel Mode">
+                            </datalist>
                         </div>
                         <div class="form-group">
                             <label for="routine_type">Type</label>
@@ -106,16 +139,16 @@
                                 <option value="evening">Evening</option>
                             </select>
                         </div>
-                        <div class="steps-section" id="steps-container">
+                        <div class="steps-section">
                             <label>Steps (up to 5)</label>
-                            <input type="text" name="step1" placeholder="Step 1">
-                            <input type="text" name="step2" placeholder="Step 2">
-                            <input type="text" name="step3" placeholder="Step 3">
-                            <input type="text" name="step4" placeholder="Step 4">
-                            <input type="text" name="step5" placeholder="Step 5">
+                            <select id="step1" name="step1" class="step-select"></select>
+                            <select id="step2" name="step2" class="step-select"></select>
+                            <select id="step3" name="step3" class="step-select"></select>
+                            <select id="step4" name="step4" class="step-select"></select>
+                            <select id="step5" name="step5" class="step-select"></select>
                         </div>
                         <div class="form-actions u-margin-top-sm">
-                            <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
+                            <button type="submit" class="btn btn-secondary" id="add-routine-submit">Add Routine</button>
                         </div>
                     {% endif %}
                 </form>
@@ -125,7 +158,7 @@
                     {% for routine in routines %}
                         <li>
                             <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}
-                            <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
+                            <a href="{% url 'routines:dashboard' %}" class="btn btn-secondary">View</a>
                         </li>
                     {% endfor %}
                 </ul>

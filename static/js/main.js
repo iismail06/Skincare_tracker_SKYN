@@ -1,3 +1,8 @@
+
+
+// ...existing code...
+// Initialize routine step dropdowns for profile page (must be after function definition)
+setupRoutineStepDropdowns();
 /**
  * Theme Toggle Functionality
  * Handles dark/light theme switching with localStorage persistence
@@ -1064,3 +1069,49 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 
+/**
+ * Routine Step Dropdowns for Profile Page
+ * Dynamically updates step options based on routine type (morning/evening)
+ * Used in templates/users/profile.html
+ */
+function setupRoutineStepDropdowns() {
+  const morningOptions = [
+    "Gentle Cleanse",
+    "Toner",
+    "Essence",
+    "Serum",
+    "Light Moisturizer",
+    "SPF / Sunscreen"
+  ];
+  const eveningOptions = [
+    "Double Cleanse",
+    "Toner",
+    "Essence",
+    "Serum",
+    "Eye Cream",
+    "Moisturizer",
+    "Oil",
+    "Retinol / Acid Treatment",
+    "Mask",
+    "Spot Treatment",
+    "Lip Treatment"
+  ];
+  function setStepOptions(routineType) {
+    const options = routineType === 'evening' ? eveningOptions : morningOptions;
+    for (let i = 1; i <= 5; i++) {
+      const select = document.getElementById(`step${i}`);
+      if (select) {
+        select.innerHTML = '<option value="">Select step</option>' + options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+      }
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    const routineType = document.getElementById('routine_type');
+    if (routineType && document.getElementById('step1')) {
+      setStepOptions(routineType.value);
+      routineType.addEventListener('change', function() {
+        setStepOptions(this.value);
+      });
+    }
+  });
+}

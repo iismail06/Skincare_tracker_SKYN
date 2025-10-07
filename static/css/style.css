@@ -1,4 +1,5 @@
 
+
 /* ==========================================================================
    1. CSS VARIABLES & ROOT
    ========================================================================== */
@@ -82,8 +83,22 @@ body {
     -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
-.btn, .btn-primary, .btn-secondary, .badge {
+.btn, .badge {
     border-radius: 10px;
+    border: 1.5px solid #676B5D !important;
+    display: inline-block;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    text-align: center;
+    text-decoration: none;
+    margin: 0.25rem 0;
+    background: linear-gradient(180deg, var(--glass-gradient-top), var(--glass-gradient-bottom));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--text) !important;
 }
 
 main {
@@ -100,6 +115,9 @@ main {
     margin-left: 0 !important;
     margin-right: 0 !important;
     max-width: none !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* Ensure our navbar stays on top without Bootstrap interference */
@@ -527,11 +545,24 @@ h2 {
 
 /* Inline success block used on profile when a routine is added */
 .inline-success {
-    background: color-mix(in srgb, var(--primary) 10%, white);
+    background: rgba(255,255,255,0.85); /* transparent white */
     border-left: 4px solid var(--primary);
     color: var(--secondary-color-darker);
     padding: 0.75rem;
     border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.inline-success-bottom {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .inline-success .muted {
     color: var(--gray);
@@ -682,14 +713,18 @@ label {
     margin: 0.25rem 0;
     /* glass base: semi-transparent panel */
     background: linear-gradient(180deg, var(--glass-gradient-top), var(--glass-gradient-bottom));
-    border: 1px solid var(--glass-border);
+    border: 1.5px solid #676B5D;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
-.btn:hover {
+.btn:hover,
+.badge:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    background: #676B5D !important;
+    color: #fff !important;
+    border-color: #676B5D !important;
 }
 
 /* Primary: the prominent filled button used on the home "My Routines" action */
@@ -715,11 +750,10 @@ body.dark-theme .btn-primary {
 }
 
 /* Secondary: outline or muted alternate */
+
 .btn-secondary {
-    background: var(--glass-gradient-top);
+    /* Minimal override: just use .btn glass effect, only color override if needed */
     color: var(--text) !important;
-    border: 1px solid var(--border);
-    padding: 0.6rem 1rem;
 }
 
 .btn-secondary:hover {
@@ -729,31 +763,6 @@ body.dark-theme .btn-primary {
 }
 
 /* Small button variant for inline controls */
-.btn-sm {
-    padding: 0.45rem 0.8rem;
-    font-size: 0.9rem;
-    border-radius: 6px;
-}
-
-/* Specific smaller styling for the step control buttons (Add step / Remove last step) */
-.step-control {
-    padding: 0.32rem 0.6rem !important;
-    font-size: 0.85rem !important;
-    line-height: 1;
-    border-radius: 6px;
-}
-/* Prevent step controls from expanding to container width */
-.step-control {
-    display: inline-block;
-    width: auto !important;
-    min-width: 0;
-}
-
-/* Small spacing helpers used by templates (kept minimal and semantic) */
-.u-margin-top-xl { margin-top: 2.5rem; }
-.u-margin-bottom-md { margin-bottom: 1.5rem; }
-.muted-success { color: #0b6b3a; font-weight:600; }
-.inline-success-actions { display:flex; gap:0.5rem; align-items:center; }
 .form-card--wide { max-width:600px; margin:2rem auto; }
 
 /* Small helpers used by JS when dynamically inserting elements */
@@ -1365,6 +1374,44 @@ main {
 .welcome-text {
     color: #000 !important;
 }
+/* Dropdown arrow for datalist input */
+.dropdown-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.dropdown-input-wrap input[type="text"] {
+    width: 100%;
+    padding-right: 2.2em;
+}
+.dropdown-arrow {
+    position: absolute;
+    right: 0.8em;
+    pointer-events: none;
+    font-size: 1.2em;
+    color: #000;
+    opacity: 0.7;
+}
+/* Style for routines list at the bottom of the profile page */
+.routines-list {
+    border: 2px solid rgba(0,0,0,0.12);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.85);
+    margin-top: 3rem;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 1.5rem 1.5rem 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    list-style: none;
+}
+.routines-list li {
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #eee;
+}
+.routines-list li:last-child {
+    border-bottom: none;
+}
+
 /* ==========================================================================
    19.  Dark Mode Styles
    ========================================================================== */
