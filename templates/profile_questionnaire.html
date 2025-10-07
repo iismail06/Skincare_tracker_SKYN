@@ -51,15 +51,19 @@
         </div>
 
         <div class="form-group">
-            {{ form.prefers_natural }}
-            {{ form.prefers_natural.label_tag }}
+            <div class="checkbox-inline">
+                {{ form.prefers_natural }}
+                {{ form.prefers_natural.label_tag }}
+            </div>
             {% if form.prefers_natural.errors %}
                 <div class="error">{{ form.prefers_natural.errors }}</div>
             {% endif %}
         </div>
 
-        <button type="submit" class="btn">Complete Profile</button>
+    <div class="questionnaire-actions">
+        <button type="submit" class="btn-secondary">Complete Profile</button>
         <a href="{% url 'home' %}" class="btn-secondary">Skip for Now</a>
+    </div>
     </form>
 </div>
 {% endblock %}

@@ -194,7 +194,6 @@ h2 {
 }
 
 
-
 .custom-navbar .nav-container {
     max-width: 1200px !important;
     margin: 0 auto !important;
@@ -1340,10 +1339,34 @@ main {
     border-radius: 8px !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
 }
-
-
 /* ==========================================================================
-   18.  Dark Mode Styles
+   18. QUESTIONNAIRE & PROFILE PAGE STYLES
+   ========================================================================== */
+/* Custom inline checkbox alignment for questionnaire */
+.checkbox-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.5em;
+}
+/* Questionnaire button group: equal width and spacing */
+.questionnaire-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.questionnaire-actions .btn-secondary {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 100%;
+    text-align: center;
+}
+/* Make the welcome text on the questionnaire page black */
+.welcome-text {
+    color: #000 !important;
+}
+/* ==========================================================================
+   19.  Dark Mode Styles
    ========================================================================== */
 body.dark-theme {
     --background-color: #2a2418;
@@ -1456,7 +1479,7 @@ body.dark-theme .modal-body p {
 }
 
 /* ==========================================================================
-   19. RESPONSIVE DESIGN - ALL MEDIA QUERIES
+   20. RESPONSIVE DESIGN - ALL MEDIA QUERIES
    ========================================================================== */
 
 /* Mobile Navigation Styles */
