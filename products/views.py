@@ -79,7 +79,9 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        # Only return products for the authenticated user
+        # Only return products for the authenticated user. Listing is handled
+        # in `list()` so that we can return serialized default suggestion
+        # objects when the user has no products without breaking DRF internals.
         return Product.objects.filter(user=self.request.user)
     
     def get_serializer_class(self):
@@ -90,6 +92,18 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Automatically set the user when creating a product
         serializer.save(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        """Return the user's products or default suggestions when empty."""
+        qs = self.get_queryset()
+        if qs.exists():
+            return super().list(request, *args, **kwargs)
+
+        # No user products — supply serialized default suggestions
+        category = request.GET.get('category', 'moisturizer')
+        suggestions = ProductBrowseByCategoryAPIView().create_default_suggestions(category)
+        serializer = ProductSerializer(suggestions, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
