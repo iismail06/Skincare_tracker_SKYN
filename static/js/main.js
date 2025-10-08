@@ -1,12 +1,21 @@
 
+/* ==========================================================================
+   MAIN.JS - Core Application JavaScript
+   Contains all main functionality for the skincare tracking application
+   ========================================================================== */
 
-// ...existing code...
+/* ==========================================================================
+   INITIALIZATION AND SETUP
+   Functions that initialize when the page loads
+   ========================================================================== */
+
 // Initialize routine step dropdowns for profile page (must be after function definition)
 setupRoutineStepDropdowns();
-/**
- * Theme Toggle Functionality
- * Handles dark/light theme switching with localStorage persistence
- */
+
+/* ==========================================================================
+   THEME TOGGLE FUNCTIONALITY
+   Handles dark/light theme switching with localStorage persistence
+   ========================================================================== */
 document.addEventListener('DOMContentLoaded', function() {
   const themeToggle = document.getElementById('theme-toggle');
   const body = document.body;
@@ -34,6 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+/* ==========================================================================
+   UTILITY FUNCTIONS
+   Helper functions used throughout the application
+   ========================================================================== */
+
 /**
  * Helper to read CSS custom properties from the document root
  * Returns the value as a string (raw), or null if not found
@@ -46,6 +60,11 @@ function getCssVar(name) {
     return null;
   }
 }
+
+/* ==========================================================================
+   MOBILE HAMBURGER MENU FUNCTIONALITY
+   Handles responsive navigation menu toggle
+   ========================================================================== */
 
 /**
  * Mobile Hamburger Menu Functionality
@@ -104,10 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-/**
- * Simple Calendar Component
- * Displays a monthly calendar with routine events and status indicators
- */
+/* ==========================================================================
+   CALENDAR COMPONENT
+   Simple calendar widget with routine events and status indicators
+   ========================================================================== */
+
 (function() {
   const root = document.querySelector('#calendar');
   if (!root) return;
@@ -422,10 +442,11 @@ document.addEventListener('DOMContentLoaded', function() {
   render();
 })();
 
-/**
- * Product Suggestions for Add Product Form
- * Handles category browsing and auto-filling of product forms
- */
+/* ==========================================================================
+   PRODUCT SUGGESTIONS FOR ADD PRODUCT FORM
+   Handles category browsing and auto-filling of product forms
+   ========================================================================== */
+
 (function() {
   document.addEventListener('DOMContentLoaded', function() {
     const categorySelect = document.getElementById('category-browse');
@@ -576,10 +597,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 
-/**
- * Dashboard Progress Bar Functionality
- * Sets progress bar width from data attributes
- */
+/* ==========================================================================
+   DASHBOARD PROGRESS BAR FUNCTIONALITY
+   Sets progress bar width from data attributes
+   ========================================================================== */
+
 (function() {
   document.addEventListener('DOMContentLoaded', function() {
     const progressBar = document.querySelector('.progress-fill');
@@ -590,10 +612,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 
-/**
- * Calendar Data Initialization
- * Sets up routine events and expiry events for calendar display
- */
+/* ==========================================================================
+   CALENDAR DATA INITIALIZATION
+   Sets up routine events and expiry events for calendar display
+   ========================================================================== */
+
 (function() {
   // Initialize routine events
   if (typeof window.ROUTINE_EVENTS === 'undefined') {
@@ -612,13 +635,15 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 
-/**
- * Dashboard Step Management
- * Handles individual step completion and routine completion
- */
+/* ==========================================================================
+   DASHBOARD STEP MANAGEMENT
+   Handles individual step completion and routine completion
+   ========================================================================== */
+
 (function() {
   /**
    * Toggles completion status of an individual routine step
+   * Supports both new (/routines/toggle-step/) and legacy (/routines/toggle-step-completion/) endpoints
    * @param {string|number} stepId - The ID of the step to toggle
    */
   window.toggleStepCompletion = function(stepId) {
@@ -637,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Send request to Django backend
+    // Try the newer JSON endpoint first
     fetch('/routines/toggle-step/', {
       method: 'POST',
       headers: {
@@ -650,35 +675,79 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(function(response) {
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        // If the new endpoint fails, try the legacy endpoint
+        return fallbackToggleStep(stepId, csrfToken.value);
       }
       return response.json();
     })
     .then(function(data) {
-      if (data.success) {
+      if (data && data.success) {
         console.log('Success:', data.message);
         // Update the progress display without full page reload
         updateProgressDisplay();
-      } else {
+      } else if (data && !data.success) {
         // Show error and revert checkbox
         alert('Error: ' + (data.error || 'Unknown error occurred'));
-        // Find the checkbox and revert its state
-        const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
-        if (checkbox) {
-          checkbox.checked = !checkbox.checked;
-        }
+        revertCheckbox(stepId);
       }
     })
     .catch(function(error) {
       console.error('Network error:', error);
-      alert('Error: Could not connect to server');
-      // Revert checkbox state on error
-      const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
-      if (checkbox) {
-        checkbox.checked = !checkbox.checked;
-      }
+      // Try legacy endpoint as fallback
+      fallbackToggleStep(stepId, csrfToken.value);
     });
   };
+
+  /**
+   * Fallback function using the legacy dashboard.js endpoint
+   * @param {string|number} stepId - The ID of the step to toggle  
+   * @param {string} csrfToken - CSRF token value
+   */
+  function fallbackToggleStep(stepId, csrfToken) {
+    const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+    const isCompleted = checkbox ? checkbox.checked : false;
+
+    return fetch('/routines/toggle-step-completion/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': csrfToken,
+      },
+      body: `step_id=${stepId}&completed=${isCompleted ? "1" : "0"}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Update progress bar if it exists (dashboard.js style)
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar && data.routine_progress !== undefined) {
+          progressBar.style.width = data.routine_progress + '%';
+          progressBar.setAttribute('aria-valuenow', data.routine_progress);
+          progressBar.textContent = Math.round(data.routine_progress) + '%';
+        }
+        // Also update main.js style progress
+        updateProgressDisplay();
+      } else {
+        console.error('Failed to update step completion');
+        revertCheckbox(stepId);
+      }
+    })
+    .catch(error => {
+      console.error('Error updating step completion:', error);
+      revertCheckbox(stepId);
+    });
+  }
+
+  /**
+   * Helper function to revert checkbox state on error
+   * @param {string|number} stepId - The ID of the step checkbox to revert
+   */
+  function revertCheckbox(stepId) {
+    const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+    if (checkbox) {
+      checkbox.checked = !checkbox.checked;
+    }
+  }
 
   /**
    * Updates the progress display without full page reload
@@ -774,15 +843,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
+
+    // Find all complete routine buttons and add event listeners
+    const completeButtons = document.querySelectorAll('.complete-routine-btn');
+    completeButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        const routineId = this.getAttribute('data-routine-id');
+        if (!routineId) return;
+
+        // Send AJAX request to mark routine as completed (dashboard.js compatibility)
+        fetch('/routines/complete/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          },
+          body: `routine_id=${routineId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show success message or update UI
+            this.textContent = 'Completed!';
+            this.disabled = true;
+            this.classList.add('btn-success');
+            this.classList.remove('btn-primary');
+          } else {
+            console.error('Failed to complete routine');
+          }
+        })
+        .catch(error => {
+          console.error('Error completing routine:', error);
+        });
+      });
+    });
   });
 })();
 
-/**
- * Routine Step Dropdowns for Profile Page
- * Dynamically updates step options based on routine type
- * Supports all 8 routine types with custom input capability
- * Used in templates/users/profile.html
- */
+/* ==========================================================================
+   ROUTINE STEP DROPDOWNS FOR PROFILE PAGE
+   Dynamically updates step options based on routine type
+   ========================================================================== */
+
 function setupRoutineStepDropdowns() {
   const stepOptionsByType = {
     morning: [
@@ -947,10 +1049,11 @@ function setupRoutineStepDropdowns() {
   });
 }
 
-/**
- * Dynamic Step Management (Add/Remove Steps 1-10)
- * Handles adding and removing steps without numbering
- */
+/* ==========================================================================
+   DYNAMIC STEP MANAGEMENT (ADD/REMOVE STEPS)
+   Handles adding and removing steps without numbering (1-10 steps)
+   ========================================================================== */
+
 function setupDynamicSteps() {
   let currentStepCount = 4; // Start with 4 steps
   const maxSteps = 10;
@@ -1040,13 +1143,10 @@ function setupDynamicSteps() {
 }
 
 /* ==========================================================================
-   PROFILE PAGE JAVASCRIPT
+   PROFILE PAGE FUNCTIONALITY
+   All JavaScript functionality specific to the user profile page
    ========================================================================== */
 
-/**
- * Initialize user products data for JavaScript
- * Converts Django JSON data to format usable by profile page features
- */
 function initializeProfileData() {
   try {
     // Get user products from the JSON script tag
@@ -1065,9 +1165,10 @@ function initializeProfileData() {
   }
 }
 
-/**
- * Inline editing functionality for routines
- */
+/* --------------------------------------------------------------------------
+   INLINE EDITING FUNCTIONALITY FOR ROUTINES
+   Handles edit/cancel/delete buttons and form submissions
+   -------------------------------------------------------------------------- */
 function enableInlineEditing() {
   // Handle edit button clicks
   document.addEventListener('click', function(e) {
@@ -1166,6 +1267,11 @@ function enableInlineEditing() {
   });
 }
 
+/* --------------------------------------------------------------------------
+   ROUTINE DELETION FUNCTIONALITY
+   Handles routine deletion with AJAX requests
+   -------------------------------------------------------------------------- */
+
 function deleteRoutine(routineId) {
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
   if (!csrfToken) {
@@ -1195,9 +1301,12 @@ function deleteRoutine(routineId) {
   });
 }
 
-/**
- * Initialize profile page functionality when DOM is ready
- */
+/* --------------------------------------------------------------------------
+   PROFILE PAGE INITIALIZATION
+   Initializes all profile page functionality when DOM is ready
+   -------------------------------------------------------------------------- */
+
+
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize profile data if on profile page
   if (document.getElementById('user-products-data')) {
