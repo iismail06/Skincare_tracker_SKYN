@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .models import Product
@@ -252,3 +253,49 @@ class ProductBrowseByCategoryAPIView(generics.ListAPIView):
             suggestions.append(product)
         
         return suggestions
+
+
+@login_required
+def quick_add_product(request):
+    """AJAX endpoint for quickly adding products during routine creation"""
+    if request.method == 'POST':
+        try:
+            # Get the minimal required fields
+            name = request.POST.get('name', '').strip()
+            brand = request.POST.get('brand', '').strip()
+            product_type = request.POST.get('product_type', '').strip()
+            
+            # Basic validation
+            if not name or not brand or not product_type:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Name, brand, and product type are required.'
+                }, status=400)
+            
+            # Create the product
+            product = Product.objects.create(
+                user=request.user,
+                name=name,
+                brand=brand,
+                product_type=product_type
+            )
+            
+            # Return success response with product data
+            return JsonResponse({
+                'success': True,
+                'product': {
+                    'id': product.id,
+                    'name': product.name,
+                    'brand': product.brand,
+                    'product_type': product.product_type,
+                    'display_name': f"{product.brand} - {product.name}"
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': 'An error occurred while adding the product.'
+            }, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)

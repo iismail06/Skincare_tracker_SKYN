@@ -18,4 +18,7 @@ urlpatterns = [
     
     # Browse products by category (for suggestions)
     path('browse/<str:category>/', views.ProductBrowseByCategoryAPIView.as_view(), name='product-browse-category'),
+    
+    # Quick add product (AJAX endpoint for routine creation)
+    path('quick-add/', views.quick_add_product, name='quick-add-product'),
 ]
