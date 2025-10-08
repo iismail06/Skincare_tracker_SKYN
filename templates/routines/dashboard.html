@@ -65,11 +65,9 @@
         <div class="routine-header">
           <h3>Morning Routine</h3>
           {% if morning_routine %}
-            <button type="button" class="edit-btn" data-routine-id="{{ morning_routine.pk }}" data-routine-name="{{ morning_routine.name|escapejs }}" data-routine-type="{{ morning_routine.routine_type }}">
-              Edit
-            </button>
+            <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
           {% else %}
-            <button class="edit-btn" disabled>Edit</button>
+            <span class="edit-btn disabled">Edit</span>
           {% endif %}
         </div>
         {% if morning_routine %}
@@ -117,11 +115,9 @@
         <div class="routine-header">
           <h3>Evening Routine</h3>
           {% if evening_routine %}
-            <button type="button" class="edit-btn" data-routine-id="{{ evening_routine.pk }}" data-routine-name="{{ evening_routine.name|escapejs }}" data-routine-type="{{ evening_routine.routine_type }}">
-              Edit
-            </button>
+            <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
           {% else %}
-            <button class="edit-btn" disabled>Edit</button>
+            <span class="edit-btn disabled">Edit</span>
           {% endif %}
         </div>
         {% if evening_routine %}
@@ -173,11 +169,9 @@
               <div class="routine-header">
                 <h3>Weekly Routine</h3>
                 {% if weekly_routine %}
-                  <button type="button" class="edit-btn" data-routine-id="{{ weekly_routine.pk }}" data-routine-name="{{ weekly_routine.name|escapejs }}" data-routine-type="weekly">
-                    Edit
-                  </button>
+                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
                 {% else %}
-                  <button class="edit-btn" disabled>Edit</button>
+                  <span class="edit-btn disabled">Edit</span>
                 {% endif %}
               </div>
               {% if weekly_routine %}
@@ -228,11 +222,9 @@
               <div class="routine-header">
                 <h3>Monthly Routine</h3>
                 {% if monthly_routine %}
-                  <button type="button" class="edit-btn" data-routine-id="{{ monthly_routine.pk }}" data-routine-name="{{ monthly_routine.name|escapejs }}" data-routine-type="monthly">
-                    Edit
-                  </button>
+                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
                 {% else %}
-                  <button class="edit-btn" disabled>Edit</button>
+                  <span class="edit-btn disabled">Edit</span>
                 {% endif %}
               </div>
               {% if monthly_routine %}
@@ -283,11 +275,9 @@
               <div class="routine-header">
                 <h3>Hair Care</h3>
                 {% if hair_routine %}
-                  <button type="button" class="edit-btn" data-routine-id="{{ hair_routine.pk }}" data-routine-name="{{ hair_routine.name|escapejs }}" data-routine-type="hair">
-                    Edit
-                  </button>
+                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
                 {% else %}
-                  <button class="edit-btn" disabled>Edit</button>
+                  <span class="edit-btn disabled">Edit</span>
                 {% endif %}
               </div>
               {% if hair_routine %}
@@ -338,11 +328,9 @@
               <div class="routine-header">
                 <h3>Body Care</h3>
                 {% if body_routine %}
-                  <button type="button" class="edit-btn" data-routine-id="{{ body_routine.pk }}" data-routine-name="{{ body_routine.name|escapejs }}" data-routine-type="body">
-                    Edit
-                  </button>
+                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
                 {% else %}
-                  <button class="edit-btn" disabled>Edit</button>
+                  <span class="edit-btn disabled">Edit</span>
                 {% endif %}
               </div>
               {% if body_routine %}
@@ -395,11 +383,9 @@
               <div class="routine-header">
                 <h3>Special Treatments</h3>
                 {% if special_routine %}
-                  <button type="button" class="edit-btn" data-routine-id="{{ special_routine.pk }}" data-routine-name="{{ special_routine.name|escapejs }}" data-routine-type="special">
-                    Edit
-                  </button>
+                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
                 {% else %}
-                  <button class="edit-btn" disabled>Edit</button>
+                  <span class="edit-btn disabled">Edit</span>
                 {% endif %}
               </div>
               {% if special_routine %}
@@ -450,11 +436,9 @@
               <div class="routine-header">
                 <h3>Seasonal Treatments</h3>
                 {% if seasonal_routine %}
-                  <button type="button" class="edit-btn" data-routine-id="{{ seasonal_routine.pk }}" data-routine-name="{{ seasonal_routine.name|escapejs }}" data-routine-type="seasonal">
-                    Edit
-                  </button>
+                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
                 {% else %}
-                  <button class="edit-btn" disabled>Edit</button>
+                  <span class="edit-btn disabled">Edit</span>
                 {% endif %}
               </div>
               {% if seasonal_routine %}
@@ -623,67 +607,6 @@
 </div>
 
 {% block end_of_body %}
-<!-- Edit Routine Modal -->
-<div class="modal fade" id="editRoutineModal" tabindex="-1" aria-labelledby="editRoutineModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editRoutineModalLabel">Edit Routine</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form method="post" id="editRoutineForm">
-        {% csrf_token %}
-        <input type="hidden" id="edit-routine-id" name="routine_id" value="">
-        <input type="hidden" name="action" value="edit_routine">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="edit-routine-name" class="form-label">Routine Name</label>
-            <input type="text" class="form-control" id="edit-routine-name" name="routine_name" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit-routine-type" class="form-label">Routine Type</label>
-            <select class="form-select" id="edit-routine-type" name="routine_type" required>
-              <option value="">Choose routine type</option>
-              <option value="morning">Morning</option>
-              <option value="evening">Evening</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="hair">Hair</option>
-              <option value="body">Body</option>
-              <option value="special">Special</option>
-              <option value="seasonal">Seasonal</option>
-            </select>
-          </div>
-          <div class="steps-section">
-            <h6>Routine Steps</h6>
-            <p class="text-muted small">Add up to 5 steps for your routine (leave blank if not needed)</p>
-            {% for i in "12345" %}
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label for="edit-step{{ i }}" class="form-label">Step {{ i }}</label>
-                  <input type="text" class="form-control" id="edit-step{{ i }}" name="step{{ i }}" placeholder="Step description">
-                </div>
-                <div class="col-md-6">
-                  <label for="edit-product{{ i }}" class="form-label">Product (optional)</label>
-                  <select class="form-select" id="edit-product{{ i }}" name="product{{ i }}">
-                    <option value="">-- No product selected --</option>
-                    {% for product in user.products.all %}
-                      <option value="{{ product.id }}">{{ product.brand }} - {{ product.name }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 {% endblock %}
 {% endblock %}
 
@@ -702,19 +625,75 @@
     } catch (e) {
       window.EXPIRY_EVENTS = [];
     }
-    // Expose user's products to JS so the edit modal can show suggestions without extra network calls
-    window.USER_PRODUCTS = JSON.parse(document.getElementById('user-products-data').textContent);
-    // Convert to desired format: [{id:..., label:...}, ...]
-    window.USER_PRODUCTS = window.USER_PRODUCTS.map(function(p) {
-      return { id: p[0], label: p[1] + ' - ' + p[2] };
-    });
     document.dispatchEvent(new CustomEvent('dashboardDataReady'));
   })();
 </script>
 
 {% block after_bootstrap_js %}
 <script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'js/dashboard.js' %}"></script>
+<!-- Load minimal dashboard JS for step completion and progress tracking only -->
+<script>
+// Dashboard essentials: step completion, routine completion, progress bar (without edit modal)
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Step completion toggling
+  document.querySelectorAll('.step-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+      const stepId = this.getAttribute('data-step-id');
+      if (!stepId) return;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+      if (!csrfToken) return;
+      fetch('/routines/toggle-step/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken.value
+        },
+        body: JSON.stringify({ step_id: stepId })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (!data.success) this.checked = !this.checked;
+        updateProgressDisplay();
+      })
+      .catch(() => { this.checked = !this.checked; });
+    });
+  });
+
+  // Routine completion
+  document.querySelectorAll('.complete-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const routineId = this.getAttribute('data-routine-id');
+      const routineType = this.getAttribute('data-routine-type');
+      if (!routineId || !routineType) return;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+      if (!csrfToken) return;
+      fetch('/routines/mark-complete/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken.value
+        },
+        body: JSON.stringify({ routine_id: routineId, routine_type: routineType })
+      })
+      .then(r => r.json())
+      .then(data => { if (data.success) window.location.reload(); });
+    });
+  });
+
+  // Progress bar update
+  const progressBar = document.querySelector('.progress-fill');
+  if (progressBar) {
+    const progress = progressBar.getAttribute('data-progress') || 0;
+    progressBar.style.width = progress + '%';
+  }
+});
+
+function updateProgressDisplay() {
+  // Simple progress update - reload to get accurate progress
+  setTimeout(() => window.location.reload(), 500);
+}
+</script>
 {% endblock %}
 
 {% endblock %}

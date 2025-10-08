@@ -86,7 +86,46 @@ def profile_view(request):
     last_added_id = request.session.pop('last_added_routine_id', None)
     if last_added_id:
         last_added_routine = Routine.objects.filter(pk=last_added_id, user=request.user).first()
+    
     if request.method == 'POST':
+        # Check if this is an edit routine submission
+        if request.POST.get('action') == 'edit_routine':
+            from django.shortcuts import get_object_or_404
+            form = RoutineCreateForm(request.POST, user=request.user)
+            
+            if form.is_valid():
+                routine_id = request.POST.get('routine_id')
+                routine = get_object_or_404(Routine, pk=routine_id, user=request.user)
+                
+                data = form.cleaned_data
+                # Update the routine
+                routine.name = data['routine_name']
+                routine.routine_type = data['routine_type']
+                routine.save()
+                
+                # Delete existing steps and create new ones
+                routine.steps.all().delete()
+                
+                order = 1
+                for i in range(1, 6):
+                    step_text = data.get(f'step{i}')
+                    product = data.get(f'product{i}')
+                    if step_text:
+                        RoutineStep.objects.create(
+                            routine=routine, 
+                            step_name=step_text, 
+                            order=order,
+                            product=product
+                        )
+                        order += 1
+                
+                messages.success(request, f'Routine "{routine.name}" updated successfully!')
+                return redirect('users:profile')
+            else:
+                messages.error(request, 'There was an error updating your routine. Please try again.')
+                return redirect('users:profile')
+        
+        # Handle add routine form submission
         form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
             data = form.cleaned_data
@@ -128,6 +167,13 @@ def profile_view(request):
         if add_non_field:
             # non-field errors
             form._non_form_errors = ErrorList(add_non_field)
+    
+    # Prepare user products data for JavaScript
+    import json
+    user_products = []
+    for product in request.user.products.all():
+        user_products.append([product.id, product.brand or '', product.name or ''])
+    user_products_json = json.dumps(user_products)
 
     return render(request, 'users/profile.html', {
         'user': request.user,
@@ -136,6 +182,7 @@ def profile_view(request):
         'added_ok': added_ok,
         'added_routine_form': form,
         'last_added_routine': last_added_routine,
+        'user_products_json': user_products_json,
     })
 
 

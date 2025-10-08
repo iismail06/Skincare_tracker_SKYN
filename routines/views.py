@@ -244,43 +244,6 @@ def dashboard(request):
     # This handles the old-style form submissions from routine checklists
     # We keep this to maintain backward compatibility
     if request.method == 'POST':
-        # Check if this is an edit routine submission
-        if request.POST.get('action') == 'edit_routine':
-            from .forms import RoutineCreateForm
-            form = RoutineCreateForm(request.POST, user=request.user)
-            
-            if form.is_valid():
-                routine_id = request.POST.get('routine_id')
-                routine = get_object_or_404(Routine, pk=routine_id, user=request.user)
-                
-                data = form.cleaned_data
-                # Update the routine
-                routine.name = data['routine_name']
-                routine.routine_type = data['routine_type']
-                routine.save()
-                
-                # Delete existing steps and create new ones
-                routine.steps.all().delete()
-                
-                order = 1
-                for i in range(1, 6):
-                    step_text = data.get(f'step{i}')
-                    product = data.get(f'product{i}')
-                    if step_text:
-                        RoutineStep.objects.create(
-                            routine=routine, 
-                            step_name=step_text, 
-                            order=order,
-                            product=product
-                        )
-                        order += 1
-                
-                messages.success(request, f'Routine "{routine.name}" updated successfully!')
-                return redirect('routines:dashboard')
-            else:
-                messages.error(request, 'There was an error updating your routine. Please try again.')
-                return redirect('routines:dashboard')
-        
         # Original completion tracking functionality
         try:
             # Get routine ID from form submission
