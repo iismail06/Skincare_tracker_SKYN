@@ -762,78 +762,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   };
 
-  /**
-   * Opens edit modal and populates with routine data
-   * @param {string|number} routineId - The ID of the routine to edit
-   * @param {string} routineName - The name of the routine
-   * @param {string} routineType - The type of routine
-   */
-  window.openEditModal = function(routineId, routineName, routineType) {
-    // Populate basic fields
-    const editIdField = document.getElementById('edit-routine-id');
-    const editNameField = document.getElementById('edit-routine-name');
-    const editTypeField = document.getElementById('edit-routine-type');
-    
-    if (editIdField) editIdField.value = routineId;
-    if (editNameField) editNameField.value = routineName;
-    if (editTypeField) editTypeField.value = routineType;
-    
-    // Clear all step fields first
-    for (let i = 1; i <= 5; i++) {
-      const stepField = document.getElementById('edit-step' + i);
-      const productField = document.getElementById('edit-product' + i);
-      if (stepField) stepField.value = '';
-      if (productField) productField.value = '';
-    }
-    
-    // Load existing steps via AJAX
-    fetch(`/routines/get-routine-data/${routineId}/`)
-      .then(response => response.json())
-      .then(data => {
-        // Populate step fields with existing data
-        data.steps.forEach((step, index) => {
-          if (index < 5) {
-            const stepField = document.getElementById('edit-step' + (index + 1));
-            const productField = document.getElementById('edit-product' + (index + 1));
-            
-            if (stepField) stepField.value = step.step_name;
-            if (productField && step.product_id) {
-              productField.value = step.product_id;
-            }
-          }
-        });
-      })
-      .catch(error => {
-        console.log('Could not load routine details:', error);
-        // Modal will still open with basic info
-      });
-    
-    // Show the modal (assumes Bootstrap is available)
-    const modalElement = document.getElementById('editRoutineModal');
-    if (modalElement && typeof bootstrap !== 'undefined') {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
-    }
-  };
-
   // Initialize event listeners when page loads
   document.addEventListener('DOMContentLoaded', function() {
-    // Delegated event listener for edit buttons
-    document.body.addEventListener('click', function(e) {
-      const btn = e.target.closest('.edit-btn');
-      if (btn && !btn.disabled) {
-        console.log('Edit button clicked:', btn);
-        const routineId = btn.getAttribute('data-routine-id');
-        const routineName = btn.getAttribute('data-routine-name');
-        const routineType = btn.getAttribute('data-routine-type');
-        if (routineId && routineName && routineType) {
-          console.log('Calling openEditModal with:', routineId, routineName, routineType);
-          window.openEditModal(routineId, routineName, routineType);
-        } else {
-          console.warn('Missing routine data attributes');
-        }
-      }
-    });
     // Find all step checkboxes and add event listeners
     const checkboxes = document.querySelectorAll('.step-checkbox');
     checkboxes.forEach(function(checkbox) {
@@ -1131,3 +1061,172 @@ function setupRoutineStepDropdowns() {
     }
   });
 }
+
+/* ==========================================================================
+   PROFILE PAGE JAVASCRIPT
+   ========================================================================== */
+
+/**
+ * Initialize user products data for JavaScript
+ * Converts Django JSON data to format usable by profile page features
+ */
+function initializeProfileData() {
+  try {
+    // Get user products from the JSON script tag
+    const userProductsData = document.getElementById('user-products-data');
+    if (userProductsData) {
+      window.USER_PRODUCTS = JSON.parse(userProductsData.textContent);
+      // Convert to desired format: [{id:..., label:...}, ...]
+      window.USER_PRODUCTS = window.USER_PRODUCTS.map(function(p) {
+        return { id: p[0], label: p[1] + ' - ' + p[2] };
+      });
+      document.dispatchEvent(new CustomEvent('profileDataReady'));
+    }
+  } catch (e) {
+    console.error('Error initializing profile data:', e);
+    window.USER_PRODUCTS = [];
+  }
+}
+
+/**
+ * Inline editing functionality for routines
+ */
+function enableInlineEditing() {
+  // Handle edit button clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('edit-btn')) {
+      const routineId = e.target.getAttribute('data-routine-id');
+      const listItem = document.querySelector(`li[data-routine-id="${routineId}"]`);
+      
+      if (listItem) {
+        // Hide display mode, show edit form
+        const displayDiv = listItem.querySelector('.routine-display');
+        const editDiv = listItem.querySelector('.routine-edit-form');
+        
+        if (displayDiv && editDiv) {
+          displayDiv.style.display = 'none';
+          editDiv.style.display = 'block';
+        }
+      }
+    }
+    
+    // Handle cancel button clicks
+    if (e.target.classList.contains('cancel-btn')) {
+      const listItem = e.target.closest('li[data-routine-id]');
+      if (listItem) {
+        // Show display mode, hide edit form
+        const displayDiv = listItem.querySelector('.routine-display');
+        const editDiv = listItem.querySelector('.routine-edit-form');
+        
+        if (displayDiv && editDiv) {
+          displayDiv.style.display = 'block';
+          editDiv.style.display = 'none';
+        }
+      }
+    }
+    
+    // Handle delete button clicks - simple confirmation
+    if (e.target.classList.contains('delete-btn')) {
+      const routineId = e.target.getAttribute('data-routine-id');
+      const routineName = e.target.getAttribute('data-routine-name');
+      
+      if (confirm(`Are you sure you want to delete "${routineName}"? This action cannot be undone.`)) {
+        deleteRoutine(routineId);
+      }
+    }
+  });
+  
+  // Handle inline form submissions
+  document.addEventListener('submit', function(e) {
+    if (e.target.classList.contains('inline-edit-form')) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const routineId = form.getAttribute('data-routine-id');
+      const formData = new FormData(form);
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+      
+      if (!csrfToken) {
+        console.error('CSRF token not found');
+        return;
+      }
+      
+      // Add the action to formData
+      formData.append('action', 'edit_routine');
+      formData.append('routine_id', routineId);
+      
+      // Show loading state
+      const saveBtn = form.querySelector('.save-btn');
+      const originalText = saveBtn.innerHTML;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      saveBtn.disabled = true;
+      
+      // Submit the form
+      fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': csrfToken.value
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Reload the page to show updated data
+          window.location.reload();
+        } else {
+          throw new Error('Save failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving routine. Please try again.');
+        
+        // Reset button state
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+      });
+    }
+  });
+}
+
+function deleteRoutine(routineId) {
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+  if (!csrfToken) {
+    console.error('CSRF token not found');
+    return;
+  }
+  
+  fetch(`/routines/delete/${routineId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken.value
+    },
+    body: JSON.stringify({})
+  })
+  .then(response => {
+    if (response.ok) {
+      // Reload the page to show updated data
+      window.location.reload();
+    } else {
+      throw new Error('Delete failed');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error deleting routine. Please try again.');
+  });
+}
+
+/**
+ * Initialize profile page functionality when DOM is ready
+ */
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize profile data if on profile page
+  if (document.getElementById('user-products-data')) {
+    initializeProfileData();
+  }
+  
+  // Enable inline editing functionality
+  enableInlineEditing();
+});

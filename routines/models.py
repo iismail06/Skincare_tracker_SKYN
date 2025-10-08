@@ -8,6 +8,12 @@ class Routine(models.Model):
     ROUTINE_CHOICES = [
         ('morning', 'Morning'),
         ('evening', 'Evening'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('hair', 'Hair'),
+        ('body', 'Body'),
+        ('special', 'Special'),
+        ('seasonal', 'Seasonal'),
     ]
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -18,8 +24,6 @@ class Routine(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.name}"
     
-    class Meta:
-        unique_together = ['user', 'routine_type']  # One morning, one evening per user
 
 
 FREQUENCY_CHOICES = [

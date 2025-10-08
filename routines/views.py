@@ -656,3 +656,33 @@ def get_routine_data(request, pk):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
+
+
+
+@login_required
+def delete_routine(request, pk):
+    """
+    Delete a routine and all its associated steps.
+    """
+    if request.method == 'POST':
+        try:
+            routine = get_object_or_404(Routine, pk=pk, user=request.user)
+            routine_name = routine.name
+            routine.delete()
+            
+            if request.headers.get('Content-Type') == 'application/json':
+                return JsonResponse({'success': True, 'message': f'Routine "{routine_name}" deleted successfully'})
+            else:
+                messages.success(request, f'Routine "{routine_name}" deleted successfully')
+                return redirect('users:profile')
+                
+        except Exception as e:
+            if request.headers.get('Content-Type') == 'application/json':
+                return JsonResponse({'success': False, 'error': str(e)})
+            else:
+                messages.error(request, 'Error deleting routine. Please try again.')
+                return redirect('users:profile')
+    else:
+        # GET request - redirect to profile
+        return redirect('users:profile')
+
