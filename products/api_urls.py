@@ -6,8 +6,16 @@ namespace warning). Add API-specific view routes here (or wire a DRF
 router) instead of reusing the app's HTML view urlpatterns.
 """
 from django.urls import path, include
+from . import views
 
-# Example placeholder - import and register DRF routers here if needed
+# API endpoints for products
 urlpatterns = [
-    # path('', include('products.api_views')),
+    # List and create products
+    path('', views.ProductListCreateAPIView.as_view(), name='product-list-create'),
+    
+    # Retrieve, update, delete specific product
+    path('<int:pk>/', views.ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
+    
+    # Browse products by category (for suggestions)
+    path('browse/<str:category>/', views.ProductBrowseByCategoryAPIView.as_view(), name='product-browse-category'),
 ]
