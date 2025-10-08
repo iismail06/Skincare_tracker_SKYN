@@ -778,288 +778,265 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 /**
- * Routine Form Management
- * Handles add/remove step fields and AJAX form submission for routine creation
- */
-(function () {
-  document.addEventListener('DOMContentLoaded', function () {
-    const container = document.getElementById('steps-container');
-    const form = document.getElementById('add-routine-form');
-    if (!container || !form) return;
-
-    // Configuration
-    const MAX_STEPS = 5;
-    
-    // Create add/remove step controls
-    const addBtn = document.createElement('button');
-    addBtn.type = 'button';
-    addBtn.textContent = 'Add step';
-    addBtn.className = 'btn btn-primary btn-sm step-control u-margin-top-sm';
-
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.textContent = 'Remove last step';
-    removeBtn.className = 'btn btn-primary btn-sm step-control u-margin-left-sm';
-
-    container.parentNode.insertBefore(addBtn, container.nextSibling);
-    container.parentNode.insertBefore(removeBtn, addBtn.nextSibling);
-
-    /**
-     * Counts the number of step input fields
-     * @returns {number} Number of text input fields
-     */
-    function countInputs() {
-      return container.querySelectorAll('input[type="text"]').length;
-    }
-
-    /**
-     * Adds a new step input field
-     */
-    addBtn.addEventListener('click', function () {
-      const count = countInputs();
-      if (count >= MAX_STEPS) return;
-      
-      const next = count + 1;
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.name = 'step' + next;
-      input.placeholder = 'Step ' + next;
-      input.className = 'input-block';
-      container.appendChild(input);
-    });
-
-    /**
-     * Removes the last step input field
-     */
-    removeBtn.addEventListener('click', function () {
-      const inputs = container.querySelectorAll('input[type="text"]');
-      if (inputs.length <= 1) return;
-      
-      const last = inputs[inputs.length - 1];
-      container.removeChild(last);
-    });
-
-    // AJAX form submission setup
-    const submitBtn = document.getElementById('add-routine-submit');
-    const ajaxUrl = form.getAttribute('data-ajax-url');
-
-    // Wire dismiss for server-rendered success block if present
-    if (document.getElementById('inline-success')) {
-      wireDismiss();
-    }
-
-    /**
-     * Clears form validation errors
-     */
-    function clearFormErrors() {
-      const errs = form.querySelectorAll('.error');
-      errs.forEach(function (el) { el.remove(); });
-      
-      const nonField = form.querySelector('.non-field-errors');
-      if (nonField) nonField.remove();
-    }
-
-    /**
-     * Renders inline success message
-     * @param {Object} data - Response data containing routine information
-     */
-    function renderInlineSuccess(data) {
-      let inline = document.getElementById('inline-success');
-      if (!inline) {
-        // Create a new inline block above the form
-        inline = document.createElement('div');
-        inline.id = 'inline-success';
-        inline.className = 'inline-success u-margin-top-sm';
-        form.parentNode.parentNode.insertBefore(inline, form.parentNode);
-      }
-      
-      inline.innerHTML = '<div><small class="muted-success">Added</small>' +
-        '<div><strong id="inline-success-name">' + (data.name || '') + '</strong></div></div>' +
-        '<div class="inline-success-actions">' +
-        '<a id="inline-success-view" class="btn btn-primary btn-sm" href="' + (data.detail_url || '#') + '">View</a>' +
-        '<button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>' +
-        '</div>';
-      
-      wireDismiss();
-    }
-
-    /**
-     * Wires up the dismiss functionality for success messages
-     */
-    function wireDismiss() {
-      const dismiss = document.getElementById('inline-success-dismiss');
-      if (dismiss) {
-        dismiss.addEventListener('click', function () {
-          const el = document.getElementById('inline-success');
-          if (el) el.remove();
-        });
-      }
-    }
-
-    /**
-     * Prepends a new routine to the routines list
-     * @param {Object} data - Routine data to display
-     */
-    function prependRoutineToList(data) {
-      let list = document.querySelector('.routines-list');
-      if (!list) {
-        // Create list and insert
-        list = document.createElement('ul');
-        list.className = 'routines-list';
-        form.parentNode.parentNode.appendChild(list);
-      }
-      
-      const li = document.createElement('li');
-      li.innerHTML = '<strong>' + (data.name || '') + '</strong> - ' + (data.routine_type || '') + 
-        ' <a href="' + (data.detail_url || '#') + '" class="btn btn-primary btn-sm u-margin-left-md">View</a>';
-      
-      // Add to top
-      if (list.firstChild) {
-        list.insertBefore(li, list.firstChild);
-      } else {
-        list.appendChild(li);
-      }
-    }
-
-    /**
-     * Handles form submission with AJAX
-     */
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      clearFormErrors();
-      if (!ajaxUrl) return form.submit();
-
-      const formData = new FormData(form);
-      const headers = {'X-Requested-With': 'XMLHttpRequest'};
-
-      submitBtn.disabled = true;
-
-      fetch(ajaxUrl, {
-        method: 'POST', 
-        body: formData, 
-        headers: headers, 
-        credentials: 'same-origin'
-      })
-        .then(function (resp) {
-          if (!resp.ok) return resp.json().then(function (j) { throw j; });
-          return resp.json();
-        })
-        .then(function (json) {
-          if (json && json.success) {
-            // Update inline success and routines list
-            renderInlineSuccess(json);
-            prependRoutineToList({
-              name: json.name, 
-              detail_url: json.detail_url, 
-              routine_type: ''
-            });
-            
-            // Reset form inputs
-            form.reset();
-            
-            // Remove extra step inputs except the first
-            const inputs = container.querySelectorAll('input[type="text"]');
-            for (let i = inputs.length - 1; i >= 1; i--) { 
-              inputs[i].remove(); 
-            }
-          }
-        })
-        .catch(function (err) {
-          // Handle JSON error object with 'errors' and 'non_field_errors'
-          if (err && err.errors) {
-            // Render field errors
-            Object.keys(err.errors).forEach(function (field) {
-              const val = err.errors[field];
-              const input = form.querySelector('[name="' + field + '"]');
-              if (input) {
-                const div = document.createElement('div'); 
-                div.className = 'error'; 
-                div.textContent = val.join(', ');
-                input.parentNode.insertBefore(div, input.nextSibling);
-              }
-            });
-            
-            if (err.non_field_errors && err.non_field_errors.length) {
-              const nf = document.createElement('div'); 
-              nf.className = 'form-errors non-field-errors';
-              err.non_field_errors.forEach(function (m) { 
-                const d = document.createElement('div'); 
-                d.className = 'error'; 
-                d.textContent = m; 
-                nf.appendChild(d); 
-              });
-              form.insertBefore(nf, form.firstChild);
-            }
-          }
-        })
-        .finally(function () { 
-          submitBtn.disabled = false; 
-        });
-    });
-    
-    // Handle page-level 'Add a Routine' CTA click
-    const pageAdd = document.querySelector('a[href="#"][onclick]') || document.querySelector('a.add-routine-cta');
-    if (pageAdd) {
-      // Remove inline onclick if present and wire focus handler
-      pageAdd.removeAttribute('onclick');
-      pageAdd.classList.add('btn-sm');
-      pageAdd.addEventListener('click', function (e) {
-        e.preventDefault();
-        const first = form.querySelector('input[name="routine_name"]');
-        if (first) first.focus();
-        
-        // Scroll into view
-        form.scrollIntoView({behavior: 'smooth', block: 'center'});
-      });
-    }
-  });
-})();
-
-/**
  * Routine Step Dropdowns for Profile Page
- * Dynamically updates step options based on routine type (morning/evening)
+ * Dynamically updates step options based on routine type
+ * Supports all 8 routine types with custom input capability
  * Used in templates/users/profile.html
  */
 function setupRoutineStepDropdowns() {
-  const morningOptions = [
-    "Gentle Cleanse",
-    "Toner",
-    "Essence",
-    "Serum",
-    "Light Moisturizer",
-    "SPF / Sunscreen"
-  ];
-  const eveningOptions = [
-    "Double Cleanse",
-    "Toner",
-    "Essence",
-    "Serum",
-    "Eye Cream",
-    "Moisturizer",
-    "Oil",
-    "Retinol / Acid Treatment",
-    "Mask",
-    "Spot Treatment",
-    "Lip Treatment"
-  ];
+  const stepOptionsByType = {
+    morning: [
+      "Gentle Cleanse",
+      "Toner",
+      "Essence", 
+      "Vitamin C Serum",
+      "Light Moisturizer",
+      "Eye Cream",
+      "SPF / Sunscreen"
+    ],
+    evening: [
+      "Double Cleanse",
+      "Toner",
+      "Essence",
+      "Treatment Serum",
+      "Retinol / Acid Treatment",
+      "Eye Cream",
+      "Moisturizer",
+      "Face Oil",
+      "Spot Treatment",
+      "Lip Treatment"
+    ],
+    weekly: [
+      "Deep Cleanse",
+      "Exfoliation",
+      "Clay Mask",
+      "Hydrating Mask",
+      "Hair Mask",
+      "Body Scrub",
+      "Intensive Treatment"
+    ],
+    monthly: [
+      "Professional Treatment",
+      "Deep Repair Mask",
+      "Intensive Serum",
+      "Barrier Repair",
+      "Reset Treatment"
+    ],
+    hair: [
+      "Clarifying Shampoo",
+      "Shampoo",
+      "Conditioner",
+      "Deep Hair Mask",
+      "Leave-in Treatment",
+      "Hair Oil",
+      "Scalp Treatment",
+      "Heat Protectant"
+    ],
+    body: [
+      "Body Wash",
+      "Body Scrub",
+      "Body Lotion",
+      "Body Oil",
+      "Deodorant",
+      "Hand Cream",
+      "Foot Treatment"
+    ],
+    special: [
+      "Prep Treatment",
+      "Priming Serum",
+      "Glow Treatment",
+      "Hydration Boost",
+      "Setting Treatment",
+      "Special Occasion Mask"
+    ],
+    seasonal: [
+      "Season Prep",
+      "Climate Adjustment",
+      "Barrier Repair",
+      "Humidity Control",
+      "Weather Protection",
+      "Transition Treatment"
+    ]
+  };
+
   function setStepOptions(routineType) {
-    const options = routineType === 'evening' ? eveningOptions : morningOptions;
-    for (let i = 1; i <= 5; i++) {
-      const select = document.getElementById(`step${i}`);
+    const options = stepOptionsByType[routineType] || stepOptionsByType.morning;
+    
+    // Find all step selects in the current form (works with dynamic steps)
+    const stepSelects = document.querySelectorAll('.step-item select[id^="step"]');
+    
+    stepSelects.forEach((select, index) => {
       if (select) {
-        select.innerHTML = '<option value="">Select step</option>' + options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+        // Build options HTML with custom option
+        let optionsHTML = '<option value="">Select step</option>';
+        optionsHTML += options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+        optionsHTML += '<option value="custom">✏️ Custom Step...</option>';
+        
+        select.innerHTML = optionsHTML;
+        
+        // Remove existing event listeners to avoid duplicates
+        select.removeEventListener('change', select._stepHandler);
+        
+        // Add event listener for custom option
+        select._stepHandler = function() {
+          const stepNumber = select.id.replace('step', '');
+          handleStepSelection(this, stepNumber);
+        };
+        select.addEventListener('change', select._stepHandler);
       }
+    });
+  }
+  
+  function handleStepSelection(selectElement, stepNumber) {
+    const customInputId = `custom-step${stepNumber}`;
+    let customInput = document.getElementById(customInputId);
+    
+    if (selectElement.value === 'custom') {
+      // Create custom input if it doesn't exist
+      if (!customInput) {
+        customInput = document.createElement('input');
+        customInput.type = 'text';
+        customInput.id = customInputId;
+        customInput.name = `step${stepNumber}`;
+        customInput.className = 'form-control custom-step-input';
+        customInput.placeholder = 'Enter custom step name...';
+        customInput.style.marginTop = '5px';
+        
+        // Insert after the select
+        selectElement.parentNode.insertBefore(customInput, selectElement.nextSibling);
+      }
+      
+      // Hide select, show input, focus input
+      selectElement.style.display = 'none';
+      customInput.style.display = 'block';
+      customInput.focus();
+      
+      // Add event listener to go back to select if input is empty and loses focus
+      customInput.addEventListener('blur', function() {
+        if (!this.value.trim()) {
+          selectElement.style.display = 'block';
+          this.style.display = 'none';
+          selectElement.value = '';
+        }
+      });
+      
+    } else {
+      // Remove custom input if it exists and hide it
+      if (customInput) {
+        customInput.style.display = 'none';
+        customInput.value = '';
+      }
+      selectElement.style.display = 'block';
     }
   }
+
   document.addEventListener('DOMContentLoaded', function() {
     const routineType = document.getElementById('routine_type');
-    if (routineType && document.getElementById('step1')) {
+    if (routineType && document.querySelector('.step-item select[id^="step"]')) {
       setStepOptions(routineType.value);
       routineType.addEventListener('change', function() {
         setStepOptions(this.value);
       });
     }
+    
+    // Initialize dynamic steps if step containers exist
+    if (document.querySelector('.step-item')) {
+      const initDynamicSteps = setupDynamicSteps();
+      initDynamicSteps();
+    }
   });
+}
+
+/**
+ * Dynamic Step Management (Add/Remove Steps 1-10)
+ * Handles adding and removing steps without numbering
+ */
+function setupDynamicSteps() {
+  let currentStepCount = 4; // Start with 4 steps
+  const maxSteps = 10;
+  const minSteps = 1;
+  
+  function updateStepCount() {
+    const stepCountElement = document.querySelector('.step-count');
+    if (stepCountElement) {
+      stepCountElement.textContent = `${currentStepCount} step${currentStepCount !== 1 ? 's' : ''}`;
+    }
+    
+    // Update button states
+    const addBtn = document.getElementById('add-step-btn');
+    const removeBtn = document.getElementById('remove-step-btn');
+    
+    if (addBtn) {
+      addBtn.disabled = currentStepCount >= maxSteps;
+    }
+    
+    if (removeBtn) {
+      removeBtn.disabled = currentStepCount <= minSteps;
+    }
+  }
+  
+  function createStepItem(stepNumber) {
+    const stepItem = document.createElement('div');
+    stepItem.className = 'step-item';
+    stepItem.setAttribute('data-step', stepNumber);
+    
+    stepItem.innerHTML = `
+      <select id="step${stepNumber}" name="step${stepNumber}" class="step-select"></select>
+    `;
+    
+    return stepItem;
+  }
+  
+  function addStep() {
+    if (currentStepCount >= maxSteps) return;
+    
+    currentStepCount++;
+    const container = document.getElementById('steps-container');
+    const newStep = createStepItem(currentStepCount);
+    container.appendChild(newStep);
+    
+    // Populate the new step with options based on current routine type
+    const routineType = document.getElementById('routine_type');
+    if (routineType && routineType.value) {
+      // Apply step options to the new step
+      setStepOptions(routineType.value);
+    }
+    
+    updateStepCount();
+  }
+  
+  function removeLastStep() {
+    if (currentStepCount <= minSteps) return; // Don't allow removing when at minimum
+    
+    // Remove the last step
+    const lastStep = document.querySelector(`.step-item[data-step="${currentStepCount}"]`);
+    if (lastStep) {
+      lastStep.remove();
+      currentStepCount--;
+      updateStepCount();
+    }
+  }
+  
+  
+  // Initialization function to be called from main DOMContentLoaded
+  function initializeDynamicSteps() {
+    // Set up add step button
+    const addBtn = document.getElementById('add-step-btn');
+    if (addBtn) {
+      addBtn.addEventListener('click', addStep);
+    }
+    
+    // Set up remove step button
+    const removeBtn = document.getElementById('remove-step-btn');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', removeLastStep);
+    }
+    
+    updateStepCount();
+  }
+  
+  // Return initialization function for external access
+  return initializeDynamicSteps;
 }
 
 /* ==========================================================================
