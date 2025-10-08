@@ -511,14 +511,25 @@ h2 {
 /* Profile: narrower centered container and button adjustments */
 .profile-container {
     max-width: 760px; /* comfortable reading width */
-    margin: 0 auto;   /* center container */
-    padding: 1rem;
+    margin: 2rem auto; /* center container with top/bottom margin */
+    padding: 1.5rem;
+    /* Apply uniform glass effect to main container */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    /* Prevent overflow issues */
+    box-sizing: border-box;
+    width: calc(100% - 2rem); /* Account for page margins */
 }
 
 .profile-actions {
     display: flex;
     gap: 0.6rem;
     justify-content: center; /* center action buttons */
+    margin-bottom: 1rem; /* Add space before routines section */
 }
 
 .profile-actions .btn {
@@ -528,8 +539,8 @@ h2 {
 
 .profile-routines .form-card--wide,
 .form-card {
-    max-width: 640px;
-    margin: 0.9rem auto 0 auto;
+    max-width: 100%; /* Use full width of parent container */
+    margin: 0.9rem 0 0 0; /* Remove auto margins, use parent centering */
 }
 
 .form-actions {
@@ -1037,7 +1048,7 @@ main {
 
 .form-group label {
     font-weight: 600;
-    color: var(--secondary);
+    color: var(--text);
     font-size: 1rem;
 }
 
@@ -1069,7 +1080,7 @@ main {
 }
 
 .steps-section h3 {
-    color: var(--secondary);
+    color: var(--text);
     margin-bottom: 0.5rem;
     font-size: 1.3rem;
 }
@@ -1354,36 +1365,8 @@ main {
 .back-link-wrap { margin-bottom: 1rem; }
 .back-link { color: var(--secondary-color-darker); font-size: 0.9rem; text-decoration: none; }
 
-/*---------------------------------------------------------------
-   17. custom modal styles
-   ========================================================================== */
-.modal-content {
-    background: var(--card-bg) !important;
-    color: var(--text) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
-}
-.modal-header, .modal-footer {
-    background: transparent !important;
-    border: none !important;
-}
-.modal-title {
-    color: var(--text) !important;
-    font-weight: bold !important;
-}
-.modal-body label, .modal-body input, .modal-body select, .modal-body option, .modal-body p {
-    color: var(--text) !important;
-}
-.modal-footer .btn, .modal-footer .btn-primary, .modal-footer .btn-secondary {
-    color: #fff !important;
-    font-weight: bold !important;
-    background: var(--accent-color-bg) !important;
-    border: none !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-}
 /* ==========================================================================
-   18. QUESTIONNAIRE PAGE STYLES
+   17. QUESTIONNAIRE PAGE STYLES
    ========================================================================== */
 /* Custom inline checkbox alignment for questionnaire */
 .checkbox-inline {
@@ -1523,89 +1506,21 @@ main {
     box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.25);
 }
 
-/* Delete Modal Styling */
-#deleteConfirmModal .modal-content {
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-#deleteConfirmModal .modal-header {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-    color: white;
-    border-radius: 15px 15px 0 0;
-    padding: 20px 25px 15px;
-}
-
-#deleteConfirmModal .modal-title {
-    font-weight: 600;
-}
-
-#deleteConfirmModal .btn-close {
-    filter: brightness(0) invert(1);
-    opacity: 0.8;
-}
-
-#deleteConfirmModal .btn-close:hover {
-    opacity: 1;
-}
-
-.delete-icon {
-    font-size: 48px;
-    opacity: 0.8;
-}
-
-#deleteConfirmModal .modal-body {
-    padding: 25px;
-}
-
-#deleteConfirmModal .modal-footer {
-    padding: 15px 25px 25px;
-    justify-content: center;
-    gap: 15px;
-}
-
-#deleteConfirmModal .btn {
-    min-width: 120px;
-    padding: 10px 20px;
-    font-weight: 500;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-#deleteConfirmModal .btn-danger {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-    border: none;
-    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-}
-
-#deleteConfirmModal .btn-danger:hover {
-    background: linear-gradient(135deg, #ff5252, #e53935);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
-}
-
-#deleteConfirmModal .btn-secondary {
-    background: #6c757d;
-    border: none;
-}
-
-#deleteConfirmModal .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
-}
-
-
 /* Style for routines list at the bottom of the profile page */
 .routines-list {
-    border: 2px solid rgba(0,0,0,0.12);
+    /* Use same glass effect as other profile components */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: 10px;
-    background: rgba(255,255,255,0.85);
-    margin-top: 3rem;
-    margin-bottom: 2.5rem;
-    padding: 1.5rem 1.5rem 1.5rem 2rem;
     box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    /* Consistent sizing and spacing within parent container */
+    margin-top: 1.5rem;
+    margin-bottom: 0; /* Remove bottom margin to prevent overflow */
+    padding: 1.5rem;
     list-style: none;
+    width: 100%; /* Use full width of parent */
 }
 .routines-list li {
     margin-bottom: 1.2rem;
@@ -1790,7 +1705,33 @@ main {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
 }
+/* ====== LIGHT MODE - ENSURE TEXT VISIBILITY  ======= */
 
+/*  Ensure all text elements are dark and readable */
+.profile-container label,
+.profile-container .form-group label,
+.profile-container .steps-header label,
+.profile-container p,
+.profile-container h1,
+.profile-container h2,
+.profile-container h3,
+.profile-container .routine-info,
+.profile-container .step-count {
+    color: var(--text) !important;
+}
+
+/*  Ensure form elements have dark text */
+.profile-container input,
+.profile-container select,
+.profile-container textarea {
+    color: var(--text) !important;
+}
+
+/* Select options should be dark */
+.profile-container select option {
+    color: var(--text) !important;
+    background: #fff !important;
+}
 /* ==========================================================================
    20.  Dark Mode Styles
    ========================================================================== */
@@ -1954,20 +1895,6 @@ body.dark-theme .warning-message {
     border-color: var(--border);
 }
 
-/* Dark mode adjustments for specific modal styles */
-body.dark-theme .modal-content {
-    background: var(--glass-bg) !important;
-    color: #fff !important;
-}
-body.dark-theme .modal-title,
-body.dark-theme .modal-body label,
-body.dark-theme .modal-body input,
-body.dark-theme .modal-body select,
-body.dark-theme .modal-body option,
-body.dark-theme .modal-body p {
-    color: #fff !important;
-}
-
 /* ===  PROFILE PAGE SPECIFIC STYLES === */
 
 /* Profile container and basic layout */
@@ -1976,6 +1903,12 @@ body.dark-theme .profile-container {
     border: 1px solid var(--glass-border) !important;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+}
+
+/* Dark mode: Ensure routines list matches the glass effect */
+body.dark-theme .routines-list {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
 }
 
 /* Profile page title */
@@ -2111,6 +2044,8 @@ body.dark-theme .badge.success {
     background: var(--success-color) !important;
     color: #fff !important;
 }
+
+
 
 /* ==========================================================================
    21. RESPONSIVE DESIGN - ALL MEDIA QUERIES
