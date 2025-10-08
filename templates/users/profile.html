@@ -32,7 +32,7 @@
     </div>
 
     <div class="profile-routines u-margin-top-xl">
-            <h2 style="color:#fff;">My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
+            <h2>My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
     </div> <!-- /.profile-routines -->
     {% if last_added_routine %}
         <div id="inline-success" class="inline-success inline-success-bottom">
@@ -275,6 +275,4 @@
 <script id="user-products-data" type="application/json">
 {{ user_products_json|safe }}
 </script>
-
-<script src="{% static 'js/main.js' %}"></script>
 {% endblock %}

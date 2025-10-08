@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const themeToggle = document.getElementById('theme-toggle');
   const body = document.body;
   
+  // Exit early if theme toggle button is not found
+  if (!themeToggle) {
+    console.warn('Theme toggle button not found');
+    return;
+  }
+  
   // Check for saved theme preference or default to 'light'
   const currentTheme = localStorage.getItem('theme') || 'light';
   

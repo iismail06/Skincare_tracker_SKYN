@@ -780,7 +780,7 @@ label {
 
 /* Dark theme: ensure primary buttons show with light foreground */
 body.dark-theme .btn-primary {
-    color: var(--background-color) !important;
+    color: #fff !important;
 }
 
 /* Secondary: outline or muted alternate */
@@ -1833,7 +1833,7 @@ body.dark-theme .brand-highlight {
     color: var(--secondary-color-darker);
 }
 
-/* Dark mode adjustments for Navbar */
+/* === adjustments for Navbar === */
 
 /* Dark theme nav links & form inputs: subtle glass accents */
 body.dark-theme .custom-navbar .nav-links a {
@@ -1851,7 +1851,7 @@ body.dark-theme select {
     border: 1px solid var(--glass-border) !important;
     color: var(--text) !important;
 }
-/* Dark theme: stronger glass contrast on key containers */
+/* stronger glass contrast on key containers */
 body.dark-theme .custom-navbar,
 body.dark-theme .form-card,
 body.dark-theme .form-container,
@@ -1865,7 +1865,7 @@ body.dark-theme .dashboard-section {
 }
 
 
-/* --- Dark mode override for signup form fields --- */
+/* ===  for signup form fields === */
 body.dark-theme #signup-form input,
 body.dark-theme #signup-form textarea,
 body.dark-theme #signup-form select {
@@ -1874,14 +1874,78 @@ body.dark-theme #signup-form select {
     border: 1.5px solid var(--accent-color, #6c63ff);
 }
 
-/* Dark mode adjustments for Buttons */
+/* ===  adjustments for Buttons === */
 
-/* Dark mode: make danger buttons readable on dark bg */
-body.dark-theme .btn-danger {
-    color: #fff;
-    border-color: rgba(220,53,69,0.85);
+/* Dark mode: All button text should be white for readability */
+body.dark-theme .btn,
+body.dark-theme .btn-primary,
+body.dark-theme .btn-secondary,
+body.dark-theme .btn-success,
+body.dark-theme .btn-info,
+body.dark-theme .btn-warning,
+body.dark-theme .btn-light,
+body.dark-theme .btn-dark,
+body.dark-theme button {
+    color: #fff !important;
 }
-/* Dark mode: message */
+
+/* Dark mode: Specific button type adjustments */
+body.dark-theme .btn-primary {
+    background: var(--accent-color-bg) !important;
+    border-color: var(--accent-color-bg) !important;
+    color: #fff !important;
+}
+
+body.dark-theme .btn-secondary {
+    background: var(--glass-bg) !important;
+    border-color: var(--glass-border) !important;
+    color: #fff !important;
+}
+
+/*  make danger buttons readable on dark bg */
+body.dark-theme .btn-danger {
+    color: #fff !important;
+    background: #dc3545 !important;
+    border-color: rgba(220,53,69,0.85) !important;
+}
+
+/* Dark mode: Success buttons */
+body.dark-theme .btn-success {
+    color: #fff !important;
+    background: var(--success-color) !important;
+    border-color: var(--success-color) !important;
+}
+
+/* Dark mode: Button hover states */
+body.dark-theme .btn:hover,
+body.dark-theme .btn-primary:hover,
+body.dark-theme .btn-secondary:hover,
+body.dark-theme button:hover {
+    color: #fff !important;
+}
+
+/* Dark mode: Edit, View, Delete buttons specifically */
+body.dark-theme .edit-btn,
+body.dark-theme .delete-btn,
+body.dark-theme .save-btn,
+body.dark-theme .cancel-btn {
+    color: #fff !important;
+}
+
+/* Dark mode: Form action buttons */
+body.dark-theme .form-actions .btn,
+body.dark-theme .profile-actions .btn,
+body.dark-theme .routine-actions .btn {
+    color: #fff !important;
+}
+
+/* Dark mode: Inline dismiss buttons */
+body.dark-theme .inline-dismiss {
+    color: #fff !important;
+    background: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+}
+/* ===  message ===  */
 
 /* Dark theme warning message */
 body.dark-theme .warning-message {
@@ -1901,6 +1965,150 @@ body.dark-theme .modal-body input,
 body.dark-theme .modal-body select,
 body.dark-theme .modal-body option,
 body.dark-theme .modal-body p {
+    color: #fff !important;
+}
+
+/* ===  PROFILE PAGE SPECIFIC STYLES === */
+
+/* Profile container and basic layout */
+body.dark-theme .profile-container {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+}
+
+/* Profile page title */
+body.dark-theme .profile-container .page-title {
+    color: var(--secondary-color-darker) !important;
+}
+
+/*  Profile information section */
+body.dark-theme .profile-info {
+    color: var(--text) !important;
+}
+
+body.dark-theme .profile-info p {
+    color: var(--text) !important;
+}
+
+body.dark-theme .profile-info strong {
+    color: var(--secondary-color-darker) !important;
+}
+
+/*  Profile routines section */
+body.dark-theme .profile-routines h2 {
+    color: var(--secondary-color-darker) !important;
+}
+
+/*  Routines list items */
+body.dark-theme .routines-list {
+    background: transparent !important;
+}
+
+body.dark-theme .routines-list li {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+/* Routine display items */
+body.dark-theme .routine-display {
+    background: transparent !important;
+}
+
+body.dark-theme .routine-info {
+    color: var(--text) !important;
+}
+
+body.dark-theme .routine-info strong {
+    color: var(--secondary-color-darker) !important;
+}
+
+/* Inline success messages */
+body.dark-theme .inline-success {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
+
+body.dark-theme .inline-success .muted-success {
+    color: var(--accent-color-lighter) !important;
+}
+
+body.dark-theme .inline-success strong {
+    color: var(--secondary-color-darker) !important;
+}
+
+/* Step count and labels in forms */
+body.dark-theme .step-count {
+    color: var(--accent-color-lighter) !important;
+}
+
+body.dark-theme .steps-header label {
+    color: var(--text) !important;
+}
+
+/* Step items and selects */
+body.dark-theme .step-item select,
+body.dark-theme .step-select {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
+
+body.dark-theme .step-item select option,
+body.dark-theme .step-select option {
+    background: var(--background-color-darker) !important;
+    color: var(--text) !important;
+}
+
+/* Edit form content */
+body.dark-theme .edit-form-content {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+body.dark-theme .edit-form-content label {
+    color: var(--text) !important;
+}
+
+/* Form labels and inputs in profile forms */
+body.dark-theme .form-card label {
+    color: var(--text) !important;
+}
+
+body.dark-theme .form-card input[type="text"],
+body.dark-theme .form-card select,
+body.dark-theme .form-card textarea {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
+
+/* Dropdown input wrapper */
+body.dark-theme .dropdown-input-wrap input {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
+
+body.dark-theme .dropdown-arrow {
+    color: var(--text) !important;
+}
+
+/* Badges and success elements */
+body.dark-theme .badge {
+    background: var(--accent-color-bg) !important;
+    color: var(--background-color) !important;
+}
+
+body.dark-theme .badge.success {
+    background: var(--success-color) !important;
     color: #fff !important;
 }
 
