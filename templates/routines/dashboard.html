@@ -65,7 +65,7 @@
         <div class="routine-header">
           <h3>Morning Routine</h3>
           {% if morning_routine %}
-            <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
+            <a href="{% url 'routines:edit' morning_routine.pk %}" class="edit-btn">Edit</a>
           {% else %}
             <span class="edit-btn disabled">Edit</span>
           {% endif %}
@@ -115,7 +115,7 @@
         <div class="routine-header">
           <h3>Evening Routine</h3>
           {% if evening_routine %}
-            <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
+            <a href="{% url 'routines:edit' evening_routine.pk %}" class="edit-btn">Edit</a>
           {% else %}
             <span class="edit-btn disabled">Edit</span>
           {% endif %}
@@ -168,11 +168,6 @@
             <div class="routine-card weekly">
               <div class="routine-header">
                 <h3>Weekly Routine</h3>
-                {% if weekly_routine %}
-                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
-                {% else %}
-                  <span class="edit-btn disabled">Edit</span>
-                {% endif %}
               </div>
               {% if weekly_routine %}
                 <ul class="routine-steps">
@@ -193,16 +188,11 @@
                 </ul>
                 <div class="routine-actions">
                   <button class="complete-btn" onclick="markRoutineComplete('{{ weekly_routine.id }}', 'weekly')">Mark Complete</button>
+                  <a href="{% url 'routines:edit' weekly_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your weekly treatment</a>
                 </div>
               {% else %}
-                <ul class="routine-steps">
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Exfoliation (scrub / AHA/BHA)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Hydrating face mask</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Clay/charcoal mask</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Facial massage or gua sha</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Scalp scrub or mask</span></label></li>
-                </ul>
-                <a href="{% url 'routines:add' %}?type=weekly" class="add-routine-btn">➕ Add Weekly Routine</a>
+                <p>No weekly treatment set yet.</p>
+                <a href="{% url 'routines:add' %}?type=weekly" class="add-routine-btn">➕ Add weekly treatment</a>
               {% endif %}
             </div>
           </div>
@@ -221,11 +211,6 @@
             <div class="routine-card monthly">
               <div class="routine-header">
                 <h3>Monthly Routine</h3>
-                {% if monthly_routine %}
-                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
-                {% else %}
-                  <span class="edit-btn disabled">Edit</span>
-                {% endif %}
               </div>
               {% if monthly_routine %}
                 <ul class="routine-steps">
@@ -246,16 +231,11 @@
                 </ul>
                 <div class="routine-actions">
                   <button class="complete-btn" onclick="markRoutineComplete('{{ monthly_routine.id }}', 'monthly')">Mark Complete</button>
+                  <a href="{% url 'routines:edit' monthly_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your monthly treatment</a>
                 </div>
               {% else %}
-                <ul class="routine-steps">
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">At-home peel (stronger exfoliation)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Professional facial / spa treatment</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Skin reset (skip actives for barrier care)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Replace / clean tools (brushes, sponges, rollers)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Dermaplaning / face shaving</span></label></li>
-                </ul>
-                <a href="{% url 'routines:add' %}?type=monthly" class="add-routine-btn">➕ Add Monthly Routine</a>
+                <p>No monthly treatment set yet.</p>
+                <a href="{% url 'routines:add' %}?type=monthly" class="add-routine-btn">➕ Add monthly treatment</a>
               {% endif %}
             </div>
           </div>
@@ -274,11 +254,6 @@
             <div class="routine-card hair">
               <div class="routine-header">
                 <h3>Hair Care</h3>
-                {% if hair_routine %}
-                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
-                {% else %}
-                  <span class="edit-btn disabled">Edit</span>
-                {% endif %}
               </div>
               {% if hair_routine %}
                 <ul class="routine-steps">
@@ -299,16 +274,11 @@
                 </ul>
                 <div class="routine-actions">
                   <button class="complete-btn" onclick="markRoutineComplete('{{ hair_routine.id }}', 'hair')">Mark Complete</button>
+                  <a href="{% url 'routines:edit' hair_routine.pk %}" class="add-routine-btn">Edit your hair treatment</a>
                 </div>
               {% else %}
-                <ul class="routine-steps">
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Oil treatment (scalp or ends)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Deep conditioning mask</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Protein treatment (every few weeks)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Clarifying shampoo (remove buildup)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Scalp massage with serum</span></label></li>
-                </ul>
-                <a href="{% url 'routines:add' %}?type=hair" class="add-routine-btn">➕ Add Hair Care Routine</a>
+                <p>No hair treatment set yet.</p>
+                <a href="{% url 'routines:add' %}?type=hair" class="add-routine-btn">➕ Add hair treatment</a>
               {% endif %}
             </div>
           </div>
@@ -327,11 +297,6 @@
             <div class="routine-card body">
               <div class="routine-header">
                 <h3>Body Care</h3>
-                {% if body_routine %}
-                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
-                {% else %}
-                  <span class="edit-btn disabled">Edit</span>
-                {% endif %}
               </div>
               {% if body_routine %}
                 <ul class="routine-steps">
@@ -352,18 +317,11 @@
                 </ul>
                 <div class="routine-actions">
                   <button class="complete-btn" onclick="markRoutineComplete('{{ body_routine.id }}', 'body')">Mark Complete</button>
+                  <a href="{% url 'routines:edit' body_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your body treatment</a>
                 </div>
               {% else %}
-                <ul class="routine-steps">
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Body exfoliation (scrub, dry brushing)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Hydrating body mask / moisturising soak</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Hand and foot masks (paraffin, shea butter, etc.)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Body peel (AHA/BHA for rough patches)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Targeted treatments (stretch marks, cellulite, cracked heels)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Massage (home or professional)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Self-tan / reset (if used)</span></label></li>
-                </ul>
-                <a href="{% url 'routines:add' %}?type=body" class="add-routine-btn">➕ Add Body Care Routine</a>
+                <p>No body treatment set yet.</p>
+                <a href="{% url 'routines:add' %}?type=body" class="add-routine-btn">➕ Add body treatment</a>
               {% endif %}
             </div>
           </div>
@@ -382,11 +340,6 @@
             <div class="routine-card special">
               <div class="routine-header">
                 <h3>Special Treatments</h3>
-                {% if special_routine %}
-                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
-                {% else %}
-                  <span class="edit-btn disabled">Edit</span>
-                {% endif %}
               </div>
               {% if special_routine %}
                 <ul class="routine-steps">
@@ -407,16 +360,11 @@
                 </ul>
                 <div class="routine-actions">
                   <button class="complete-btn" onclick="markRoutineComplete('{{ special_routine.id }}', 'special')">Mark Complete</button>
+                  <a href="{% url 'routines:edit' special_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your special treatment</a>
                 </div>
               {% else %}
-                <ul class="routine-steps">
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Retinol night (track frequency)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">LED mask or light therapy</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Microneedling / derma roller</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Spot treatments (acne patches, sulfur mask)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Under-eye masks / treatments</span></label></li>
-                </ul>
-                <a href="{% url 'routines:add' %}?type=special" class="add-routine-btn">➕ Add Special Treatments</a>
+                <p>No special treatment set yet.</p>
+                <a href="{% url 'routines:add' %}?type=special" class="add-routine-btn">➕ Add special treatment</a>
               {% endif %}
             </div>
           </div>
@@ -435,11 +383,6 @@
             <div class="routine-card seasonal">
               <div class="routine-header">
                 <h3>Seasonal Treatments</h3>
-                {% if seasonal_routine %}
-                  <a href="{% url 'users:profile' %}" class="edit-btn">Edit</a>
-                {% else %}
-                  <span class="edit-btn disabled">Edit</span>
-                {% endif %}
               </div>
               {% if seasonal_routine %}
                 <ul class="routine-steps">
@@ -460,15 +403,11 @@
                 </ul>
                 <div class="routine-actions">
                   <button class="complete-btn" onclick="markRoutineComplete('{{ seasonal_routine.id }}', 'seasonal')">Mark Complete</button>
+                  <a href="{% url 'routines:edit' seasonal_routine.pk %}" class="add-routine-btn">Edit your seasonal treatment</a>
                 </div>
               {% else %}
-                <ul class="routine-steps">
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Switch moisturiser (light in summer, rich in winter)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Lip care (extra balm in winter, exfoliate in summer)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Adjust body lotions (butters for winter, gels for summer)</span></label></li>
-                  <li class="routine-step"><label class="step-label"><input type="checkbox"> <span class="step-text">Allergy season soothing (calming creams, eye drops)</span></label></li>
-                </ul>
-                <a href="{% url 'routines:add' %}?type=seasonal" class="add-routine-btn">➕ Add Seasonal Treatments</a>
+                <p>No seasonal treatment set yet.</p>
+                <a href="{% url 'routines:add' %}?type=seasonal" class="add-routine-btn">➕ Add seasonal treatment</a>
               {% endif %}
             </div>
           </div>
@@ -602,6 +541,27 @@
   <!-- Calendar Section with isolated styling -->
   <section class="calendar-section" id="calendar-wrapper">
     <h2 class="section-title">Calendar Overview</h2>
+    
+    <!-- Calendar Legend -->
+    <div class="calendar-legend">
+      <div class="legend-item">
+        <span class="legend-symbol morning">☀️</span>
+        <span class="legend-text">Morning</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-symbol evening">🌙</span>
+        <span class="legend-text">Evening</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-symbol complete">✨</span>
+        <span class="legend-text">Complete</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-symbol missed">×</span>
+        <span class="legend-text">Missed</span>
+      </div>
+    </div>
+    
     <div id="calendar"></div>
   </section>
 </div>

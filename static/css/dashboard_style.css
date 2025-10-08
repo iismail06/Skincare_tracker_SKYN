@@ -5,14 +5,12 @@
 :root {
   --accent-color: #676B5D; 
   --accent-color-rgb: 255, 215, 0; /* RGB values of #FFD700 */
-  --text-color: #333;
-  --text-light: #666;
+  --text-color: #1a1a1a;
+  --text-light: #4a4a4a;
   --border-color: #ddd;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.85);
 }
-
-
-
 
 
 /* =========================
@@ -40,7 +38,7 @@ body {
 .section-title {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: var(--text-color);
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -230,6 +228,28 @@ p {
 .routine-actions {
   margin-top: 1rem;
   text-align: center;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make all buttons in routine actions the same size */
+.routine-actions .complete-btn,
+.routine-actions .add-routine-btn {
+  min-width: 160px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  height: 45px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  vertical-align: top;
+  margin: 0;
+  line-height: 1;
+  text-decoration: none;
 }
 
 .routine-note {
@@ -387,6 +407,51 @@ body.dark-theme .routine-step:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(200, 200, 200, 0.8);
   margin-bottom: 1rem;
+}
+
+/* Ensure accordion text is visible */
+.accordion-body .routine-card h3,
+.accordion-body .routine-card .step-text,
+.accordion-body .routine-card p,
+.accordion-body .routine-card li,
+.accordion-body .routine-card span {
+  color: #1a1a1a !important;
+  font-weight: 500;
+}
+
+/* Make sure all text in accordion is dark */
+.accordion-body * {
+  color: #1a1a1a;
+}
+
+/* Ensure edit buttons are visible and functional in accordion */
+.accordion-body .edit-btn {
+  color: #1a1a1a !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 2px solid #676B5D !important;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.accordion-body .edit-btn:hover {
+  background: #676B5D !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.accordion-body .edit-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 body.dark-theme .step-checkbox {
@@ -748,6 +813,82 @@ body.dark-theme .step-checkbox {
 
 .sc-miss {
   color: #dc3545 !important;
+}
+
+/* Custom styling for completed days (sparkle) */
+.sc-day-completed {
+  position: relative;
+}
+
+.sc-day-completed .calendar-icon {
+  color: #4caf50 !important; /* Green color for sparkle */
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+  filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.4));
+}
+
+/* Custom styling for evening routine (moon) */
+.sc-day-evening .calendar-icon {
+  color: #c0c0c0 !important; /* Silver color for moon */
+  text-shadow: 0 0 6px rgba(192, 192, 192, 0.5);
+  filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.3));
+}
+
+/* Calendar Legend Styling */
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(192, 192, 192, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(192, 192, 192, 0.2);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  border: 1px solid rgba(192, 192, 192, 0.3);
+}
+
+.legend-symbol {
+  font-size: 1rem;
+  display: inline-block;
+  min-width: 1.2rem;
+  text-align: center;
+}
+
+.legend-symbol.morning {
+  color: #ffd700;
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+}
+
+.legend-symbol.evening {
+  color: #c0c0c0 !important; /* Silver to match calendar moon */
+  text-shadow: 0 0 6px rgba(192, 192, 192, 0.5);
+  filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.3));
+}
+
+.legend-symbol.complete {
+  color: #4caf50 !important; /* Green to match calendar sparkle */
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+  filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.4));
+}
+
+.legend-symbol.missed {
+  color: #dc3545;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.legend-text {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
 }
 
 .calendar-expiry-event {

@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Set status indicators based on event data
         if (ev) {
         if (ev.status === 'completed') {
-          icon.textContent = '🟢';
+          icon.textContent = '✨';
           cell.classList.add('sc-day-completed');
         } else if (ev.status === 'not_done') {
           if (isFutureDay) {
@@ -245,8 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
             cell.classList.add('sc-day-future');
             icon.textContent = '';
           } else {
-            // Past missed days - red dot
-            icon.textContent = '•';
+            // Past missed days - red cross
+            icon.textContent = '×';
             const errorColor = getCssVar('--error-color');
             if (errorColor) icon.style.color = errorColor;
             icon.style.fontSize = '2rem';
