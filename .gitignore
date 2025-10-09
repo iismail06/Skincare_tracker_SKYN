@@ -237,3 +237,16 @@ snapshots/prev/**
 snapshots/**/main.monday.js
 snapshots/**/dashboard.monday.html
 
+
+# Ignore management package inits (user request)
+routines/management/__init__.py
+routines/management/commands/__init__.py
+
+# Ignore Python test files and folders (user request)
+**/tests/
+**/tests/**
+**/test_*.py
+**/*_test.py
+**/tests.py
+**/test.py
+
