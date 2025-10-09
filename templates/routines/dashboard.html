@@ -99,7 +99,7 @@
           </ul>
           <div class="routine-actions">
             {% if morning_routine.id %}
-              <button class="complete-btn" onclick="markRoutineComplete('{{ morning_routine.id }}', 'morning')">Mark Complete</button>
+              <button class="complete-btn" data-routine-id="{{ morning_routine.id }}" data-routine-type="morning">Mark Complete</button>
             {% else %}
               <button class="complete-btn" disabled>No Routine Set</button>
             {% endif %}
@@ -142,7 +142,7 @@
           </ul>
           <div class="routine-actions">
             {% if evening_routine.id %}
-              <button class="complete-btn" onclick="markRoutineComplete('{{ evening_routine.id }}', 'evening')">Mark Complete</button>
+              <button class="complete-btn" data-routine-id="{{ evening_routine.id }}" data-routine-type="evening">Mark Complete</button>
             {% else %}
               <button class="complete-btn" disabled>No Routine Set</button>
             {% endif %}
@@ -187,7 +187,7 @@
                   {% endfor %}
                 </ul>
                 <div class="routine-actions">
-                  <button class="complete-btn" onclick="markRoutineComplete('{{ weekly_routine.id }}', 'weekly')">Mark Complete</button>
+                  <button class="complete-btn" data-routine-id="{{ weekly_routine.id }}" data-routine-type="weekly">Mark Complete</button>
                   <a href="{% url 'routines:edit' weekly_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your weekly treatment</a>
                 </div>
               {% else %}
@@ -230,7 +230,7 @@
                   {% endfor %}
                 </ul>
                 <div class="routine-actions">
-                  <button class="complete-btn" onclick="markRoutineComplete('{{ monthly_routine.id }}', 'monthly')">Mark Complete</button>
+                  <button class="complete-btn" data-routine-id="{{ monthly_routine.id }}" data-routine-type="monthly">Mark Complete</button>
                   <a href="{% url 'routines:edit' monthly_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your monthly treatment</a>
                 </div>
               {% else %}
@@ -273,7 +273,7 @@
                   {% endfor %}
                 </ul>
                 <div class="routine-actions">
-                  <button class="complete-btn" onclick="markRoutineComplete('{{ hair_routine.id }}', 'hair')">Mark Complete</button>
+                  <button class="complete-btn" data-routine-id="{{ hair_routine.id }}" data-routine-type="hair">Mark Complete</button>
                   <a href="{% url 'routines:edit' hair_routine.pk %}" class="add-routine-btn">Edit your hair treatment</a>
                 </div>
               {% else %}
@@ -316,7 +316,7 @@
                   {% endfor %}
                 </ul>
                 <div class="routine-actions">
-                  <button class="complete-btn" onclick="markRoutineComplete('{{ body_routine.id }}', 'body')">Mark Complete</button>
+                  <button class="complete-btn" data-routine-id="{{ body_routine.id }}" data-routine-type="body">Mark Complete</button>
                   <a href="{% url 'routines:edit' body_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your body treatment</a>
                 </div>
               {% else %}
@@ -359,7 +359,7 @@
                   {% endfor %}
                 </ul>
                 <div class="routine-actions">
-                  <button class="complete-btn" onclick="markRoutineComplete('{{ special_routine.id }}', 'special')">Mark Complete</button>
+                  <button class="complete-btn" data-routine-id="{{ special_routine.id }}" data-routine-type="special">Mark Complete</button>
                   <a href="{% url 'routines:edit' special_routine.pk %}" class="add-routine-btn" style="margin-left: 10px;"> Edit your special treatment</a>
                 </div>
               {% else %}
@@ -402,7 +402,7 @@
                   {% endfor %}
                 </ul>
                 <div class="routine-actions">
-                  <button class="complete-btn" onclick="markRoutineComplete('{{ seasonal_routine.id }}', 'seasonal')">Mark Complete</button>
+                  <button class="complete-btn" data-routine-id="{{ seasonal_routine.id }}" data-routine-type="seasonal">Mark Complete</button>
                   <a href="{% url 'routines:edit' seasonal_routine.pk %}" class="add-routine-btn">Edit your seasonal treatment</a>
                 </div>
               {% else %}
@@ -561,113 +561,13 @@
         <span class="legend-text">Missed</span>
       </div>
     </div>
-    
-  <!-- Calendar Section with isolated styling -->
-  <section class="calendar-section" id="calendar-wrapper">
-    <h2 class="section-title">Calendar Overview</h2>
     <div id="calendar"></div>
   </section>
 {% endblock content %}
 
-{% block end_of_body %}
-{% endblock end_of_body %}
-
 {% block extra_js %}
-<!-- Initialize calendar data from Django backend -->
-<script>
-  (function() {
-    try {
-      window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}"|escapejs }}');
-    } catch (e) {
-      window.ROUTINE_EVENTS = {};
-      console.warn('Could not parse routine events:', e);
-    }
-    try {
-      window.EXPIRY_EVENTS = JSON.parse('{{ expiry_events_json|default:"[]"|escapejs }}');
-    } catch (e) {
-      window.EXPIRY_EVENTS = [];
-      console.warn('Could not parse expiry events:', e);
-    }
-    
-    // Make sure events are loaded before dispatching the event
-    window.addEventListener('load', function() {
-      // Dispatch the event with routine data for the calendar
-      document.dispatchEvent(new CustomEvent('dashboardDataReady', {
-        detail: {
-          routineData: window.ROUTINE_EVENTS
-        }
-      }));
-      
-      console.log('Dashboard data ready event dispatched');
-    });
-  })();
-</script>
-
-{% block after_bootstrap_js %}
-
-<script>
-// Dashboard essentials: step completion, routine completion, progress bar
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Step completion toggling
-  document.querySelectorAll('.step-checkbox').forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-      const stepId = this.getAttribute('data-step-id');
-      if (!stepId) return;
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-      if (!csrfToken) return;
-      fetch('/routines/toggle-step/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken.value
-        },
-        body: JSON.stringify({ step_id: stepId })
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (!data.success) this.checked = !this.checked;
-        updateProgressDisplay();
-      })
-      .catch(() => { this.checked = !this.checked; });
-    });
-  });
-
-  // Routine completion
-  document.querySelectorAll('.complete-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const routineId = this.getAttribute('data-routine-id');
-      const routineType = this.getAttribute('data-routine-type');
-      if (!routineId || !routineType) return;
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-      if (!csrfToken) return;
-      fetch('/routines/mark-complete/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken.value
-        },
-        body: JSON.stringify({ routine_id: routineId, routine_type: routineType })
-      })
-      .then(r => r.json())
-      .then(data => { if (data.success) window.location.reload(); });
-    });
-  });
-
-  // Progress bar update
-  const progressBar = document.querySelector('.progress-fill');
-  if (progressBar) {
-    const progress = progressBar.getAttribute('data-progress') || 0;
-    progressBar.style.width = progress + '%';
-  }
-});
-
-function updateProgressDisplay() {
-  // Simple progress update - reload to get accurate progress
-  setTimeout(() => window.location.reload(), 500);
-}
-</script>
-{% endblock after_bootstrap_js %}
-
+  <!-- Dashboard data as JSON for use by main.js -->
+  <script type="application/json" id="routine-events">{{ routine_events_json|default:"{}"|safe }}</script>
+  <script type="application/json" id="expiry-events">{{ expiry_events_json|default:"[]"|safe }}</script>
 {% endblock extra_js %}
 

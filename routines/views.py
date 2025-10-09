@@ -328,7 +328,11 @@ def dashboard(request):
             'status': status,
             'product_name': product.name,
             'brand': product.brand,
-            'days_until': days_until_expiry
+            'days_until': days_until_expiry,
+            # Extra fields for calendar display
+            'expiry_date': product.expiry_date.strftime('%Y-%m-%d'),
+            'rating': getattr(product, 'rating', None),
+            'is_favorite': getattr(product, 'is_favorite', False),
         })
 
     # === FAVORITE PRODUCT USAGE IN CALENDAR ===

@@ -757,34 +757,17 @@ body.dark-theme .step-checkbox {
   z-index: 0 !important;
 }
 
-/* Cell status styles */
-.sc-day-completed {
-  background-color: rgba(40, 167, 69, 0.1) !important;
-}
+/* Icons-only calendar*/
 
-.sc-day-not-done {
-  background-color: rgba(220, 53, 69, 0.1) !important;
-}
-
-/* Fix for the red cross issue */
-.sc-day-not-done .sc-day-icon {
-  color: #dc3545 !important;
-  font-size: 1.5rem !important;
-  content: "•" !important;
-}
-
-/* Future day styling - Option 1: Blank/Neutral */
-.sc-day-future {
-  background-color: rgba(255, 255, 255, 0.4) !important;
-  border: 1px solid rgba(200, 200, 200, 0.3) !important;
-}
-
-.sc-day-morning {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.1) 50%, transparent 50%) !important;
-}
-
-.sc-day-evening {
-  background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(13, 110, 253, 0.1) 50%) !important;
+/* Small badge for expiry presence */
+.sc-expiry-badge {
+  position: absolute !important;
+  top: 4px !important;
+  right: 4px !important;
+  font-size: 0.9rem !important;
+  line-height: 1 !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
 }
 
 /* Details section */
@@ -815,23 +798,6 @@ body.dark-theme .step-checkbox {
   color: #dc3545 !important;
 }
 
-/* Custom styling for completed days (sparkle) */
-.sc-day-completed {
-  position: relative;
-}
-
-.sc-day-completed .calendar-icon {
-  color: #4caf50 !important; /* Green color for sparkle */
-  text-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
-  filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.4));
-}
-
-/* Custom styling for evening routine (moon) */
-.sc-day-evening .calendar-icon {
-  color: #c0c0c0 !important; /* Silver color for moon */
-  text-shadow: 0 0 6px rgba(192, 192, 192, 0.5);
-  filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.3));
-}
 
 /* Calendar Legend Styling */
 .calendar-legend {

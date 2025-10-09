@@ -265,12 +265,41 @@ function initNavigation() {
   const root = document.querySelector('#calendar');
   if (!root) return;
 
-  const events = (window.ROUTINE_EVENTS && Array.isArray(window.ROUTINE_EVENTS)) ? window.ROUTINE_EVENTS : [];
+  // Prefer CSP-friendly JSON script tags for events
+  let events = [];
+  let expiryEvents = [];
+  try {
+    const routineTag = document.getElementById('routine-events');
+    if (routineTag && routineTag.textContent) {
+      const parsed = JSON.parse(routineTag.textContent);
+      if (Array.isArray(parsed)) events = parsed;
+    }
+    const expiryTag = document.getElementById('expiry-events');
+    if (expiryTag && expiryTag.textContent) {
+      const parsedExpiry = JSON.parse(expiryTag.textContent);
+      if (Array.isArray(parsedExpiry)) expiryEvents = parsedExpiry;
+    }
+  } catch (e) {
+    // fallback below
+  }
+  if (!events.length && window.ROUTINE_EVENTS && Array.isArray(window.ROUTINE_EVENTS)) {
+    events = window.ROUTINE_EVENTS;
+  }
+  if (!expiryEvents.length && window.EXPIRY_EVENTS && Array.isArray(window.EXPIRY_EVENTS)) {
+    expiryEvents = window.EXPIRY_EVENTS;
+  }
   const eventsByDate = {};
+  const expiryByDate = {};
   
   events.forEach(function(ev) {
     if (!ev || !ev.date) return;
     eventsByDate[ev.date] = ev;
+  });
+
+  expiryEvents.forEach(function(ex) {
+    if (!ex || !ex.date) return;
+    if (!expiryByDate[ex.date]) expiryByDate[ex.date] = [];
+    expiryByDate[ex.date].push(ex);
   });
 
   const state = {
@@ -361,37 +390,69 @@ function initNavigation() {
       const cellDate = new Date(state.year, state.month, day);
       const isFutureDay = cellDate > today;
       
-      // Set status indicators based on event data
-        if (ev) {
+      // Set status indicators based on event data 
+      let statusText = 'No events';
+      if (ev) {
         if (ev.status === 'completed') {
           icon.textContent = '✨';
-          cell.classList.add('sc-day-completed');
+          statusText = 'Completed';
         } else if (ev.status === 'not_done') {
           if (isFutureDay) {
-            // Future days - add class but leave empty (no marker)
-            cell.classList.add('sc-day-future');
+            // Future days - leave empty icon
             icon.textContent = '';
+            statusText = 'Upcoming';
           } else {
             // Past missed days - red cross
             icon.textContent = '×';
             const errorColor = getCssVar('--error-color');
             if (errorColor) icon.style.color = errorColor;
             icon.style.fontSize = '2rem';
-            cell.classList.add('sc-day-not-done');
+            statusText = 'Missed';
           }
         } else if (ev.status === 'morning') {
           icon.textContent = '☀️';
-          cell.classList.add('sc-day-morning');
+          statusText = 'Morning routine';
         } else if (ev.status === 'evening') {
           icon.textContent = '🌙';
-          cell.classList.add('sc-day-evening');
+          statusText = 'Evening routine';
         }
       } else if (isFutureDay) {
         // Future days with no events
-        cell.classList.add('sc-day-future');
+        statusText = 'Upcoming';
       }
       
       cell.appendChild(icon);
+
+      // Build tooltip text including expiry info if present
+      const parts = dateKey.split('-');
+      const readableDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+      let tooltip = readableDate + ' — ' + statusText;
+
+      const expiries = expiryByDate[dateKey] || [];
+      if (expiries.length) {
+        // Add a small badge to the cell for at-a-glance awareness
+        const badge = document.createElement('div');
+        badge.className = 'sc-expiry-badge';
+        badge.textContent = '⚠️';
+        cell.appendChild(badge);
+
+        // Append concise expiry info to tooltip
+        const maxList = 2;
+        const items = expiries.slice(0, maxList).map(function(ex) {
+          const parts = [];
+          parts.push(ex.product_name || ex.title || 'Product');
+          if (ex.rating) parts.push((ex.rating + '⭐'));
+          if (ex.is_favorite) parts.push('💖');
+          return parts.join(' ');
+        });
+        const moreCount = expiries.length - items.length;
+        const expiryLine = 'Expiring: ' + items.join(', ') + (moreCount > 0 ? (' and ' + moreCount + ' more') : '');
+        tooltip += ' • ' + expiryLine;
+      }
+
+      // Accessibility: add title and aria-label for screen readers/tooltips
+      cell.title = tooltip;
+      cell.setAttribute('aria-label', tooltip);
 
       cell.addEventListener('click', function(e) {
         showDetails(this.dataset.date);
@@ -400,25 +461,6 @@ function initNavigation() {
       grid.appendChild(cell);
     }
 
-    // Apply heatmap coloring based on routine events
-    if (window.ROUTINE_EVENTS && Array.isArray(window.ROUTINE_EVENTS)) {
-      window.ROUTINE_EVENTS.forEach(function(event) {
-        const dayElem = document.getElementById('calendar-day-' + event.date);
-        if (dayElem) {
-          dayElem.classList.remove('sc-day-completed', 'sc-day-not-done', 'sc-day-morning', 'sc-day-evening');
-          
-          if (event.status === 'completed') {
-            dayElem.classList.add('sc-day-completed');
-          } else if (event.status === 'morning') {
-            dayElem.classList.add('sc-day-morning');
-          } else if (event.status === 'evening') {
-            dayElem.classList.add('sc-day-evening');
-          } else {
-            dayElem.classList.add('sc-day-not-done');
-          }
-        }
-      });
-    }
 
     // Highlight weekly step reminders (expects window.weeklyDueDates from template)
     const weeklyDueDates = Array.isArray(window.weeklyDueDates) ? window.weeklyDueDates : [];
@@ -506,6 +548,25 @@ function initNavigation() {
       });
     }
 
+    // Show expiry items for this day
+    const expiries = expiryByDate[dateKey] || [];
+    expiries.forEach(function(ex) {
+      const div = document.createElement('div');
+      div.className = 'sc-event';
+      const left = document.createElement('div');
+      left.innerHTML = '<b>Expiry:</b> ' + (ex.product_name || ex.title || 'Product');
+      const right = document.createElement('div');
+      const bits = [];
+      if (ex.rating) bits.push(ex.rating + '⭐');
+      if (ex.is_favorite) bits.push('💖');
+      if (typeof ex.days_until === 'number') bits.push((ex.days_until === 0 ? 'Today' : (ex.days_until + ' days')));
+      right.textContent = bits.join(' · ');
+      div.appendChild(left);
+      div.appendChild(right);
+      details.appendChild(div);
+      found = true;
+    });
+
     if (!ev && !found) {
       const p = document.createElement('p');
       p.textContent = 'No events';
@@ -589,6 +650,18 @@ function initRoutines() {
       } else {
         handleRoutineStepUpdate(target);
       }
+    }
+  });
+
+  // Delegated handler for routine completion buttons
+  document.addEventListener('click', function(event) {
+    const btn = event.target.closest && event.target.closest('.complete-btn');
+    if (!btn) return;
+    event.preventDefault();
+    const routineId = btn.getAttribute('data-routine-id');
+    const routineType = btn.getAttribute('data-routine-type');
+    if (routineId && routineType) {
+      markRoutineComplete(routineId, routineType);
     }
   });
 }
