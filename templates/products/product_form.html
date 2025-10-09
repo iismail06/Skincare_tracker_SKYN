@@ -52,7 +52,7 @@
         <!-- Manual Form Section -->
         <div class="manual-form-section">
             <h3>Or Add Manually</h3>
-            <form method="post" class="product-form" id="product-form">
+            <form method="post" class="product-form" id="product-form" action="{% if product %}{% url 'products:edit' product.pk %}{% else %}{% url 'products:create' %}{% endif %}">
             {% csrf_token %}
             
             <div class="form-group">

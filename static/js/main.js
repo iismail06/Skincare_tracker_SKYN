@@ -906,7 +906,6 @@ function handleRoutineFormSubmit(event) {
 function initProducts() {
   initProductForms();
   initProductSearch();
-  initProductDeleteButtons();
   initProductSuggestions();
 }
 
@@ -1021,45 +1020,7 @@ function initProductSearch() {
   }, 300));
 }
 
-/**
- * Initializes product delete buttons
- */
-function initProductDeleteButtons() {
-  document.querySelectorAll('.delete-product-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      if (confirm('Are you sure you want to delete this product?')) {
-        const productId = this.dataset.productId;
-        
-        fetch(`/products/delete/${productId}/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCsrfToken(),
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            // Remove the product element from the DOM
-            const productElement = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-            if (productElement) {
-              productElement.remove();
-            }
-            showSuccessMessage('Product deleted successfully');
-          } else {
-            showErrorMessage(data.message || 'Error deleting product');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          showErrorMessage('An error occurred while deleting the product');
-        });
-      }
-      });
-    });
-  }
+// Removed unused AJAX delete code to align with confirmation-page delete flow
 
 /**
  * Initializes product suggestions on the product form page

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
+from django.urls import reverse
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .models import Product
@@ -27,10 +28,30 @@ def product_create(request):
                 product.user = request.user
                 product.save()
                 messages.success(request, f'Product "{product.name}" added successfully!')
+                # If AJAX/XHR, return JSON for the front-end handler
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': f'Product "{product.name}" added successfully!',
+                        'redirect_url': reverse('products:list')
+                    })
                 return redirect('products:list')
             except Exception as e:
                 messages.error(request, "Sorry, we couldn't save your product. Please try again.")
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': "Sorry, we couldn't save your product. Please try again."
+                    }, status=500)
                 # Form will be re-displayed with the user's data still filled in
+        else:
+            # Return validation errors for AJAX submissions
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Please correct the errors below.',
+                    'errors': form.errors
+                }, status=400)
     else:
         form = ProductForm()
     
@@ -49,7 +70,20 @@ def product_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f'Product "{product.name}" updated successfully!')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f'Product "{product.name}" updated successfully!',
+                    'redirect_url': reverse('products:list')
+                })
             return redirect('products:list')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Please correct the errors below.',
+                    'errors': form.errors
+                }, status=400)
     else:
         form = ProductForm(instance=product)
     
@@ -95,16 +129,15 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
     def list(self, request, *args, **kwargs):
-        """Return the user's products or default suggestions when empty."""
-        qs = self.get_queryset()
-        if qs.exists():
+        """Return the user's products. If an error occurs retrieving them, fall back to suggestions."""
+        try:
             return super().list(request, *args, **kwargs)
-
-        # No user products — supply serialized default suggestions
-        category = request.GET.get('category', 'moisturizer')
-        suggestions = ProductBrowseByCategoryAPIView().create_default_suggestions(category)
-        serializer = ProductSerializer(suggestions, many=True, context={'request': request})
-        return Response(serializer.data)
+        except Exception:
+            # As a resilience fallback only (e.g., DB temporarily unavailable), provide suggestions
+            category = request.GET.get('category', 'moisturizer')
+            suggestions = ProductBrowseByCategoryAPIView().create_default_suggestions(category)
+            serializer = ProductSerializer(suggestions, many=True, context={'request': request})
+            return Response(serializer.data)
 
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
