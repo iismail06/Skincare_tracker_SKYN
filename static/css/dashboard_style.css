@@ -43,6 +43,11 @@ body {
   font-weight: 600;
 }
 
+/* Light mode only: improve contrast for 'Your Routines' title on dashboard */
+body:not(.dark-theme) .routines-section .section-title {
+  color: #ffffff !important;
+}
+
 h1, h2, h3 {
   margin-top: 0;
   color: var(--text-color);
@@ -61,12 +66,7 @@ p {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
-.calendar-container {
-  width: 100%;
-  max-width: 100%;
-  padding: 1.5rem;
-  box-sizing: border-box;
-}
+/* .calendar-container unused — removed */
 
 .dashboard-section:hover, .calendar-section:hover {
   transform: scale(1.02);
@@ -409,23 +409,23 @@ body.dark-theme .routine-step:hover {
   margin-bottom: 1rem;
 }
 
-/* Ensure accordion text is visible */
-.accordion-body .routine-card h3,
-.accordion-body .routine-card .step-text,
-.accordion-body .routine-card p,
-.accordion-body .routine-card li,
-.accordion-body .routine-card span {
+/* Ensure accordion text is visible (light mode only) */
+body:not(.dark-theme) .accordion-body .routine-card h3,
+body:not(.dark-theme) .accordion-body .routine-card .step-text,
+body:not(.dark-theme) .accordion-body .routine-card p,
+body:not(.dark-theme) .accordion-body .routine-card li,
+body:not(.dark-theme) .accordion-body .routine-card span {
   color: #1a1a1a !important;
   font-weight: 500;
 }
 
-/* Make sure all text in accordion is dark */
-.accordion-body * {
+/* Make sure all text in accordion is dark (light mode only) */
+body:not(.dark-theme) .accordion-body * {
   color: #1a1a1a;
 }
 
-/* Ensure edit buttons are visible and functional in accordion */
-.accordion-body .edit-btn {
+/* Ensure edit buttons are visible and functional in accordion (light mode only) */
+body:not(.dark-theme) .accordion-body .edit-btn {
   color: #1a1a1a !important;
   background: rgba(255, 255, 255, 0.95) !important;
   border: 2px solid #676B5D !important;
@@ -441,7 +441,7 @@ body.dark-theme .routine-step:hover {
   z-index: 10;
 }
 
-.accordion-body .edit-btn:hover {
+body:not(.dark-theme) .accordion-body .edit-btn:hover {
   background: #676B5D !important;
   color: white !important;
   transform: translateY(-1px);
@@ -457,6 +457,7 @@ body.dark-theme .routine-step:hover {
 body.dark-theme .step-checkbox {
   accent-color: var(--accent-color);
 }
+
 
 /* =========================
   10. Progress Section
@@ -802,11 +803,12 @@ body.dark-theme .step-checkbox {
 /* Calendar Legend Styling */
 .calendar-legend {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  background: rgba(192, 192, 192, 0.1);
+  gap: 0.75rem 1rem;
+  margin: 0 0 0.75rem 0;
+  padding: 0.5rem;
+  background: rgba(192, 192, 192, 0.08);
   border-radius: 8px;
   border: 1px solid rgba(192, 192, 192, 0.2);
 }
@@ -814,15 +816,15 @@ body.dark-theme .step-checkbox {
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.6rem;
-  background: rgba(255, 255, 255, 0.3);
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 6px;
-  border: 1px solid rgba(192, 192, 192, 0.3);
+  border: 1px solid rgba(192, 192, 192, 0.25);
 }
 
 .legend-symbol {
-  font-size: 1rem;
+  font-size: 0.95rem;
   display: inline-block;
   min-width: 1.2rem;
   text-align: center;
@@ -852,22 +854,9 @@ body.dark-theme .step-checkbox {
 }
 
 .legend-text {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #666;
   font-weight: 500;
-}
-
-.calendar-expiry-event {
-  background: #35552a !important;
-    color: white !important;
-    border-radius: 4px;
-    padding: 2px 4px;
-    font-size: 0.7rem;
-}
-
-.calendar-favorite-day {
-    border: 2px solid #e91e63 !important;
-    border-radius: 50%;
 }
 
 
@@ -1160,14 +1149,12 @@ body.dark-theme .calendar-section h2.section-title {
 body.dark-theme .calendar-overview-title, body.dark-theme #calendar-overview-title {
   color: #fff !important;
 }
-body.dark-theme .sc-cell, body.dark-theme .calendar-day {
+body.dark-theme .sc-cell {
   background: rgba(255,255,255,0.10) !important;
   backdrop-filter: blur(2px);
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
-body.dark-theme .sc-header .sc-day-num {
-  color: #222;
-}
+/* Removed: .sc-day-num does not appear inside .sc-header */
 body.dark-theme #calendar-wrapper {
   background: rgba(255,255,255,0.10); /* clear glass look */
 }
@@ -1185,6 +1172,23 @@ body.dark-theme .sc-header {
 body.dark-theme .sc-dow, body.dark-theme .sc-dow-cell, body.dark-theme .sc-cell, body.dark-theme .sc-day-num, body.dark-theme .sc-title {
   color: #fff;
 }
+
+/* Make calendar legend text readable in dark mode */
+body.dark-theme .calendar-legend .legend-text {
+  color: #ffffff !important;
+}
+
+/* Remove default borders in dark mode to reduce visual noise */
+body.dark-theme .sc-dow { border-bottom-color: transparent !important; }
+body.dark-theme .sc-cell { border-color: transparent !important; }
+
+/* Keep event-specific borders applied inline (weekly/monthly) — no override needed */
+
+/* Restore simple golden dotted outline for today */
+.sc-today {
+  outline: 2px dotted rgba(255, 215, 0, 0.85) !important; /* gold */
+  outline-offset: -3px !important;
+}
 body.dark-theme .dashboard-container, body.dark-theme .calendar-section {
   background-color: #3a2618; /* main brown shade for dark mode */
   padding: 20px;
@@ -1195,7 +1199,7 @@ body.dark-theme .routine-card, body.dark-theme .routine-section, body.dark-theme
   background-color: #2d2116;
   color: #fff;
 }
-body.dark-theme .calendar-day, body.dark-theme .routine-item {
+body.dark-theme .routine-item {
   background-color: #2d2116;
   color: #f0d3bc;
   border-radius: 6px;
@@ -1261,6 +1265,54 @@ body.dark-theme .complete-btn:hover {
 body.dark-theme .add-routine-btn,
 body.dark-theme .complete-btn {
   margin-top: 1rem;
+}
+
+/* ------ Accordion ------ */
+body.dark-theme .accordion-item {
+  background: #2d2116; /* deep brown background to match app */
+  border: 1px solid #35552a; /* dark green border */
+  box-shadow: none;
+}
+
+body.dark-theme .accordion-button {
+  background: #35552a; /* dark green header */
+  color: #ffffff;
+  border-radius: 12px 12px 0 0;
+}
+
+body.dark-theme .accordion-button:not(.collapsed) {
+  background: #35552a; /* keep green when open */
+  color: #ffffff;
+  box-shadow: none;
+}
+
+body.dark-theme .accordion-button:hover {
+  background: #2f4a25; /* slightly darker green on hover */
+  color: #ffffff;
+}
+
+body.dark-theme .accordion-body {
+  background: #2d2116; /* remove gray glass */
+}
+
+/* Ensure all text inside accordion is readable in dark mode */
+body.dark-theme .accordion-body,
+body.dark-theme .accordion-body *,
+body.dark-theme .accordion-body .routine-card,
+body.dark-theme .accordion-body .routine-card * {
+  color: #ffffff !important;
+}
+
+/* Dark-mode edit buttons inside accordion use app-wide styling */
+body.dark-theme .accordion-body .edit-btn {
+  color: #ffffff !important;
+  background: transparent !important;
+  border: 2px solid #35552a !important;
+}
+
+body.dark-theme .accordion-body .edit-btn:hover {
+  background: #35552a !important;
+  color: #ffffff !important;
 }
 
 /* --- Miscellaneous / Scrollbar --- */
@@ -1332,18 +1384,10 @@ body.dark-theme footer a:hover {
     }
   }
 
-
-
-  /* Performance: reduce heavy backdrop-filter effects while modal is open */
-body.modal-open *:not(.modal):not(.modal *) {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  filter: none !important;
-}
-
-/* Also temporarily disable transitions/animations/shadows during modal open to reduce paint cost */
-body.modal-open *:not(.modal):not(.modal *) {
-  transition: none !important;
-  box-shadow: none !important;
-  animation: none !important;
+/* Smaller legend on narrow screens */
+@media (max-width: 768px) {
+  .calendar-legend { gap: 0.5rem 0.6rem; padding: 0.4rem; }
+  .legend-item { gap: 0.3rem; padding: 0.2rem 0.4rem; }
+  .legend-symbol { font-size: 0.9rem; min-width: 1rem; }
+  .legend-text { font-size: 0.75rem; }
 }

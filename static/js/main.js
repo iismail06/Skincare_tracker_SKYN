@@ -258,16 +258,17 @@ function initNavigation() {
 
 /* ==========================================================================
    CALENDAR FUNCTIONALITY
-   Handles calendar display and interactions
    ========================================================================== */
 
 (function() {
   const root = document.querySelector('#calendar');
   if (!root) return;
 
-  // Prefer CSP-friendly JSON script tags for events
+  // Parse JSON script tags for events
   let events = [];
   let expiryEvents = [];
+  let weeklyDueDates = [];
+  let monthlyDueDates = [];
   try {
     const routineTag = document.getElementById('routine-events');
     if (routineTag && routineTag.textContent) {
@@ -278,6 +279,16 @@ function initNavigation() {
     if (expiryTag && expiryTag.textContent) {
       const parsedExpiry = JSON.parse(expiryTag.textContent);
       if (Array.isArray(parsedExpiry)) expiryEvents = parsedExpiry;
+    }
+    const weeklyTag = document.getElementById('weekly-due-dates');
+    if (weeklyTag && weeklyTag.textContent) {
+      const parsedWeekly = JSON.parse(weeklyTag.textContent);
+      if (Array.isArray(parsedWeekly)) weeklyDueDates = parsedWeekly;
+    }
+    const monthlyTag = document.getElementById('monthly-due-dates');
+    if (monthlyTag && monthlyTag.textContent) {
+      const parsedMonthly = JSON.parse(monthlyTag.textContent);
+      if (Array.isArray(parsedMonthly)) monthlyDueDates = parsedMonthly;
     }
   } catch (e) {
     // fallback below
@@ -366,6 +377,10 @@ function initNavigation() {
     }
 
     // Add cells for each day of the month
+    // Cache today's date at midnight for comparisons
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     for (let day = 1; day <= daysInMonth; day++) {
       const dateKey = toDateKey(state.year, state.month, day);
       const cell = document.createElement('div');
@@ -384,11 +399,13 @@ function initNavigation() {
       
       const ev = eventsByDate[dateKey];
       
-      // Check if the date is in the future
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      // Check if the date is in the future and/or is today
       const cellDate = new Date(state.year, state.month, day);
       const isFutureDay = cellDate > today;
+      const isToday = cellDate.getTime() === today.getTime();
+      if (isToday) {
+        cell.classList.add('sc-today');
+      }
       
       // Set status indicators based on event data 
       let statusText = 'No events';
@@ -426,7 +443,7 @@ function initNavigation() {
       // Build tooltip text including expiry info if present
       const parts = dateKey.split('-');
       const readableDate = parts[2] + '-' + parts[1] + '-' + parts[0];
-      let tooltip = readableDate + ' — ' + statusText;
+  let tooltip = readableDate + ' — ' + statusText + (isToday ? ' • Today' : '');
 
       const expiries = expiryByDate[dateKey] || [];
       if (expiries.length) {
@@ -462,26 +479,30 @@ function initNavigation() {
     }
 
 
-    // Highlight weekly step reminders (expects window.weeklyDueDates from template)
-    const weeklyDueDates = Array.isArray(window.weeklyDueDates) ? window.weeklyDueDates : [];
-    weeklyDueDates.forEach(function(item) {
+    // Highlight weekly step reminders
+    const weeklyList = Array.isArray(weeklyDueDates) && weeklyDueDates.length ? weeklyDueDates : (Array.isArray(window.weeklyDueDates) ? window.weeklyDueDates : []);
+    weeklyList.forEach(function(item) {
       const dayElem = document.getElementById('calendar-day-' + item.date);
       if (dayElem) {
         const weeklyRgb = getCssVar('--accent-color-bg-lighter-rgb');
         const weeklyBorder = weeklyRgb ? ('rgb(' + weeklyRgb + ')') : getCssVar('--accent-step-weekly');
         if (weeklyBorder) dayElem.style.border = '2px solid ' + weeklyBorder;
-        dayElem.title = 'Weekly step: ' + item.step_name + ' (' + item.routine_type + ')';
+        const weeklyText = 'Weekly step: ' + item.step_name + ' (' + item.routine_type + ')';
+        dayElem.title = dayElem.title ? (dayElem.title + ' • ' + weeklyText) : weeklyText;
+        dayElem.setAttribute('aria-label', dayElem.title);
       }
     });
 
-    // Highlight monthly step reminders (expects window.monthlyDueDates from template)
-    const monthlyDueDates = Array.isArray(window.monthlyDueDates) ? window.monthlyDueDates : [];
-    monthlyDueDates.forEach(function(item) {
+    // Highlight monthly step reminders
+    const monthlyList = Array.isArray(monthlyDueDates) && monthlyDueDates.length ? monthlyDueDates : (Array.isArray(window.monthlyDueDates) ? window.monthlyDueDates : []);
+    monthlyList.forEach(function(item) {
       const dayElem = document.getElementById('calendar-day-' + item.date);
       if (dayElem) {
         const monthlyBorder = getCssVar('--accent-step-monthly');
         if (monthlyBorder) dayElem.style.border = '2px solid ' + monthlyBorder;
-        dayElem.title = 'Monthly step: ' + item.step_name + ' (' + item.routine_type + ')';
+        const monthlyText = 'Monthly step: ' + item.step_name + ' (' + item.routine_type + ')';
+        dayElem.title = dayElem.title ? (dayElem.title + ' • ' + monthlyText) : monthlyText;
+        dayElem.setAttribute('aria-label', dayElem.title);
       }
     });
 
@@ -501,6 +522,8 @@ function initNavigation() {
     details.className = 'sc-details';
     details.style.display = 'none';
     root.appendChild(details);
+
+    // Today highlight uses default styling (no user-configurable options)
   }
 
   /**
@@ -521,8 +544,9 @@ function initNavigation() {
     let found = false;
     
     // Show weekly routine info if present
-    if (window.weeklyDueDates && Array.isArray(window.weeklyDueDates)) {
-      window.weeklyDueDates.forEach(function(item) {
+    const weeklyList = Array.isArray(weeklyDueDates) && weeklyDueDates.length ? weeklyDueDates : (Array.isArray(window.weeklyDueDates) ? window.weeklyDueDates : []);
+    if (weeklyList && weeklyList.forEach) {
+      weeklyList.forEach(function(item) {
         if (item.date === dateKey) {
           const div = document.createElement('div');
           div.className = 'sc-event';
@@ -535,8 +559,9 @@ function initNavigation() {
     }
     
     // Show monthly routine info if present
-    if (window.monthlyDueDates && Array.isArray(window.monthlyDueDates)) {
-      window.monthlyDueDates.forEach(function(item) {
+    const monthlyList = Array.isArray(monthlyDueDates) && monthlyDueDates.length ? monthlyDueDates : (Array.isArray(window.monthlyDueDates) ? window.monthlyDueDates : []);
+    if (monthlyList && monthlyList.forEach) {
+      monthlyList.forEach(function(item) {
         if (item.date === dateKey) {
           const div = document.createElement('div');
           div.className = 'sc-event';
@@ -622,6 +647,8 @@ function initNavigation() {
 
   // Initialize calendar
   render();
+
+  // No calendar UI controls or persisted preferences for today highlight
 })();
 
 /* ==========================================================================

@@ -560,6 +560,10 @@
         <span class="legend-symbol missed">×</span>
         <span class="legend-text">Missed</span>
       </div>
+      <div class="legend-item">
+        <span class="legend-symbol expiry">⚠️</span>
+        <span class="legend-text">Expiring</span>
+      </div>
     </div>
     <div id="calendar"></div>
   </section>
@@ -569,5 +573,7 @@
   <!-- Dashboard data as JSON for use by main.js -->
   <script type="application/json" id="routine-events">{{ routine_events_json|default:"{}"|safe }}</script>
   <script type="application/json" id="expiry-events">{{ expiry_events_json|default:"[]"|safe }}</script>
+  <script type="application/json" id="weekly-due-dates">{{ weekly_due_dates_json|default:"[]"|safe }}</script>
+  <script type="application/json" id="monthly-due-dates">{{ monthly_due_dates_json|default:"[]"|safe }}</script>
 {% endblock extra_js %}
 
