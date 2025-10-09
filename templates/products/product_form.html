@@ -4,16 +4,15 @@
 {% block title %}{{ title }} - SKYN{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-<div class="container">
+<div class="container products-page">
     <div class="page-header">
         <h1>{{ title }}</h1>
         <a href="{% url 'products:list' %}" class="btn btn-secondary">Back to Products</a>
     </div>
 
     <div class="form-container">
-        <!-- Product Suggestions Section -->
-    <div class="product-suggestions-section glass">
+        <!-- Product Suggestions Section (top) -->
+        <div class="form-card product-suggestions-section">
             <h3 class="suggestions-title">Quick Add from Popular Products</h3>
             <p class="suggestions-desc">Browse popular products or add your own manually below.</p>
             
@@ -49,8 +48,8 @@
             </div>
         </div>
         
-        <!-- Manual Form Section -->
-        <div class="manual-form-section">
+        <!-- Manual Form Section (below) -->
+        <div class="form-card manual-form-section">
             <h3>Or Add Manually</h3>
             <form method="post" class="product-form" id="product-form" action="{% if product %}{% url 'products:edit' product.pk %}{% else %}{% url 'products:create' %}{% endif %}">
             {% csrf_token %}
@@ -88,6 +87,22 @@
             </div>
 
             <div class="form-group">
+                <label for="{{ form.expiry_date.id_for_label }}">Expiry Date</label>
+                {{ form.expiry_date }}
+                {% if form.expiry_date.errors %}
+                    <div class="error">{{ form.expiry_date.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.is_favorite.id_for_label }}">Mark as Favorite</label>
+                {{ form.is_favorite }}
+                {% if form.is_favorite.errors %}
+                    <div class="error">{{ form.is_favorite.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
                 <label for="{{ form.skin_type.id_for_label }}">Best for Skin Type</label>
                 {{ form.skin_type }}
                 {% if form.skin_type.errors %}
@@ -111,7 +126,7 @@
                 {% endif %}
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions center">
                 <button type="submit" class="btn btn-primary">
                     {% if product %}Update Product{% else %}Add Product{% endif %}
                 </button>

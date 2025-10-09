@@ -14,12 +14,37 @@
             {% for product in products %}
                 <div class="product-card">
                     <div class="product-info">
-                        <h3>{{ product.name }}</h3>
-                        <p class="brand">{{ product.brand }}</p>
-                        <span class="product-type">{{ product.get_product_type_display }}</span>
-                        
+                        <div class="product-card-header">
+                            <div class="product-avatar" aria-hidden="true">
+                                {% if product.brand %}
+                                    {{ product.brand|slice:":1"|upper }}
+                                {% else %}
+                                    <i class="fas fa-bottle-droplet"></i>
+                                {% endif %}
+                            </div>
+                            <div class="product-title">
+                                <h3>{{ product.name }}</h3>
+                                <div class="product-meta">
+                                    <span class="brand">{{ product.brand }}</span>
+                                    <span class="product-type badge-neutral">{{ product.get_product_type_display }}</span>
+                                </div>
+                            </div>
+                            <div class="product-corner-badges">
+                                {% if product.is_favorite %}
+                                    <span class="badge-flag favorite" title="Favorite"><i class="fas fa-heart"></i></span>
+                                {% endif %}
+                                {% if product.expiry_date %}
+                                    <span class="badge-flag expiry" title="Has expiry date"><i class="fas fa-clock"></i></span>
+                                {% endif %}
+                            </div>
+                        </div>
+
                         {% if product.notes %}
-                            <p class="notes">{{ product.notes|truncatewords:8 }}</p>
+                            <p class="notes">{{ product.notes|truncatewords:14 }}</p>
+                        {% endif %}
+
+                        {% if product.rating %}
+                            <div class="rating" aria-label="Rating: {{ product.rating }} out of 5">{{ product.rating }}/5</div>
                         {% endif %}
                         
                         <div class="product-actions">
