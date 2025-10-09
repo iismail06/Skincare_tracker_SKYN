@@ -111,15 +111,19 @@
                                 <div id="steps-container">
                                     <div class="step-item" data-step="1">
                                         <select id="step1" name="step1" class="step-select"></select>
+                                        <select id="product1" name="product1" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product1|default_if_none:'' }}"{% endif %}></select>
                                     </div>
                                     <div class="step-item" data-step="2">
                                         <select id="step2" name="step2" class="step-select"></select>
+                                        <select id="product2" name="product2" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product2|default_if_none:'' }}"{% endif %}></select>
                                     </div>
                                     <div class="step-item" data-step="3">
                                         <select id="step3" name="step3" class="step-select"></select>
+                                        <select id="product3" name="product3" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product3|default_if_none:'' }}"{% endif %}></select>
                                     </div>
                                     <div class="step-item" data-step="4">
                                         <select id="step4" name="step4" class="step-select"></select>
+                                        <select id="product4" name="product4" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product4|default_if_none:'' }}"{% endif %}></select>
                                     </div>
                                 </div>
                             </div>
@@ -177,15 +181,19 @@
                             <div id="steps-container">
                                 <div class="step-item" data-step="1">
                                     <select id="step1" name="step1" class="step-select"></select>
+                                    <select id="product1" name="product1" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
                                 </div>
                                 <div class="step-item" data-step="2">
                                     <select id="step2" name="step2" class="step-select"></select>
+                                    <select id="product2" name="product2" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
                                 </div>
                                 <div class="step-item" data-step="3">
                                     <select id="step3" name="step3" class="step-select"></select>
+                                    <select id="product3" name="product3" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
                                 </div>
                                 <div class="step-item" data-step="4">
                                     <select id="step4" name="step4" class="step-select"></select>
+                                    <select id="product4" name="product4" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
                                 </div>
                             </div>
                         </div>

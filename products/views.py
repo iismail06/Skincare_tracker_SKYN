@@ -266,6 +266,138 @@ class ProductBrowseByCategoryAPIView(generics.ListAPIView):
                 {'name': 'Tea Tree Oil Blemish Stick', 'brand': 'The Body Shop', 'ingredients': 'Tea Tree Oil, Salicylic Acid'},
                 {'name': 'Acne Treatment', 'brand': 'La Roche-Posay', 'ingredients': 'Benzoyl Peroxide, LHA'},
             ],
+            # Body care
+            'body_scrub': [
+                {'name': 'Coconut Exfoliating Scrub', 'brand': 'Tree Hut', 'ingredients': 'Sugar, Shea Butter, Coconut Extract'},
+                {'name': 'Energizing Body Scrub', 'brand': 'Dove', 'ingredients': 'Rice Milk, Macadamia, Exfoliating Particles'},
+                {'name': 'Coffee Body Scrub', 'brand': 'Frank Body', 'ingredients': 'Coffee, Sweet Almond Oil'},
+                {'name': 'Sea Salt Body Scrub', 'brand': 'LUSH', 'ingredients': 'Sea Salt, Grapefruit, Lime'},
+            ],
+            'body_wash': [
+                {'name': 'Hydrating Body Wash', 'brand': 'CeraVe', 'ingredients': 'Ceramides, Hyaluronic Acid'},
+                {'name': 'Deep Moisture Body Wash', 'brand': 'Dove', 'ingredients': 'Glycerin, Stearic Acid'},
+                {'name': 'Sensitive Skin Body Wash', 'brand': 'Aveeno', 'ingredients': 'Colloidal Oatmeal, Glycerin'},
+            ],
+            'body_lotion': [
+                {'name': 'Daily Moisturizing Lotion', 'brand': 'Aveeno', 'ingredients': 'Colloidal Oatmeal, Dimethicone'},
+                {'name': 'Daily Moisturizing Lotion', 'brand': 'CeraVe', 'ingredients': 'Ceramides, Hyaluronic Acid'},
+                {'name': 'Ultra Repair Cream', 'brand': 'First Aid Beauty', 'ingredients': 'Colloidal Oatmeal, Shea Butter'},
+            ],
+            'body_oil': [
+                {'name': 'Light Sesame Body Oil', 'brand': 'Neutrogena', 'ingredients': 'Sesamum Indicum (Sesame) Seed Oil'},
+                {'name': 'Bio-Oil Skincare Oil', 'brand': 'Bio-Oil', 'ingredients': 'Mineral Oil, Vitamin A, Vitamin E'},
+                {'name': 'Coconut Body Oil', 'brand': 'Palmer\'s', 'ingredients': 'Cocos Nucifera Oil, Monoi Oil'},
+            ],
+            'deodorant': [
+                {'name': 'Invisible Solid', 'brand': 'Secret', 'ingredients': 'Aluminum Zirconium, Cyclopentasiloxane'},
+                {'name': 'Clinical Strength', 'brand': 'Degree', 'ingredients': 'Aluminum Zirconium Tetrachlorohydrex Gly'},
+                {'name': 'Natural Deodorant', 'brand': 'Native', 'ingredients': 'Baking Soda, Coconut Oil'},
+            ],
+            'hand_cream': [
+                {'name': 'Hand Repair Cream', 'brand': 'Neutrogena', 'ingredients': 'Glycerin, Dimethicone'},
+                {'name': 'Ultimate Strength Hand Salve', 'brand': 'Kiehl\'s', 'ingredients': 'Avocado Oil, Eucalyptus'},
+                {'name': 'Intensive Hand Cream', 'brand': 'Nivea', 'ingredients': 'Glycerin, Panthenol'},
+            ],
+            'foot_treatment': [
+                {'name': 'Intensive Foot Cream', 'brand': 'O\'Keeffe\'s', 'ingredients': 'Glycerin, Allantoin'},
+                {'name': 'Exfoliating Foot Peel', 'brand': 'Baby Foot', 'ingredients': 'AHA/BHA Blend'},
+                {'name': 'Foot Repair Balm', 'brand': 'Eucerin', 'ingredients': 'Urea, Lactic Acid'},
+            ],
+            'lip_treatment': [
+                {'name': 'Aquaphor Lip Repair', 'brand': 'Aquaphor', 'ingredients': 'Mineral Oil, Panthenol'},
+                {'name': 'Laneige Lip Sleeping Mask', 'brand': 'Laneige', 'ingredients': 'Berry Extract, Shea Butter'},
+                {'name': 'Burt\'s Bees Lip Balm', 'brand': 'Burt\'s Bees', 'ingredients': 'Beeswax, Peppermint Oil'},
+            ],
+            # Hair care
+            'clarifying_shampoo': [
+                {'name': 'ACV Clarifying Shampoo', 'brand': 'dpHUE', 'ingredients': 'Apple Cider Vinegar, Argan Oil'},
+                {'name': 'Clarifying Shampoo', 'brand': 'Neutrogena', 'ingredients': 'Sodium Laureth Sulfate, PEG-80 Sorbitan Laurate'},
+            ],
+            'shampoo': [
+                {'name': 'Daily Moisture Shampoo', 'brand': 'Dove', 'ingredients': 'Sodium Laureth Sulfate, Glycerin'},
+                {'name': 'Hydration Shampoo', 'brand': 'Pantene', 'ingredients': 'Pro-Vitamin B5, Glycerin'},
+            ],
+            'conditioner': [
+                {'name': 'Daily Moisture Conditioner', 'brand': 'Dove', 'ingredients': 'Stearamidopropyl Dimethylamine, Glycerin'},
+                {'name': 'Repair Conditioner', 'brand': 'Aussie', 'ingredients': 'Aloe, Jojoba Oil'},
+            ],
+            'hair_mask': [
+                {'name': 'Strength & Restore Mask', 'brand': 'SheaMoisture', 'ingredients': 'Shea Butter, Castor Oil'},
+                {'name': '3 Minute Miracle Moist', 'brand': 'Aussie', 'ingredients': 'Aloe, Jojoba Oil'},
+            ],
+            'deep_hair_mask': [
+                {'name': 'Intense Rescue Shots', 'brand': 'Pantene', 'ingredients': 'Pro-V Blend'},
+                {'name': 'K-Pak Reconstructor', 'brand': 'Joico', 'ingredients': 'Keratin, Amino Acids'},
+            ],
+            'leave_in_treatment': [
+                {'name': 'It\'s a 10 Miracle Leave-In', 'brand': 'It\'s a 10', 'ingredients': 'Panthenol, Silk Amino Acids'},
+                {'name': 'Anti-Frizz Leave-In', 'brand': 'Garnier', 'ingredients': 'Argan Oil, Plant Keratin'},
+            ],
+            'hair_oil': [
+                {'name': 'Moroccanoil Treatment', 'brand': 'Moroccanoil', 'ingredients': 'Argan Oil, Linseed Extract'},
+                {'name': 'Coconut Hair Oil', 'brand': 'Parachute', 'ingredients': 'Cocos Nucifera Oil'},
+            ],
+            'scalp_treatment': [
+                {'name': 'Scalp Detox', 'brand': 'The Inkey List', 'ingredients': 'Salicylic Acid'},
+                {'name': 'Scalp Relief Treatment', 'brand': 'Head & Shoulders', 'ingredients': 'Pyrithione Zinc'},
+            ],
+            'heat_protectant': [
+                {'name': 'Heat Protect Spray', 'brand': 'Tresemmé', 'ingredients': 'Dimethicone, Glycerin'},
+                {'name': 'Hot Toddy Heat Protectant', 'brand': 'Drybar', 'ingredients': 'Silicones Blend'},
+            ],
+            # Special/seasonal treatments
+            'primer': [
+                {'name': 'Blur + Smooth Primer', 'brand': 'Maybelline', 'ingredients': 'Dimethicone, Cyclopentasiloxane'},
+                {'name': 'Hydrating Primer', 'brand': 'e.l.f.', 'ingredients': 'Glycerin, Dimethicone'},
+            ],
+            'glow_treatment': [
+                {'name': 'Glow Recipe Dew Drops', 'brand': 'Glow Recipe', 'ingredients': 'Niacinamide, Watermelon'},
+                {'name': 'Illuminating Serum', 'brand': 'L\'Oréal', 'ingredients': 'Glycerin, Mica'},
+            ],
+            'hydration_boost': [
+                {'name': 'Hydrating Serum', 'brand': 'Vichy', 'ingredients': 'Hyaluronic Acid, Thermal Water'},
+                {'name': 'Hydration Booster', 'brand': 'The Inkey List', 'ingredients': 'Hyaluronic Acid'},
+            ],
+            'setting_treatment': [
+                {'name': 'Makeup Setting Spray', 'brand': 'Urban Decay', 'ingredients': 'Aloe, PVP'},
+                {'name': 'Hydrating Setting Spray', 'brand': 'NYX', 'ingredients': 'Glycerin, Aloe'},
+            ],
+            'treatment': [
+                {'name': 'Peptide Treatment', 'brand': 'The Ordinary', 'ingredients': 'Matrixyl, Argireline'},
+                {'name': 'Resveratrol Night Treatment', 'brand': 'The Ordinary', 'ingredients': 'Resveratrol, Ferulic Acid'},
+            ],
+            'professional_treatment': [
+                {'name': 'At-Home Peel Kit', 'brand': 'Dr Dennis Gross', 'ingredients': 'AHA/BHA Blend'},
+                {'name': 'Microdermabrasion Kit', 'brand': 'PMD', 'ingredients': 'Aluminum Oxide Crystals'},
+            ],
+            'barrier_repair': [
+                {'name': 'Cicaplast Baume B5', 'brand': 'La Roche-Posay', 'ingredients': 'Panthenol, Madecassoside'},
+                {'name': 'SOS Repair Cream', 'brand': 'Avene', 'ingredients': 'Thermal Spring Water, Mineral Oil'},
+            ],
+            'reset_treatment': [
+                {'name': 'Overnight Reset Oil-in-Serum', 'brand': 'L\'Occitane', 'ingredients': 'Immortelle Essential Oil'},
+                {'name': 'Skin Reset Serum', 'brand': 'Trilogy', 'ingredients': 'Rosapene, Tamanu'},
+            ],
+            'season_prep': [
+                {'name': 'Winter Defense Cream', 'brand': 'Weleda', 'ingredients': 'Beeswax, Lanolin'},
+                {'name': 'Summer Prep Gel', 'brand': 'Aloe Gator', 'ingredients': 'Aloe Vera'},
+            ],
+            'climate_adjustment': [
+                {'name': 'Humidity Shield', 'brand': 'Living Proof', 'ingredients': 'Amino Silicones'},
+                {'name': 'Dry Climate Cream', 'brand': 'Kiehl\'s', 'ingredients': 'Glycerin, Squalane'},
+            ],
+            'humidity_control': [
+                {'name': 'Anti-Humidity Spray', 'brand': 'Frizz Ease', 'ingredients': 'Silicones'},
+                {'name': 'Moisture Barrier Gel', 'brand': 'Clinique', 'ingredients': 'Dimethicone, Glycerin'},
+            ],
+            'weather_protection': [
+                {'name': 'Wind & Cold Cream', 'brand': 'Weleda', 'ingredients': 'Lanolin, Beeswax'},
+                {'name': 'UV Protective Milk', 'brand': 'Shiseido', 'ingredients': 'UV Filters, Silicones'},
+            ],
+            'transition_treatment': [
+                {'name': 'Seasonal Transition Serum', 'brand': 'Origins', 'ingredients': 'Plant Extracts'},
+                {'name': 'Adaptive Moisturizer', 'brand': 'Clinique', 'ingredients': 'Glycerin, Dimethicone'},
+            ],
         }
         
         # Get default products for this category, fallback to moisturizer if category not found

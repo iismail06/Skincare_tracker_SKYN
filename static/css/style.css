@@ -780,9 +780,10 @@ main {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
     background: transparent;
     border-radius: 4px;
+    border: 1px solid var(--background-color-darker);
     transition: background-color 0.2s ease;
 }
 
@@ -884,6 +885,9 @@ main {
 
 .steps-section {
     margin-top: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem;
 }
 
 .steps-section h3 {
@@ -2316,6 +2320,21 @@ body.dark-theme .badge.success {
 
 .step-select {
   flex: 1;
+}
+
+/* Compact product picker next to each step */
+/* Compact product select next to the step */
+.product-select {
+    margin-left: 0.25rem;
+    max-width: 160px;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.35rem;
+    line-height: 1.1;
+}
+
+/* Show a subtle placeholder style when empty */
+.product-select option[disabled][value=""] {
+    color: #888;
 }
 
 /* Quick Add button styling */

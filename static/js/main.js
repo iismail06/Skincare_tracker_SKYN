@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
       progressBar.style.width = progress + '%';
     }
   }
+
+  // Populate product selects on profile routine builder if present
+  initProductSelectsForProfile();
 });
 
 /* ==========================================================================
@@ -1126,6 +1129,338 @@ function setupRoutineStepDropdowns() {
     });
   })
 };
+
+/**
+ * Populate .product-select dropdowns from #user-products-data JSON
+ * and keep them in sync for dynamic add/remove of steps
+ */
+function initProductSelectsForProfile() {
+  const stepsContainer = document.getElementById('steps-container');
+  if (!stepsContainer) return;
+  const jsonTag = document.getElementById('user-products-data');
+  let products = [];
+  // Cache suggestions by category to avoid repeated requests
+  const suggestionCache = {};
+  try {
+    if (jsonTag && jsonTag.textContent) {
+      const parsed = JSON.parse(jsonTag.textContent);
+      if (Array.isArray(parsed)) products = parsed; // [[id, brand, name], ...]
+    }
+  } catch (_) {}
+
+  function buildOptionsHtml(selectedVal) {
+    const hasSelection = !!selectedVal;
+    let html = `<option value="" disabled${hasSelection ? '' : ' selected'}>Add product</option>`;
+    if (products.length) {
+      html += '<optgroup label="My products">';
+      for (const item of products) {
+        const [id, brand, name] = item;
+        const label = `${brand || ''}${brand && name ? ' — ' : ''}${name || ''}`.trim() || 'Untitled Product';
+        const sel = String(selectedVal || '') === String(id) ? ' selected' : '';
+        html += `<option value="${id}"${sel}>${label}</option>`;
+      }
+      html += '</optgroup>';
+    } else {
+      html += '<option value="" disabled>No products yet</option>';
+    }
+    return html;
+  }
+
+  function buildOptionsWithSuggestions(selectedVal, suggestions) {
+    const hasSelection = !!selectedVal;
+    let html = `<option value="" disabled${hasSelection ? '' : ' selected'}>Add product</option>`;
+    // My products
+    if (products.length) {
+      html += '<optgroup label="My products">';
+      for (const item of products) {
+        const [id, brand, name] = item;
+        const label = `${brand || ''}${brand && name ? ' — ' : ''}${name || ''}`.trim() || 'Untitled Product';
+        const sel = String(selectedVal || '') === String(id) ? ' selected' : '';
+        html += `<option value="${id}"${sel}>${label}</option>`;
+      }
+      html += '</optgroup>';
+    }
+    // Suggestions
+    if (Array.isArray(suggestions) && suggestions.length) {
+      html += '<optgroup label="Suggestions">';
+      suggestions.forEach((sug, idx) => {
+        const label = `${(sug.brand || '').trim()}${sug.brand && sug.name ? ' — ' : ''}${(sug.name || '').trim()}` || 'Suggested Product';
+        const val = `suggestion::${idx}`;
+        html += `<option value="${val}" data-sug-name="${(sug.name||'').replace(/"/g,'&quot;')}" data-sug-brand="${(sug.brand||'').replace(/"/g,'&quot;')}" data-sug-type="${(sug.product_type||'').replace(/"/g,'&quot;')}">${label}</option>`;
+      });
+      html += '</optgroup>';
+    }
+    return html;
+  }
+
+  function populateAll() {
+    const selects = stepsContainer.querySelectorAll('select.product-select');
+    selects.forEach(sel => {
+      const pre = sel.getAttribute('data-selected') || sel.value || '';
+      sel.innerHTML = buildOptionsHtml(pre);
+      if (pre) sel.value = pre; // re-apply selected if any
+    });
+  }
+
+  // Initial population
+  populateAll();
+
+  // No toggle logic needed; select is always visible and compact
+
+  // When steps are added dynamically, ensure new product select is populated
+  const addBtn = document.getElementById('add-step-btn');
+  const removeBtn = document.getElementById('remove-step-btn');
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      // Defer to allow the step DOM to be appended by existing code
+      setTimeout(() => {
+        // Find last step item and see if it has a product-select without options
+        const items = stepsContainer.querySelectorAll('.step-item');
+        const last = items[items.length - 1];
+        if (!last) return;
+        let psel = last.querySelector('select.product-select');
+        if (!psel) {
+          // Create and append if not present
+          const stepNum = last.getAttribute('data-step') || items.length;
+          psel = document.createElement('select');
+          psel.id = 'product' + stepNum;
+          psel.name = 'product' + stepNum;
+          psel.className = 'product-select';
+          last.appendChild(psel);
+        }
+        // Populate
+        const pre = psel.getAttribute('data-selected') || psel.value || '';
+        psel.innerHTML = buildOptionsHtml(pre);
+        if (pre) psel.value = pre;
+        // Wire suggestion behavior for this new row
+        wireSuggestionsForItem(last);
+      }, 0);
+    });
+  }
+  if (removeBtn) {
+    removeBtn.addEventListener('click', function() {
+     // Defer to allow the step DOM to be removed by existing code
+    });
+  }
+
+  // Map a step label to a product category understood by the API
+  function mapStepToCategory(label) {
+    const v = (label || '').toLowerCase().trim();
+    if (!v) return null;
+
+    // Deterministic mapping for known options
+    const exactMap = {
+      // Face routines
+      'gentle cleanse': 'cleanser',
+      'double cleanse': 'cleanser',
+      'deep cleanse': 'cleanser',
+      'toner': 'toner',
+      'essence': 'essence',
+      'vitamin c serum': 'vitamin_c',
+      'treatment serum': 'serum',
+      'intensive serum': 'serum',
+      'light moisturizer': 'moisturizer',
+      'moisturizer': 'moisturizer',
+      'spf / sunscreen': 'sunscreen',
+      'retinol / acid treatment': 'retinol',
+      'spot treatment': 'spot_treatment',
+      'eye cream': 'eye_cream',
+      'face oil': 'oil',
+      'lip treatment': 'lip_treatment',
+
+      // Weekly treatments
+      'exfoliation': 'exfoliant',
+      'clay mask': 'mask',
+      'hydrating mask': 'mask',
+      'intensive treatment': 'treatment',
+
+      // Monthly/specialized
+      'professional treatment': 'professional_treatment',
+      'deep repair mask': 'mask',
+      'barrier repair': 'barrier_repair',
+      'reset treatment': 'reset_treatment',
+
+      // Body
+      'body wash': 'body_wash',
+      'body scrub': 'body_scrub',
+      'body lotion': 'body_lotion',
+      'body oil': 'body_oil',
+      'deodorant': 'deodorant',
+      'hand cream': 'hand_cream',
+      'foot treatment': 'foot_treatment',
+
+      // Hair
+      'clarifying shampoo': 'clarifying_shampoo',
+      'shampoo': 'shampoo',
+      'conditioner': 'conditioner',
+      'hair mask': 'hair_mask',
+      'deep hair mask': 'deep_hair_mask',
+      'leave-in treatment': 'leave_in_treatment',
+      'hair oil': 'hair_oil',
+      'scalp treatment': 'scalp_treatment',
+      'heat protectant': 'heat_protectant',
+
+      // Special
+      'prep treatment': 'primer',
+      'priming serum': 'primer',
+      'glow treatment': 'glow_treatment',
+      'hydration boost': 'hydration_boost',
+      'setting treatment': 'setting_treatment',
+
+      // Seasonal
+      'season prep': 'season_prep',
+      'climate adjustment': 'climate_adjustment',
+      'humidity control': 'humidity_control',
+      'weather protection': 'weather_protection',
+      'transition treatment': 'transition_treatment',
+    };
+    if (exactMap[v]) return exactMap[v];
+
+    // Fallback heuristics for custom steps
+    if (v.includes('cleanse')) return 'cleanser';
+    if (v.includes('toner')) return 'toner';
+    if (v.includes('essence')) return 'essence';
+    if (v.includes('vitamin c')) return 'vitamin_c';
+    if (v.includes('serum')) return 'serum';
+    if (v.includes('moistur')) return 'moisturizer';
+    if (v.includes('spf') || v.includes('sunscreen')) return 'sunscreen';
+    if (v.includes('retinol') || v.includes('retinoid')) return 'retinol';
+    if (v.includes('acid') || v.includes('exfol')) return 'exfoliant';
+    if (v.includes('mask')) return 'mask';
+    if (v.includes('eye')) return 'eye_cream';
+    if (v.includes('lip')) return 'lip_treatment';
+    if (v.includes('oil')) return 'oil';
+    if (v.includes('spot')) return 'spot_treatment';
+    if (v.includes('body') && v.includes('wash')) return 'body_wash';
+    if (v.includes('body') && v.includes('scrub')) return 'body_scrub';
+    if (v.includes('body') && (v.includes('lotion') || v.includes('cream'))) return 'body_lotion';
+    if (v.includes('shampoo')) return 'shampoo';
+    if (v.includes('conditioner')) return 'conditioner';
+    if (v.includes('scalp')) return 'scalp_treatment';
+    if (v.includes('heat') && v.includes('protect')) return 'heat_protectant';
+    if (v.includes('deodor')) return 'deodorant';
+    if (v.includes('hand')) return 'hand_cream';
+    if (v.includes('foot')) return 'foot_treatment';
+    return null;
+  }
+
+  async function fetchSuggestions(category) {
+    if (!category) return [];
+    if (suggestionCache[category]) return suggestionCache[category];
+    try {
+      const resp = await fetch(`/api/products/browse/${encodeURIComponent(category)}/`, {
+        credentials: 'same-origin',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!resp.ok) {
+        console.debug('Suggestion fetch failed:', category, resp.status);
+        return [];
+      }
+      // Ensure JSON; if server returned HTML (e.g., redirect), guard it
+      const ct = resp.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        console.debug('Suggestion response not JSON for category:', category, ct);
+        return [];
+      }
+      const data = await resp.json();
+      suggestionCache[category] = Array.isArray(data) ? data : [];
+      return suggestionCache[category];
+    } catch (_) {
+      console.debug('Suggestion fetch error for category:', category);
+      return [];
+    }
+  }
+
+  function getStepAndProductSelectsFromItem(item) {
+    const stepSel = item.querySelector('select[id^="step"]');
+    let productSel = item.querySelector('select.product-select');
+    if (!productSel && stepSel) {
+      const n = (stepSel.id || '').replace('step','');
+      productSel = item.querySelector(`#product${n}`);
+    }
+    return { stepSel, productSel };
+  }
+
+  function setProductSelectOptions(productSel, selectedVal, suggestions) {
+    productSel.innerHTML = buildOptionsWithSuggestions(selectedVal, suggestions);
+    if (selectedVal) productSel.value = String(selectedVal);
+  }
+
+  function handleSuggestionSelection(productSel) {
+    productSel.addEventListener('change', async function() {
+      const val = productSel.value;
+      if (!val || !val.startsWith('suggestion::')) return;
+      // Extract suggestion payload
+      const opt = productSel.options[productSel.selectedIndex];
+      const name = (opt.getAttribute('data-sug-name') || '').trim();
+      const brand = (opt.getAttribute('data-sug-brand') || '').trim();
+      const product_type = (opt.getAttribute('data-sug-type') || '').trim() || 'other';
+      if (!name || !brand) return;
+      // Persist via quick-add, then select the new product id
+      try {
+        const form = new FormData();
+        form.append('name', name);
+        form.append('brand', brand);
+        form.append('product_type', product_type);
+        const resp = await fetch('/api/products/quick-add/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCsrfToken() },
+          body: form,
+          credentials: 'same-origin'
+        });
+        if (!resp.ok) throw new Error('quick-add failed');
+        const data = await resp.json();
+        if (data && data.success && data.product && data.product.id) {
+          // Add to in-memory list and rebuild with selection
+          products.push([data.product.id, data.product.brand || '', data.product.name || '']);
+          setProductSelectOptions(productSel, data.product.id, []);
+        }
+      } catch (e) {
+        showErrorMessage('Could not add suggested product.');
+        setProductSelectOptions(productSel, '', []);
+      }
+    });
+  }
+
+  function wireSuggestionsForItem(item) {
+    const { stepSel, productSel } = getStepAndProductSelectsFromItem(item);
+    if (!(stepSel && productSel)) return;
+    // Initialize suggestions for current step value
+    const currentCat = mapStepToCategory(stepSel.value);
+    const currentVal = productSel.getAttribute('data-selected') || productSel.value || '';
+    if (currentCat) {
+      fetchSuggestions(currentCat).then(sugs => setProductSelectOptions(productSel, currentVal, sugs));
+    } else {
+      setProductSelectOptions(productSel, currentVal, []);
+    }
+    // Wire selection handler (quick-add on suggestion)
+    handleSuggestionSelection(productSel);
+    // On step change, refresh suggestions
+    stepSel.addEventListener('change', async function() {
+      const cat = mapStepToCategory(stepSel.value);
+      const selVal = productSel.value || '';
+      const sugs = await fetchSuggestions(cat);
+      setProductSelectOptions(productSel, selVal, sugs);
+    });
+
+    // Fallback: on first focus of product select, fetch suggestions for current step
+    let fetchedOnFocus = false;
+    productSel.addEventListener('focus', async function() {
+      if (fetchedOnFocus) return;
+      const cat = mapStepToCategory(stepSel.value);
+      if (!cat) return; // no category derived
+      const sugs = await fetchSuggestions(cat);
+      if (sugs && sugs.length) {
+        const selVal = productSel.value || '';
+        setProductSelectOptions(productSel, selVal, sugs);
+        fetchedOnFocus = true;
+      }
+    }, { once: false });
+  }
+
+  // Wire all existing step rows
+  stepsContainer.querySelectorAll('.step-item').forEach(wireSuggestionsForItem);
+}
 
 /* ==========================================================================
    PROFILE PAGE: ROUTINE STEP BUILDER
