@@ -388,6 +388,12 @@ def add_routine(request):
                 routine_type=data['routine_type']
             )
             order = 1
+            # Infer step frequency from routine type for calendar reminders
+            if data['routine_type'] in ('weekly', 'monthly'):
+                inferred_freq = data['routine_type']
+            else:
+                inferred_freq = 'daily'
+
             for i in range(1, 6):
                 step_text = data.get(f'step{i}')
                 product = data.get(f'product{i}')
@@ -396,7 +402,8 @@ def add_routine(request):
                         routine=routine, 
                         step_name=step_text, 
                         order=order,
-                        product=product
+                        product=product,
+                        frequency=inferred_freq
                     )
                     order += 1
             # store created routine id in session so profile view can show richer inline success
@@ -470,6 +477,12 @@ def edit_routine(request, pk):
             routine.steps.all().delete()
             
             order = 1
+            # Infer step frequency from routine type for calendar reminders
+            if data['routine_type'] in ('weekly', 'monthly'):
+                inferred_freq = data['routine_type']
+            else:
+                inferred_freq = 'daily'
+
             for i in range(1, 6):
                 step_text = data.get(f'step{i}')
                 product = data.get(f'product{i}')
@@ -478,7 +491,8 @@ def edit_routine(request, pk):
                         routine=routine, 
                         step_name=step_text, 
                         order=order,
-                        product=product
+                        product=product,
+                        frequency=inferred_freq
                     )
                     order += 1
             

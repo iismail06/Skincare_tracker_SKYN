@@ -26,9 +26,11 @@ class Routine(models.Model):
     
 
 
+# Step frequency for calendar/reminders
 FREQUENCY_CHOICES = [
     ('daily', 'Daily'),
     ('weekly', 'Weekly'),
+    ('monthly', 'Monthly'),
 ]
 
 class RoutineStep(models.Model):

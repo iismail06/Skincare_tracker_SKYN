@@ -841,14 +841,12 @@ function updateProgressDisplay() {
   const completedCheckboxes = document.querySelectorAll('.step-checkbox:checked').length;
   const progressPercent = totalCheckboxes > 0 ? Math.round((completedCheckboxes / totalCheckboxes) * 100) : 0;
 
-  const progressElement = document.querySelector('.progress-stat h3');
-  if (progressElement) progressElement.textContent = progressPercent + '%';
-
-  const progressText = document.querySelector('.progress-stat p');
-  if (progressText) progressText.textContent = `${completedCheckboxes} of ${totalCheckboxes} steps completed today`;
-
+  // Dashboard uses .progress-fill bar and .progress-text span
   const progressBar = document.querySelector('.progress-fill');
   if (progressBar) progressBar.style.width = progressPercent + '%';
+
+  const progressText = document.querySelector('.progress-text');
+  if (progressText) progressText.textContent = `${completedCheckboxes} of ${totalCheckboxes} steps completed`;
 }
 
 /**
