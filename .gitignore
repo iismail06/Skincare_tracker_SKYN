@@ -230,3 +230,10 @@ products/tests/test_no_hardcoded_colors.py
 ci_test.tex
 ci_test.txt
 
+# Snapshots: ignore old snapshot artifacts
+# - Entire "prev" snapshots directory
+# - Monday test artifacts inside dated snapshot folders
+snapshots/prev/**
+snapshots/**/main.monday.js
+snapshots/**/dashboard.monday.html
+

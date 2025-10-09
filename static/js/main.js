@@ -138,6 +138,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Setup common UI elements
   setupCommonElements();
+
+  // Initialize progress bar width from data-progress (if present)
+  const progressBar = document.querySelector('.progress-fill');
+  if (progressBar) {
+    const progress = parseInt(progressBar.getAttribute('data-progress') || '0', 10);
+    if (!Number.isNaN(progress)) {
+      progressBar.style.width = progress + '%';
+    }
+  }
 });
 
 /* ==========================================================================
@@ -150,70 +159,36 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initTheme() {
   const themeToggle = document.getElementById('theme-toggle');
-  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-  
-  // Set up initial theme based on local storage or system preference
-  const currentTheme = localStorage.getItem('theme');
-  
-  if (currentTheme) {
-    // If a preference exists in localStorage, use that
-    document.body.classList.toggle('dark-theme', currentTheme === 'dark');
-    updateThemeToggleIcon(currentTheme === 'dark');
+  const body = document.body;
+
+  if (!themeToggle) {
+    // Not every page has a theme toggle
+    return;
+  }
+
+  // Check for saved theme preference or default to 'light'
+  const currentTheme = localStorage.getItem('theme') || 'light';
+
+  if (currentTheme === 'dark') {
+    body.classList.add('dark-theme');
+    themeToggle.textContent = '\u2600\uFE0F';
   } else {
-    // Otherwise, use the system preference
-    document.body.classList.toggle('dark-theme', prefersDarkScheme.matches);
-    updateThemeToggleIcon(prefersDarkScheme.matches);
-    // Save the system preference to localStorage
-    localStorage.setItem('theme', prefersDarkScheme.matches ? 'dark' : 'light');
+    themeToggle.textContent = '\uD83C\uDF19';
   }
-  
-  // Add event listener for theme toggle button
-  if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
-  }
-  
-  // Listen for system theme changes
-  prefersDarkScheme.addEventListener('change', function(e) {
-    // Only update if the user hasn't set a preference
-    if (!localStorage.getItem('theme')) {
-      document.body.classList.toggle('dark-theme', e.matches);
-      updateThemeToggleIcon(e.matches);
+
+  // Avoid duplicate handlers if initTheme is called more than once
+  themeToggle.removeEventListener('click', themeToggle._handler || (()=>{}));
+  themeToggle._handler = function() {
+    body.classList.toggle('dark-theme');
+    if (body.classList.contains('dark-theme')) {
+      themeToggle.textContent = '\u2600\uFE0F';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      themeToggle.textContent = '\uD83C\uDF19';
+      localStorage.setItem('theme', 'light');
     }
-  });
-}
-
-/**
- * Toggle between light and dark themes
- */
-function toggleTheme() {
-  // Toggle the theme
-  document.body.classList.toggle('dark-theme');
-  const isDarkTheme = document.body.classList.contains('dark-theme');
-  
-  // Update the icon
-  updateThemeToggleIcon(isDarkTheme);
-  
-  // Save the preference to localStorage
-  localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
-}
-
-/**
- * Update the theme toggle icon based on the current theme
- * @param {boolean} isDarkTheme - Whether the current theme is dark
- */
-function updateThemeToggleIcon(isDarkTheme) {
-  const themeToggle = document.getElementById('theme-toggle');
-  if (!themeToggle) return;
-  
-  // Update icon classes
-  const icon = themeToggle.querySelector('i') || themeToggle;
-  if (isDarkTheme) {
-    icon.classList.remove('fa-moon');
-    icon.classList.add('fa-sun');
-  } else {
-    icon.classList.remove('fa-sun');
-    icon.classList.add('fa-moon');
-  }
+  };
+  themeToggle.addEventListener('click', themeToggle._handler);
 }
 
 /* ==========================================================================
@@ -222,41 +197,63 @@ function updateThemeToggleIcon(isDarkTheme) {
    ========================================================================== */
 
 /**
- * Initialize navigation functionality
+ * Mobile Hamburger Menu Functionality
+ * Handles responsive navigation menu toggle
  */
 function initNavigation() {
-  const menuToggle = document.querySelector('.hamburger-menu');
-  const mobileMenu = document.querySelector('.mobile-menu');
-  
-  if (!menuToggle || !mobileMenu) return;
-  
-  // Toggle menu on hamburger click
-  menuToggle.addEventListener('click', function() {
-    this.classList.toggle('active');
-    mobileMenu.classList.toggle('active');
-    document.body.classList.toggle('menu-open');
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const navLinks = document.getElementById('nav-links');
+
+  if (!(hamburgerMenu && navLinks)) return;
+
+  // Click handler for toggling menu
+  const onHamburgerClick = function() {
+    hamburgerMenu.classList.toggle('active');
+    navLinks.classList.toggle('active');
+    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+  };
+
+  // Remove previous bindings (if any) to avoid duplicates
+  hamburgerMenu.removeEventListener('click', hamburgerMenu._handler || (()=>{}));
+  hamburgerMenu._handler = onHamburgerClick;
+  hamburgerMenu.addEventListener('click', onHamburgerClick);
+
+  // Close on nav link click
+  const navLinkItems = navLinks.querySelectorAll('a');
+  navLinkItems.forEach(link => {
+    link.removeEventListener('click', link._closeHandler || (()=>{}));
+    link._closeHandler = function() {
+      hamburgerMenu.classList.remove('active');
+      navLinks.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+    link.addEventListener('click', link._closeHandler);
   });
-  
-  // Close menu when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!mobileMenu.contains(event.target) && 
-        !menuToggle.contains(event.target) && 
-        mobileMenu.classList.contains('active')) {
-      
-      menuToggle.classList.remove('active');
-      mobileMenu.classList.remove('active');
-      document.body.classList.remove('menu-open');
+
+  // Close when clicking outside
+  const onDocClick = function(event) {
+    const isClickInsideNav = navLinks.contains(event.target) || hamburgerMenu.contains(event.target);
+    if (!isClickInsideNav && navLinks.classList.contains('active')) {
+      hamburgerMenu.classList.remove('active');
+      navLinks.classList.remove('active');
+      document.body.style.overflow = '';
     }
-  });
-  
-  // Close menu when pressing escape key
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' && mobileMenu.classList.contains('active')) {
-      menuToggle.classList.remove('active');
-      mobileMenu.classList.remove('active');
-      document.body.classList.remove('menu-open');
+  };
+  document.removeEventListener('click', document._navOutsideHandler || (()=>{}));
+  document._navOutsideHandler = onDocClick;
+  document.addEventListener('click', onDocClick);
+
+  // Close on resize
+  const onResize = function() {
+    if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+      hamburgerMenu.classList.remove('active');
+      navLinks.classList.remove('active');
+      document.body.style.overflow = '';
     }
-  });
+  };
+  window.removeEventListener('resize', window._navResizeHandler || (()=>{}));
+  window._navResizeHandler = onResize;
+  window.addEventListener('resize', onResize);
 }
 
 /* ==========================================================================
@@ -264,185 +261,307 @@ function initNavigation() {
    Handles calendar display and interactions
    ========================================================================== */
 
-/**
- * Initialize calendar if it exists on the page
- */
-function initCalendar() {
-  const calendarContainer = document.querySelector('.calendar-container');
-  if (!calendarContainer) return;
+(function() {
+  const root = document.querySelector('#calendar');
+  if (!root) return;
+
+  const events = (window.ROUTINE_EVENTS && Array.isArray(window.ROUTINE_EVENTS)) ? window.ROUTINE_EVENTS : [];
+  const eventsByDate = {};
   
-  // Initialize calendar state
-  const today = new Date();
-  const currentMonth = {
-    date: new Date(today.getFullYear(), today.getMonth(), 1),
-    events: []
+  events.forEach(function(ev) {
+    if (!ev || !ev.date) return;
+    eventsByDate[ev.date] = ev;
+  });
+
+  const state = {
+    year: (new Date()).getFullYear(),
+    month: (new Date()).getMonth() // 0-indexed
   };
 
-  // Render initial calendar
-  renderCalendar(currentMonth.date);
-  
-  // Add event listeners for month navigation
-  const prevMonthBtn = document.querySelector('.calendar-prev-month');
-  const nextMonthBtn = document.querySelector('.calendar-next-month');
-  const todayBtn = document.querySelector('.calendar-today');
-  
-  if (prevMonthBtn) {
-    prevMonthBtn.addEventListener('click', () => {
-      currentMonth.date = new Date(currentMonth.date.getFullYear(), currentMonth.date.getMonth() - 1, 1);
-      renderCalendar(currentMonth.date);
-    });
-  }
-  
-  if (nextMonthBtn) {
-    nextMonthBtn.addEventListener('click', () => {
-      currentMonth.date = new Date(currentMonth.date.getFullYear(), currentMonth.date.getMonth() + 1, 1);
-      renderCalendar(currentMonth.date);
-    });
-  }
-  
-  if (todayBtn) {
-    todayBtn.addEventListener('click', () => {
-      currentMonth.date = new Date(today.getFullYear(), today.getMonth(), 1);
-      renderCalendar(currentMonth.date);
-    });
-  }
-  
-  // Listen for routine data updates
-  document.addEventListener('dashboardDataReady', function(event) {
-    if (event.detail && event.detail.routineData) {
-      currentMonth.events = event.detail.routineData;
-      renderCalendar(currentMonth.date);
-    }
-  });
-  
-  // Listen for routine step updates
-  document.addEventListener('routineStepUpdated', function() {
-    // Refresh calendar data if needed
-    fetchCalendarEvents();
-  });
-}
+  /**
+   * Renders the calendar interface
+   */
+  function render() {
+    root.innerHTML = '';
 
-/**
- * Render the calendar for a given month
- * @param {Date} date - Date object representing the month to display
- */
-function renderCalendar(date) {
-  const calendarContainer = document.querySelector('.calendar-container');
-  if (!calendarContainer) return;
-  
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  
-  // Update month/year display
-  const monthYearElement = document.querySelector('.calendar-month-year');
-  if (monthYearElement) {
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"];
-    monthYearElement.textContent = `${monthNames[month]} ${year}`;
-  }
-  
-  // Get the first day of the month
-  const firstDay = new Date(year, month, 1);
-  
-  // Get the last day of the month
-  const lastDay = new Date(year, month + 1, 0);
-  
-  // Get the day of the week for the first day (0 = Sunday, 6 = Saturday)
-  const startingDayOfWeek = firstDay.getDay();
-  
-  // Calculate number of days in the month
-  const daysInMonth = lastDay.getDate();
-  
-  // Create calendar grid
-  const calendarGrid = document.querySelector('.calendar-grid');
-  if (!calendarGrid) return;
-  
-  // Clear previous calendar
-  calendarGrid.innerHTML = '';
-  
-  // Add day headers (Sun, Mon, etc.)
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  daysOfWeek.forEach(day => {
-    const dayElement = document.createElement('div');
-    dayElement.className = 'calendar-day-header';
-    dayElement.textContent = day;
-    calendarGrid.appendChild(dayElement);
-  });
-  
-  // Add empty cells for days before the first day of the month
-  for (let i = 0; i < startingDayOfWeek; i++) {
-    const emptyDay = document.createElement('div');
-    emptyDay.className = 'calendar-day empty';
-    calendarGrid.appendChild(emptyDay);
-  }
-  
-  // Add days of the month
-  const today = new Date();
-  const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
-  
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dayElement = document.createElement('div');
-    dayElement.className = 'calendar-day';
+    // Create header with navigation
+    const header = document.createElement('div');
+    header.className = 'sc-header';
     
-    // Check if it's today
-    if (isCurrentMonth && day === today.getDate()) {
-      dayElement.classList.add('today');
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '<';
+    prevBtn.addEventListener('click', function() { changeMonth(-1); });
+    
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = '>';
+    nextBtn.addEventListener('click', function() { changeMonth(1); });
+    
+    const title = document.createElement('div');
+    title.className = 'sc-title';
+    title.textContent = new Date(state.year, state.month).toLocaleString(undefined, { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+
+    header.appendChild(prevBtn);
+    header.appendChild(title);
+    header.appendChild(nextBtn);
+    root.appendChild(header);
+
+    // Create days of week header
+    const dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dowRow = document.createElement('div');
+    dowRow.className = 'sc-dow';
+    
+    dow.forEach(function(d) {
+      const cell = document.createElement('div');
+      cell.className = 'sc-dow-cell';
+      cell.textContent = d;
+      dowRow.appendChild(cell);
+    });
+    root.appendChild(dowRow);
+
+    // Create calendar grid
+    const grid = document.createElement('div');
+    grid.className = 'sc-grid';
+
+    const first = new Date(state.year, state.month, 1);
+    const startWeekday = first.getDay();
+    const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+
+    // Add empty cells for days before month start
+    for (let i = 0; i < startWeekday; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'sc-cell sc-other';
+      grid.appendChild(blank);
     }
-    
-    const dateNum = document.createElement('span');
-    dateNum.className = 'calendar-date-num';
-    dateNum.textContent = day;
-    dayElement.appendChild(dateNum);
-    
-    // Add event indicators if there are events on this day
-    const currentDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const eventsForDay = window.dashboardData?.routineData?.filter(event => 
-      event.date === currentDate
-    );
-    
-    if (eventsForDay && eventsForDay.length > 0) {
-      const eventContainer = document.createElement('div');
-      eventContainer.className = 'calendar-event-indicators';
+
+    // Add cells for each day of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateKey = toDateKey(state.year, state.month, day);
+      const cell = document.createElement('div');
+      cell.className = 'sc-cell sc-day';
+      cell.dataset.date = dateKey;
+      cell.id = 'calendar-day-' + dateKey;
+
+      const num = document.createElement('div');
+      num.className = 'sc-day-num';
+      num.textContent = day;
+      cell.appendChild(num);
+
+      // Add status icon
+      const icon = document.createElement('div');
+      icon.className = 'sc-day-icon';
       
-      eventsForDay.forEach(event => {
-        const eventIndicator = document.createElement('span');
-        eventIndicator.className = 'calendar-event-indicator';
-        eventIndicator.style.backgroundColor = getCssVar('--color-primary') || '#4caf50';
-        
-        if (event.completed) {
-          eventIndicator.classList.add('completed');
+      const ev = eventsByDate[dateKey];
+      
+      // Check if the date is in the future
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      const cellDate = new Date(state.year, state.month, day);
+      const isFutureDay = cellDate > today;
+      
+      // Set status indicators based on event data
+        if (ev) {
+        if (ev.status === 'completed') {
+          icon.textContent = '✨';
+          cell.classList.add('sc-day-completed');
+        } else if (ev.status === 'not_done') {
+          if (isFutureDay) {
+            // Future days - add class but leave empty (no marker)
+            cell.classList.add('sc-day-future');
+            icon.textContent = '';
+          } else {
+            // Past missed days - red cross
+            icon.textContent = '×';
+            const errorColor = getCssVar('--error-color');
+            if (errorColor) icon.style.color = errorColor;
+            icon.style.fontSize = '2rem';
+            cell.classList.add('sc-day-not-done');
+          }
+        } else if (ev.status === 'morning') {
+          icon.textContent = '☀️';
+          cell.classList.add('sc-day-morning');
+        } else if (ev.status === 'evening') {
+          icon.textContent = '🌙';
+          cell.classList.add('sc-day-evening');
         }
-        
-        eventContainer.appendChild(eventIndicator);
+      } else if (isFutureDay) {
+        // Future days with no events
+        cell.classList.add('sc-day-future');
+      }
+      
+      cell.appendChild(icon);
+
+      cell.addEventListener('click', function(e) {
+        showDetails(this.dataset.date);
       });
-      
-      dayElement.appendChild(eventContainer);
-      
-      // Make clickable if there are events
-      dayElement.classList.add('has-events');
-      dayElement.setAttribute('data-date', currentDate);
-      dayElement.addEventListener('click', () => showDayDetail(currentDate));
+
+      grid.appendChild(cell);
+    }
+
+    // Apply heatmap coloring based on routine events
+    if (window.ROUTINE_EVENTS && Array.isArray(window.ROUTINE_EVENTS)) {
+      window.ROUTINE_EVENTS.forEach(function(event) {
+        const dayElem = document.getElementById('calendar-day-' + event.date);
+        if (dayElem) {
+          dayElem.classList.remove('sc-day-completed', 'sc-day-not-done', 'sc-day-morning', 'sc-day-evening');
+          
+          if (event.status === 'completed') {
+            dayElem.classList.add('sc-day-completed');
+          } else if (event.status === 'morning') {
+            dayElem.classList.add('sc-day-morning');
+          } else if (event.status === 'evening') {
+            dayElem.classList.add('sc-day-evening');
+          } else {
+            dayElem.classList.add('sc-day-not-done');
+          }
+        }
+      });
+    }
+
+    // Highlight weekly step reminders (expects window.weeklyDueDates from template)
+    const weeklyDueDates = Array.isArray(window.weeklyDueDates) ? window.weeklyDueDates : [];
+    weeklyDueDates.forEach(function(item) {
+      const dayElem = document.getElementById('calendar-day-' + item.date);
+      if (dayElem) {
+        const weeklyRgb = getCssVar('--accent-color-bg-lighter-rgb');
+        const weeklyBorder = weeklyRgb ? ('rgb(' + weeklyRgb + ')') : getCssVar('--accent-step-weekly');
+        if (weeklyBorder) dayElem.style.border = '2px solid ' + weeklyBorder;
+        dayElem.title = 'Weekly step: ' + item.step_name + ' (' + item.routine_type + ')';
+      }
+    });
+
+    // Highlight monthly step reminders (expects window.monthlyDueDates from template)
+    const monthlyDueDates = Array.isArray(window.monthlyDueDates) ? window.monthlyDueDates : [];
+    monthlyDueDates.forEach(function(item) {
+      const dayElem = document.getElementById('calendar-day-' + item.date);
+      if (dayElem) {
+        const monthlyBorder = getCssVar('--accent-step-monthly');
+        if (monthlyBorder) dayElem.style.border = '2px solid ' + monthlyBorder;
+        dayElem.title = 'Monthly step: ' + item.step_name + ' (' + item.routine_type + ')';
+      }
+    });
+
+    // Add trailing empty cells to complete the grid
+    const totalCells = startWeekday + daysInMonth;
+    const trailing = (7 - (totalCells % 7)) % 7;
+    for (let t = 0; t < trailing; t++) {
+      const blank2 = document.createElement('div');
+      blank2.className = 'sc-cell sc-other';
+      grid.appendChild(blank2);
+    }
+
+    root.appendChild(grid);
+
+    // Add details section
+    const details = document.createElement('div');
+    details.className = 'sc-details';
+    details.style.display = 'none';
+    root.appendChild(details);
+  }
+
+  /**
+   * Shows event details for a specific date
+   * @param {string} dateKey - Date in YYYY-MM-DD format
+   */
+  function showDetails(dateKey) {
+    const details = root.querySelector('.sc-details');
+    const ev = eventsByDate[dateKey];
+    details.innerHTML = '';
+
+    const parts = dateKey.split('-');
+    const display = parts[2] + '-' + parts[1] + '-' + parts[0].slice(2);
+    const heading = document.createElement('h4');
+    heading.textContent = display;
+    details.appendChild(heading);
+
+    let found = false;
+    
+    // Show weekly routine info if present
+    if (window.weeklyDueDates && Array.isArray(window.weeklyDueDates)) {
+      window.weeklyDueDates.forEach(function(item) {
+        if (item.date === dateKey) {
+          const div = document.createElement('div');
+          div.className = 'sc-event';
+          div.innerHTML = '<b>Weekly Routine Step:</b> ' + item.step_name + 
+                        ' <span class="badge badge-warning">(' + item.routine_type + ')</span>';
+          details.appendChild(div);
+          found = true;
+        }
+      });
     }
     
-    calendarGrid.appendChild(dayElement);
+    // Show monthly routine info if present
+    if (window.monthlyDueDates && Array.isArray(window.monthlyDueDates)) {
+      window.monthlyDueDates.forEach(function(item) {
+        if (item.date === dateKey) {
+          const div = document.createElement('div');
+          div.className = 'sc-event';
+          div.innerHTML = '<b>Monthly Routine Step:</b> ' + item.step_name + 
+                        ' <span class="badge badge-info">(' + item.routine_type + ')</span>';
+          details.appendChild(div);
+          found = true;
+        }
+      });
+    }
+
+    if (!ev && !found) {
+      const p = document.createElement('p');
+      p.textContent = 'No events';
+      details.appendChild(p);
+    } else if (ev) {
+      const div = document.createElement('div');
+      div.className = 'sc-event';
+      
+      const name = document.createElement('div');
+      name.textContent = ev.eventName || '(Unnamed)';
+      
+      const status = document.createElement('div');
+      status.textContent = (ev.status === 'completed') ? 'Completed' : 'Missed';
+      status.className = (ev.status === 'completed') ? 'sc-ok' : 'sc-miss';
+      
+      div.appendChild(name);
+      div.appendChild(status);
+      details.appendChild(div);
+    }
+    
+    details.style.display = 'block';
   }
-}
 
-/**
- * Show detail for a specific day
- * @param {string} dateString - Date in YYYY-MM-DD format
- */
-function showDayDetail(dateString) {
-  // Implementation would go here
-  console.log('Show events for date:', dateString);
-}
+  /**
+   * Converts year, month, day to date key string
+   * @param {number} y - Year
+   * @param {number} m - Month (0-indexed)
+   * @param {number} d - Day
+   * @returns {string} Date in YYYY-MM-DD format
+   */
+  function toDateKey(y, m, d) {
+    const mm = (m + 1).toString().padStart(2, '0');
+    const dd = d.toString().padStart(2, '0');
+    return y + '-' + mm + '-' + dd;
+  }
 
-/**
- * Fetch calendar events from the server
- */
-function fetchCalendarEvents() {
-  // Implementation would go here
-}
+  /**
+   * Changes the displayed month
+   * @param {number} delta - Number of months to change (+1 or -1)
+   */
+  function changeMonth(delta) {
+    state.month += delta;
+    if (state.month < 0) { 
+      state.month = 11; 
+      state.year -= 1; 
+    }
+    if (state.month > 11) { 
+      state.month = 0; 
+      state.year += 1; 
+    }
+    render();
+  }
+
+  // Initialize calendar
+  render();
+})();
 
 /* ==========================================================================
    ROUTINES FUNCTIONALITY
@@ -459,58 +578,177 @@ function initRoutines() {
     form.addEventListener('submit', handleRoutineFormSubmit);
   });
   
-  // Add event listeners for routine step checkboxes
-  document.addEventListener('click', function(event) {
-    const step = event.target.closest('.routine-step');
-    if (step && event.target.classList.contains('step-checkbox')) {
-      handleRoutineStepUpdate(step);
+  // Listen for checkbox changes (delegated)
+  document.addEventListener('change', function(event) {
+    const target = event.target;
+    if (target && target.classList && target.classList.contains('step-checkbox')) {
+      // Use unified toggle flow to match previous behavior
+      const stepId = target.getAttribute('data-step-id');
+      if (stepId) {
+        toggleStepCompletion(stepId, target);
+      } else {
+        handleRoutineStepUpdate(target);
+      }
     }
   });
 }
 
 /**
  * Handles routine step updates (completion status)
- * @param {HTMLElement} step - The routine step element
+ * @param {HTMLInputElement} checkbox - The routine step checkbox element
  */
-function handleRoutineStepUpdate(step) {
-  const stepId = step.dataset.stepId;
-  const isChecked = step.querySelector('.step-checkbox').checked;
+function handleRoutineStepUpdate(checkbox) {
+  const stepId = checkbox && checkbox.dataset ? checkbox.dataset.stepId : null;
+  const isChecked = !!(checkbox && checkbox.checked);
+  const stepItem = checkbox.closest('.routine-step');
   
-  // Make AJAX request to update step completion status
-  fetch(`/routines/update_step/${stepId}/`, {
+  if (!stepId) {
+    console.warn('Step ID missing on checkbox');
+    return;
+  }
+  
+  // Make AJAX request to toggle step completion (matches backend URL)
+  fetch('/routines/toggle-step/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRFToken': getCsrfToken(),
     },
-    body: JSON.stringify({
-      completed: isChecked
-    })
+    body: JSON.stringify({ step_id: stepId })
   })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
+  .then(response => response.json())
   .then(data => {
-    if (data.status === 'success') {
-      step.classList.toggle('completed', isChecked);
-      showSuccessMessage('Routine step updated');
-      
+    if (data && data.success) {
+      if (stepItem) stepItem.classList.toggle('completed', isChecked);
+      showSuccessMessage(data.message || 'Routine step updated');
+      updateProgressDisplay();
       // Dispatch event for calendar/dashboard updates
-      const event = new CustomEvent('routineStepUpdated', {
-        detail: { stepId, completed: isChecked }
-      });
-      document.dispatchEvent(event);
+      document.dispatchEvent(new CustomEvent('routineStepUpdated', { detail: { stepId, completed: isChecked } }));
     } else {
-      showErrorMessage('Could not update routine step');
+      showErrorMessage((data && (data.error || data.message)) || 'Could not update routine step');
+      // Revert UI checkbox state on failure
+      checkbox.checked = !isChecked;
     }
   })
   .catch(error => {
     console.error('Error updating routine step:', error);
     showErrorMessage('Failed to update routine step');
+    // Revert UI checkbox state on error
+    checkbox.checked = !isChecked;
   });
+}
+
+/**
+ * Legacy-compatible toggle function with fallback endpoint
+ * @param {string|number} stepId 
+ * @param {HTMLInputElement=} checkbox Optional checkbox to update/revert
+ */
+function toggleStepCompletion(stepId, checkbox) {
+  const csrf = getCsrfToken();
+  if (!csrf) {
+    console.error('CSRF token not found');
+    if (checkbox) checkbox.checked = !checkbox.checked;
+    return;
+  }
+
+  fetch('/routines/toggle-step/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrf
+    },
+    body: JSON.stringify({ step_id: stepId })
+  })
+  .then(function(response) {
+    if (!response.ok) {
+      // fallback to legacy form-encoded endpoint if present
+      return fallbackToggleStep(stepId, csrf);
+    }
+    return response.json();
+  })
+  .then(function(data) {
+    if (data && data.success) {
+      updateProgressDisplay();
+    } else if (data && data.success === false) {
+      console.error('Failed to update step', data.error || data.message);
+      if (checkbox) checkbox.checked = !checkbox.checked;
+    }
+  })
+  .catch(function(error) {
+    console.error('Network error while toggling step:', error);
+    if (checkbox) checkbox.checked = !checkbox.checked;
+  });
+}
+
+function fallbackToggleStep(stepId, csrfToken) {
+  const checkbox = document.querySelector(`[data-step-id="${stepId}"]`);
+  const isCompleted = checkbox ? checkbox.checked : false;
+  return fetch('/routines/toggle-step-completion/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken,
+    },
+    body: `step_id=${encodeURIComponent(stepId)}&completed=${isCompleted ? '1' : '0'}`
+  }).then(r => r.json()).then(d => {
+    if (d && d.success) {
+      updateProgressDisplay();
+    } else if (checkbox) {
+      checkbox.checked = !isCompleted;
+    }
+    return d || { success: false };
+  });
+}
+
+/**
+ * Marks an entire routine as complete (parity with previous file)
+ * @param {string|number} routineId
+ * @param {string} routineType
+ */
+function markRoutineComplete(routineId, routineType) {
+  const csrf = getCsrfToken();
+  if (!csrf) { console.error('CSRF token not found'); return; }
+  fetch('/routines/mark-complete/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrf
+    },
+    body: JSON.stringify({ routine_id: routineId, routine_type: routineType })
+  })
+  .then(resp => {
+    if (!resp.ok) throw new Error('Network error');
+    return resp.json();
+  })
+  .then(data => {
+    if (data && data.success) {
+      window.location.reload();
+    } else {
+      showErrorMessage(data && (data.error || data.message) || 'Failed to mark routine complete');
+    }
+  })
+  .catch(err => {
+    console.error('Error marking routine complete:', err);
+    showErrorMessage('Could not connect to server');
+  });
+}
+
+/**
+ * Updates the progress display without full page reload
+ */
+function updateProgressDisplay() {
+  const totalCheckboxes = document.querySelectorAll('.step-checkbox').length;
+  const completedCheckboxes = document.querySelectorAll('.step-checkbox:checked').length;
+  const progressPercent = totalCheckboxes > 0 ? Math.round((completedCheckboxes / totalCheckboxes) * 100) : 0;
+
+  const progressElement = document.querySelector('.progress-stat h3');
+  if (progressElement) progressElement.textContent = progressPercent + '%';
+
+  const progressText = document.querySelector('.progress-stat p');
+  if (progressText) progressText.textContent = `${completedCheckboxes} of ${totalCheckboxes} steps completed today`;
+
+  const progressBar = document.querySelector('.progress-fill');
+  if (progressBar) progressBar.style.width = progressPercent + '%';
 }
 
 /**
@@ -569,6 +807,7 @@ function initProducts() {
   initProductForms();
   initProductSearch();
   initProductDeleteButtons();
+  initProductSuggestions();
 }
 
 /**
@@ -722,6 +961,127 @@ function initProductDeleteButtons() {
     });
   }
 
+/**
+ * Initializes product suggestions on the product form page
+ */
+function initProductSuggestions() {
+  const categorySelect = document.getElementById('category-browse');
+  const loadingDiv = document.getElementById('suggestions-loading');
+  const suggestionsDiv = document.getElementById('product-suggestions');
+  const suggestionsGrid = document.getElementById('suggestions-grid');
+  const productForm = document.getElementById('product-form');
+
+  // Only run where the product form and browse select exist
+  if (!categorySelect || !productForm || !suggestionsGrid || !suggestionsDiv || !loadingDiv) return;
+
+  categorySelect.addEventListener('change', function() {
+    const category = this.value;
+    if (!category) {
+      suggestionsDiv.style.display = 'none';
+      suggestionsDiv.setAttribute('aria-hidden', 'true');
+      return;
+    }
+
+    // Show loading state
+    loadingDiv.style.display = 'block';
+    loadingDiv.setAttribute('aria-hidden', 'false');
+    suggestionsDiv.style.display = 'none';
+    suggestionsDiv.setAttribute('aria-hidden', 'true');
+    suggestionsGrid.innerHTML = '';
+
+    fetch('/api/products/browse/' + encodeURIComponent(category) + '/')
+      .then(function(response) {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(function(products) {
+        loadingDiv.style.display = 'none';
+        loadingDiv.setAttribute('aria-hidden', 'true');
+
+        if (!products || products.length === 0) {
+          suggestionsGrid.innerHTML = '<p class="muted-message">No products found for this category. Try importing some first!</p>';
+        } else {
+          products.forEach(function(product) {
+            const card = createSuggestionCard(product, productForm);
+            suggestionsGrid.appendChild(card);
+          });
+        }
+
+        suggestionsDiv.style.display = 'block';
+        suggestionsDiv.setAttribute('aria-hidden', 'false');
+      })
+      .catch(function(error) {
+        console.error('Error fetching products:', error);
+        loadingDiv.style.display = 'none';
+        loadingDiv.setAttribute('aria-hidden', 'true');
+        suggestionsGrid.innerHTML = '<p class="error-message">Error loading suggestions. Please try again.</p>';
+        suggestionsDiv.style.display = 'block';
+        suggestionsDiv.setAttribute('aria-hidden', 'false');
+      });
+  });
+
+  function createSuggestionCard(product, formEl) {
+    const card = document.createElement('div');
+    card.className = 'suggestion-card';
+    card.style.cursor = 'pointer';
+
+    const productTypeDisplay = product.product_type_display || product.product_type || '';
+
+    card.innerHTML =
+      '<h5>' + escapeHtml(product.name || '') + '</h5>' +
+      '<p><strong>Brand:</strong> ' + escapeHtml(product.brand || '') + '</p>' +
+      (product.ingredients ?
+        '<p><strong>Key ingredients:</strong> ' + escapeHtml(product.ingredients.substring(0, 100)) +
+        (product.ingredients.length > 100 ? '...' : '') + '</p>' : '') +
+      '<div class="product-type">' + escapeHtml(productTypeDisplay) + '</div>';
+
+    card.addEventListener('click', function() {
+      fillProductForm(formEl, product);
+      // Scroll and highlight
+      formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const highlightColor = getCssVar('--accent-color-bg-lighter');
+      if (highlightColor) {
+        const original = formEl.style.backgroundColor;
+        formEl.style.backgroundColor = highlightColor;
+        setTimeout(function() { formEl.style.backgroundColor = original; }, 2000);
+      }
+    });
+
+    return card;
+  }
+
+  function fillProductForm(formEl, product) {
+    setFormField(formEl, 'name', product.name || '');
+    setFormField(formEl, 'brand', product.brand || '');
+    setFormField(formEl, 'product_type', product.product_type || '');
+    if (product.ingredients) setFormField(formEl, 'ingredients', product.ingredients);
+    if (product.description) setFormField(formEl, 'description', product.description);
+
+    // Reset dropdown and hide suggestions area
+    categorySelect.value = '';
+    const suggestionsDiv = document.getElementById('product-suggestions');
+    if (suggestionsDiv) {
+      suggestionsDiv.style.display = 'none';
+      suggestionsDiv.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function setFormField(formEl, fieldName, value) {
+    const field = formEl.querySelector('[name="' + fieldName + '"]');
+    if (field) {
+      field.value = value;
+      const event = new Event('change', { bubbles: true });
+      field.dispatchEvent(event);
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+}
+
 /* ==========================================================================
    COMMON UI FUNCTIONALITY
    Shared UI elements and functionality
@@ -733,7 +1093,8 @@ function initProductDeleteButtons() {
 function initPageSpecificFunctions() {
   // Dashboard page initialization
   if (document.querySelector('.dashboard-page')) {
-    initCalendar();
+    // Calendar self-initializes via IIFE; guard in case a global init is not present
+    try { if (typeof initCalendar === 'function') { initCalendar(); } } catch (e) { /* no-op */ }
     initRoutines();
   }
   
@@ -745,6 +1106,11 @@ function initPageSpecificFunctions() {
   // Combined pages that need both routines and products
   if (document.querySelector('.routines-products-page')) {
     initRoutines();
+    initProducts();
+  }
+
+  // Auto-detect product form pages even without marker class
+  if (document.getElementById('product-form') || document.getElementById('category-browse')) {
     initProducts();
   }
 }
@@ -787,3 +1153,155 @@ function setupRoutineStepDropdowns() {
     });
   })
 };
+
+/* ==========================================================================
+   PROFILE PAGE: ROUTINE STEP BUILDER
+   Populates step selects, supports custom option, and add/remove steps
+   ========================================================================== */
+
+function initProfileRoutineBuilder() {
+  const stepsContainer = document.getElementById('steps-container');
+  const routineTypeEl = document.getElementById('routine_type');
+  const addBtn = document.getElementById('add-step-btn');
+  const removeBtn = document.getElementById('remove-step-btn');
+  const stepCountEl = document.querySelector('.step-count');
+
+  if (!stepsContainer || !routineTypeEl) return; // Not on profile add/edit form
+
+  const stepOptionsByType = {
+    morning: [
+      'Gentle Cleanse', 'Toner', 'Essence', 'Vitamin C Serum', 'Light Moisturizer', 'Eye Cream', 'SPF / Sunscreen'
+    ],
+    evening: [
+      'Double Cleanse', 'Toner', 'Essence', 'Treatment Serum', 'Retinol / Acid Treatment', 'Eye Cream', 'Moisturizer', 'Face Oil', 'Spot Treatment', 'Lip Treatment'
+    ],
+    weekly: [
+      'Deep Cleanse', 'Exfoliation', 'Clay Mask', 'Hydrating Mask', 'Hair Mask', 'Body Scrub', 'Intensive Treatment'
+    ],
+    monthly: [
+      'Professional Treatment', 'Deep Repair Mask', 'Intensive Serum', 'Barrier Repair', 'Reset Treatment'
+    ],
+    hair: [
+      'Clarifying Shampoo', 'Shampoo', 'Conditioner', 'Deep Hair Mask', 'Leave-in Treatment', 'Hair Oil', 'Scalp Treatment', 'Heat Protectant'
+    ],
+    body: [
+      'Body Wash', 'Body Scrub', 'Body Lotion', 'Body Oil', 'Deodorant', 'Hand Cream', 'Foot Treatment'
+    ],
+    special: [
+      'Prep Treatment', 'Priming Serum', 'Glow Treatment', 'Hydration Boost', 'Setting Treatment', 'Special Occasion Mask'
+    ],
+    seasonal: [
+      'Season Prep', 'Climate Adjustment', 'Barrier Repair', 'Humidity Control', 'Weather Protection', 'Transition Treatment'
+    ]
+  };
+
+  const minSteps = 1;
+  const maxSteps = 10;
+
+  function updateStepCount() {
+    const count = stepsContainer.querySelectorAll('.step-item').length;
+    if (stepCountEl) stepCountEl.textContent = `${count} step${count !== 1 ? 's' : ''}`;
+    if (addBtn) addBtn.disabled = count >= maxSteps;
+    if (removeBtn) removeBtn.disabled = count <= minSteps;
+  }
+
+  function buildOptions(routineType) {
+    const options = stepOptionsByType[routineType] || stepOptionsByType.morning;
+    let html = '<option value="">Select step</option>';
+    html += options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+    html += '<option value="custom">✏️ Custom Step...</option>';
+    return html;
+  }
+
+  function attachSelectBehavior(selectEl) {
+    // Remove previous handler if present
+    selectEl.removeEventListener('change', selectEl._handler || (()=>{}));
+    selectEl._handler = function() {
+      const stepNumber = this.id.replace('step', '');
+      let customInput = document.getElementById(`custom-step${stepNumber}`);
+      if (this.value === 'custom') {
+        if (!customInput) {
+          customInput = document.createElement('input');
+          customInput.type = 'text';
+          customInput.id = `custom-step${stepNumber}`;
+          customInput.name = `step${stepNumber}`;
+          customInput.className = 'form-control custom-step-input';
+          customInput.placeholder = 'Enter custom step name...';
+          customInput.style.marginTop = '5px';
+          this.parentNode.insertBefore(customInput, this.nextSibling);
+        }
+        this.style.display = 'none';
+        customInput.style.display = 'block';
+        customInput.focus();
+        customInput.addEventListener('blur', function onBlur() {
+          if (!this.value.trim()) {
+            selectEl.style.display = 'block';
+            this.style.display = 'none';
+            selectEl.value = '';
+          }
+          customInput.removeEventListener('blur', onBlur);
+        });
+      } else if (customInput) {
+        customInput.style.display = 'none';
+        customInput.value = '';
+        this.style.display = 'block';
+      }
+    };
+    selectEl.addEventListener('change', selectEl._handler);
+  }
+
+  function populateAllSelects() {
+    const selects = stepsContainer.querySelectorAll('.step-item select[id^="step"]');
+    const rt = routineTypeEl.value || 'morning';
+    const optionsHtml = buildOptions(rt);
+    selects.forEach(sel => {
+      sel.innerHTML = optionsHtml;
+      attachSelectBehavior(sel);
+    });
+  }
+
+  function createStepItem(stepNumber) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'step-item';
+    wrapper.setAttribute('data-step', String(stepNumber));
+    wrapper.innerHTML = `<select id="step${stepNumber}" name="step${stepNumber}" class="step-select"></select>`;
+    return wrapper;
+  }
+
+  function addStep() {
+    const count = stepsContainer.querySelectorAll('.step-item').length;
+    if (count >= maxSteps) return;
+    const next = count + 1;
+    const item = createStepItem(next);
+    stepsContainer.appendChild(item);
+    // Populate and attach behavior for the new select
+    const rt = routineTypeEl.value || 'morning';
+    const sel = item.querySelector('select');
+    sel.innerHTML = buildOptions(rt);
+    attachSelectBehavior(sel);
+    updateStepCount();
+  }
+
+  function removeStep() {
+    const items = stepsContainer.querySelectorAll('.step-item');
+    if (items.length <= minSteps) return;
+    const last = items[items.length - 1];
+    last.remove();
+    updateStepCount();
+  }
+
+  // Initial population and wiring
+  populateAllSelects();
+  updateStepCount();
+  routineTypeEl.addEventListener('change', populateAllSelects);
+  if (addBtn) addBtn.addEventListener('click', addStep);
+  if (removeBtn) removeBtn.addEventListener('click', removeStep);
+}
+
+// Auto-init profile builder when present
+document.addEventListener('DOMContentLoaded', function() {
+  const hasProfileRoutineBuilder = document.getElementById('steps-container') && document.getElementById('routine_type');
+  if (hasProfileRoutineBuilder) {
+    initProfileRoutineBuilder();
+  }
+});

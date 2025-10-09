@@ -562,14 +562,15 @@
       </div>
     </div>
     
+  <!-- Calendar Section with isolated styling -->
+  <section class="calendar-section" id="calendar-wrapper">
+    <h2 class="section-title">Calendar Overview</h2>
     <div id="calendar"></div>
   </section>
-</div>
+{% endblock content %}
 
 {% block end_of_body %}
-{% endblock %}
-{% endblock %}
-
+{% endblock end_of_body %}
 
 {% block extra_js %}
 <!-- Initialize calendar data from Django backend -->
@@ -579,13 +580,26 @@
       window.ROUTINE_EVENTS = JSON.parse('{{ routine_events_json|default:"{}"|escapejs }}');
     } catch (e) {
       window.ROUTINE_EVENTS = {};
+      console.warn('Could not parse routine events:', e);
     }
     try {
       window.EXPIRY_EVENTS = JSON.parse('{{ expiry_events_json|default:"[]"|escapejs }}');
     } catch (e) {
       window.EXPIRY_EVENTS = [];
+      console.warn('Could not parse expiry events:', e);
     }
-    document.dispatchEvent(new CustomEvent('dashboardDataReady'));
+    
+    // Make sure events are loaded before dispatching the event
+    window.addEventListener('load', function() {
+      // Dispatch the event with routine data for the calendar
+      document.dispatchEvent(new CustomEvent('dashboardDataReady', {
+        detail: {
+          routineData: window.ROUTINE_EVENTS
+        }
+      }));
+      
+      console.log('Dashboard data ready event dispatched');
+    });
   })();
 </script>
 
@@ -653,8 +667,7 @@ function updateProgressDisplay() {
   setTimeout(() => window.location.reload(), 500);
 }
 </script>
-{% endblock %}
+{% endblock after_bootstrap_js %}
 
-{% endblock %}
-
+{% endblock extra_js %}
 
