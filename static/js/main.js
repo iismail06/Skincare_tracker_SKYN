@@ -211,9 +211,14 @@ function initNavigation() {
 
   // Click handler for toggling menu
   const onHamburgerClick = function() {
-    hamburgerMenu.classList.toggle('active');
-    navLinks.classList.toggle('active');
-    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    const willOpen = !navLinks.classList.contains('active');
+    hamburgerMenu.classList.toggle('active', willOpen);
+    navLinks.classList.toggle('active', willOpen);
+    // ARIA state
+    hamburgerMenu.setAttribute('aria-expanded', String(willOpen));
+    navLinks.setAttribute('aria-hidden', String(!willOpen));
+    // Body scroll lock
+    document.body.style.overflow = willOpen ? 'hidden' : '';
   };
 
   // Remove previous bindings (if any) to avoid duplicates
@@ -228,6 +233,8 @@ function initNavigation() {
     link._closeHandler = function() {
       hamburgerMenu.classList.remove('active');
       navLinks.classList.remove('active');
+      hamburgerMenu.setAttribute('aria-expanded', 'false');
+      navLinks.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     };
     link.addEventListener('click', link._closeHandler);
@@ -239,6 +246,8 @@ function initNavigation() {
     if (!isClickInsideNav && navLinks.classList.contains('active')) {
       hamburgerMenu.classList.remove('active');
       navLinks.classList.remove('active');
+      hamburgerMenu.setAttribute('aria-expanded', 'false');
+      navLinks.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
   };
@@ -251,6 +260,8 @@ function initNavigation() {
     if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
       hamburgerMenu.classList.remove('active');
       navLinks.classList.remove('active');
+      hamburgerMenu.setAttribute('aria-expanded', 'false');
+      navLinks.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
   };
@@ -1096,16 +1107,24 @@ function initPageSpecificFunctions() {
  */
 function setupCommonElements() {
   // Setup any tooltips
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  tooltipTriggerList.forEach(tooltipTriggerEl => {
-    new bootstrap.Tooltip(tooltipTriggerEl);
-  });
+  try {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    if (window.bootstrap && typeof window.bootstrap.Tooltip === 'function') {
+      tooltipTriggerList.forEach(el => new window.bootstrap.Tooltip(el));
+    }
+  } catch (e) {
+    console.debug('Tooltips unavailable:', e);
+  }
 
   // Setup popovers if any
-  const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-  popoverTriggerList.forEach(popoverTriggerEl => {
-    new bootstrap.Popover(popoverTriggerEl);
-  });
+  try {
+    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    if (window.bootstrap && typeof window.bootstrap.Popover === 'function') {
+      popoverTriggerList.forEach(el => new window.bootstrap.Popover(el));
+    }
+  } catch (e) {
+    console.debug('Popovers unavailable:', e);
+  }
   
   // Setup routine step dropdowns for profile page
   setupRoutineStepDropdowns();
