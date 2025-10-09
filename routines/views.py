@@ -8,6 +8,7 @@ from django.views.decorators.http import require_http_methods
 import json
 from .forms import RoutineCreateForm
 from django.contrib.auth.decorators import login_required
+from users.models import UserProfile
 from .models import Routine, RoutineStep, DailyCompletion
 from products.models import Product
 from datetime import date
@@ -291,8 +292,11 @@ def dashboard(request):
     # === SKIN TYPE WIDGET DATA ===
     # Get user's skin type from their profile (if available)
     user_skin_type = None
-    if hasattr(request.user, 'profile') and hasattr(request.user.profile, 'skin_type'):
-        user_skin_type = request.user.profile.skin_type
+    try:
+        profile = UserProfile.objects.filter(user=request.user).first()
+        user_skin_type = profile.skin_type if profile else None
+    except Exception:
+        user_skin_type = None
     
     # Get products that match user's skin type and are favorites
     skin_type_products = Product.objects.filter(

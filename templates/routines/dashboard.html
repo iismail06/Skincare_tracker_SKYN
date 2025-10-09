@@ -429,10 +429,6 @@
               <div class="product-mini-card" 
                    data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
                 <span class="product-name">{{ product.name }}</span>
-                <span class="product-brand">{{ product.brand }}</span>
-                {% if product.rating %}
-                  <span class="rating">{{ product.rating }}/5⭐</span>
-                {% endif %}
               </div>
             {% endfor %}
           </div>
@@ -459,14 +455,6 @@
               <div class="product-mini-card"
                    data-tooltip="Rating: {% if product.rating %}{{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.expiry_date %} | Expires: {{ product.expiry_date }}{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
                 <span class="product-name">{{ product.name }}</span>
-                <span class="product-brand">{{ product.brand }}</span>
-                {% if product.expiry_date %}
-                  {% with days_left=product.expiry_date|timeuntil %}
-                    {% if days_left %}
-                      <span class="expiry-info">{{ days_left }} left</span>
-                    {% endif %}
-                  {% endwith %}
-                {% endif %}
               </div>
             {% endfor %}
           </div>
@@ -485,14 +473,10 @@
           <h4>⚠️ Expiring Soon</h4>
           <div class="product-mini-cards">
             {% for product in expiring_products %}
-              {% with days_left=product.expiry_date|timeuntil %}
               <div class="product-mini-card expiry-warning"
                    data-tooltip="Expires: {{ product.expiry_date }} | {% if product.rating %}Rating: {{ product.rating }}/5⭐{% endif %}{% if product.ingredients %} | Ingredients: {{ product.ingredients|truncatewords:5 }}{% endif %}">
                 <span class="product-name">{{ product.name }}</span>
-                <span class="product-brand">{{ product.brand }}</span>
-                <span class="expiry-warning-text">{{ days_left }} left</span>
               </div>
-              {% endwith %}
             {% endfor %}
           </div>
         {% else %}

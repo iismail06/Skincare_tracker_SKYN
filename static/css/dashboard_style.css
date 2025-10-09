@@ -630,9 +630,10 @@ body.dark-theme .step-checkbox {
 #calendar-wrapper {
   background: var(--glass-bg);
   border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  padding: 1rem; /* was 1.5rem */
+  margin: 1rem auto 2rem; /* reduce top spacing */
   width: 100%;
+  max-width: 900px; /* constrain width so calendar isn’t humongous */
   box-sizing: border-box;
 }
 
@@ -648,7 +649,7 @@ body.dark-theme .step-checkbox {
   width: 100%;
   max-width: 100%;
   font-family: "Inter", Arial, sans-serif;
-  margin: 1rem 0;
+  margin: 0.5rem 0; /* tighten vertical spacing */
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   box-shadow: var(--shadow);
@@ -661,22 +662,22 @@ body.dark-theme .step-checkbox {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  padding: 1rem !important;
+  padding: 0.6rem 0.8rem !important; /* more compact */
   background: var(--accent-color) !important;
   color: white !important;
 }
 
 .sc-title {
   font-weight: 600 !important;
-  font-size: 1.1rem !important;
+  font-size: 1rem !important;
 }
 
 .sc-header button {
   background: rgba(255, 255, 255, 0.2) !important;
   border: none !important;
   border-radius: 50% !important;
-  width: 30px !important;
-  height: 30px !important;
+  width: 26px !important;
+  height: 26px !important;
   font-weight: bold !important;
   cursor: pointer !important;
   display: flex !important;
@@ -694,10 +695,10 @@ body.dark-theme .step-checkbox {
   display: grid !important;
   grid-template-columns: repeat(7, 1fr) !important;
   text-align: center !important;
-  padding: 0.7rem 0 !important;
+  padding: 0.5rem 0 !important;
   background: rgba(var(--accent-color-rgb), 0.1) !important;
   font-weight: 600 !important;
-  font-size: 0.9rem !important;
+  font-size: 0.85rem !important;
   border-bottom: 1px solid var(--border-color) !important;
   margin-bottom: 4px !important;
 }
@@ -711,19 +712,19 @@ body.dark-theme .step-checkbox {
   display: grid !important;
   grid-template-columns: repeat(7, 1fr) !important;
   width: 100% !important;
-  gap: 2px !important;
+  gap: 1px !important;
 }
 
 /* Calendar cells */
 .sc-cell {
   aspect-ratio: 1 !important;
   border: 1px solid var(--border-color) !important;
-  padding: 0.5rem !important;
+  padding: 0.35rem !important; /* tighter cell */
   text-align: center !important;
   position: relative !important;
   transition: background-color 0.2s ease !important;
   cursor: pointer !important;
-  min-height: 60px !important;
+  min-height: 52px !important; /* reduce minimum height */
   background-color: rgba(255, 255, 255, 0.4) !important;
   border-radius: 6px !important;
 }
@@ -743,7 +744,7 @@ body.dark-theme .step-checkbox {
   position: absolute !important;
   top: 5px !important;
   left: 5px !important;
-  font-size: 0.8rem !important;
+  font-size: 0.75rem !important;
   font-weight: 600 !important;
   /* z-index: 1 !important; */
 }
@@ -754,7 +755,7 @@ body.dark-theme .step-checkbox {
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  font-size: 1.2rem !important;
+  font-size: 1.05rem !important; /* smaller icon */
   z-index: 0 !important;
 }
 
@@ -774,7 +775,7 @@ body.dark-theme .step-checkbox {
 /* Details section */
 .sc-details {
   margin-top: 1rem !important;
-  padding: 1rem !important;
+  padding: 0.75rem !important; /* tighter */
   background: rgba(255, 255, 255, 0.5) !important;
   border-radius: 8px !important;
 }
@@ -868,10 +869,10 @@ body.dark-theme .step-checkbox {
 }
 
 .product-widgets {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* allow more columns */
+  gap: 1.2rem; /* slightly tighter gap */
+  margin-bottom: 2rem;
 }
 
 .product-widget {
@@ -891,8 +892,8 @@ body.dark-theme .step-checkbox {
 }
 
 .product-widget h4 {
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem; /* smaller section heading */
   font-weight: 600;
   color: #676B5D;
 }
@@ -923,13 +924,13 @@ body.dark-theme .step-checkbox {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(2px);
     border-radius: 8px;
-    padding: 0.8rem;
+    padding: 0.6rem; /* tighter */
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: all 0.2s ease;
     cursor: pointer;
-  position: relative;
+    position: relative;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -940,23 +941,21 @@ body.dark-theme .step-checkbox {
 }
 
 .product-name {
-    font-weight: 500;
-    color: #2c3e50;
-    flex: 1;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.8rem; /* even smaller product name */
+  flex: 1 1 auto;
+  min-width: 0; /* enable ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-brand {
-    font-size: 0.85rem;
-    color: #6c757d;
-    margin-left: 0.5rem;
+  display: none; /* not shown per user request */
 }
 
-.rating, .expiry-info, .expiry-warning-text {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-}
+.rating, .expiry-info, .expiry-warning-text { display: none; }
 
 .rating {
     background: var(--glass-bg);
@@ -1351,9 +1350,8 @@ body.dark-theme footer a:hover {
     padding: 1rem;
   }
   
-  .sc-grid {
-    font-size: 0.8rem;
-  }
+  #calendar-wrapper { max-width: 100%; padding: 0.75rem; }
+  .sc-grid { font-size: 0.8rem; }
   
   .sc-dow-cell {
     padding: 0.3rem 0;
