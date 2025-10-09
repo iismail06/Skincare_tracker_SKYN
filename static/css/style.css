@@ -790,10 +790,16 @@ label {
     background: rgba(var(--accent-color-strong-rgb), 0.12); /* rgba of --accent-color-strong */
 }
 
-/* Dark theme: ensure primary buttons show with light foreground */
-body.dark-theme .btn-primary {
-    color: #fff !important;
+/* Home hero: ensure primary button text is white in light mode for contrast */
+.hero-header .btn-primary {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.35);
 }
+.hero-header .btn-primary:hover {
+    color: #ffffff !important;
+}
+
+
 
 /* Secondary: outline or muted alternate */
 
@@ -1830,7 +1836,10 @@ body.dark-theme .btn-dark,
 body.dark-theme button {
     color: #fff !important;
 }
-
+/* Dark theme: ensure primary buttons show with light foreground */
+body.dark-theme .btn-primary {
+    color: #fff !important;
+}
 /* Dark mode: Specific button type adjustments */
 body.dark-theme .btn-primary {
     background: var(--accent-color-bg) !important;
