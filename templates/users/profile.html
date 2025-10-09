@@ -177,27 +177,15 @@
                             <div id="steps-container">
                                 <div class="step-item" data-step="1">
                                     <select id="step1" name="step1" class="step-select"></select>
-                                    <button type="button" class="quick-add-btn" data-step="1" title="Quick Add Product">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
                                 </div>
                                 <div class="step-item" data-step="2">
                                     <select id="step2" name="step2" class="step-select"></select>
-                                    <button type="button" class="quick-add-btn" data-step="2" title="Quick Add Product">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
                                 </div>
                                 <div class="step-item" data-step="3">
                                     <select id="step3" name="step3" class="step-select"></select>
-                                    <button type="button" class="quick-add-btn" data-step="3" title="Quick Add Product">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
                                 </div>
                                 <div class="step-item" data-step="4">
                                     <select id="step4" name="step4" class="step-select"></select>
-                                    <button type="button" class="quick-add-btn" data-step="4" title="Quick Add Product">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -212,13 +200,6 @@
                         </div>
                     {% endif %}
                 </form>
-            </div>
-            
-            <!-- Add Product button - always visible, styled like other form buttons -->
-            <div class="form-actions u-margin-top-sm">
-                <button type="button" id="add-product-btn" class="btn btn-primary">
-                    <i class="fas fa-bottle-droplet"></i> Add Product
-                </button>
             </div>
             
             {% if routines %}
@@ -286,40 +267,7 @@
     </div> 
 </div>
 
-<!-- Simple Add Product Form at Bottom -->
-<div class="form-card">
-    <h3>Add New Product</h3>
-    <form action="{% url 'products:create' %}" method="get" class="simple-add-form">
-        <div class="form-row">
-            <div class="form-group">
-                <label for="product-type">Product Type:</label>
-                <select id="product-type" name="product_type" class="form-control">
-                    <option value="">Select Product Type</option>
-                    <option value="cleanser">Cleanser</option>
-                    <option value="toner">Toner</option>
-                    <option value="serum">Serum</option>
-                    <option value="moisturizer">Moisturizer</option>
-                    <option value="sunscreen">Sunscreen</option>
-                    <option value="exfoliant">Exfoliant</option>
-                    <option value="mask">Face Mask</option>
-                    <option value="eye_cream">Eye Cream</option>
-                    <option value="oil">Face Oil</option>
-                    <option value="essence">Essence</option>
-                    <option value="spot_treatment">Spot Treatment</option>
-                    <option value="retinol">Retinol/Retinoid</option>
-                    <option value="vitamin_c">Vitamin C</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add Product
-            </button>
-        </div>
-    </form>
-</div>
--->
-<!-- END OF COMMENTED OUT QUICK ADD PANEL -->
+
 
 {% endblock %}
 
