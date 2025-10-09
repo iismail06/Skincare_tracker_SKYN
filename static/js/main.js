@@ -440,10 +440,10 @@ function initNavigation() {
       
       cell.appendChild(icon);
 
-      // Build tooltip text including expiry info if present
+    // Build tooltip text including expiry info if present (hover-only)
       const parts = dateKey.split('-');
       const readableDate = parts[2] + '-' + parts[1] + '-' + parts[0];
-  let tooltip = readableDate + ' — ' + statusText + (isToday ? ' • Today' : '');
+    let tooltip = readableDate + ' — ' + statusText + (isToday ? ' • Today' : '');
 
       const expiries = expiryByDate[dateKey] || [];
       if (expiries.length) {
@@ -453,27 +453,20 @@ function initNavigation() {
         badge.textContent = '⚠️';
         cell.appendChild(badge);
 
-        // Append concise expiry info to tooltip
+        // Tooltip details for expiry items (concise: name — brand)
         const maxList = 2;
         const items = expiries.slice(0, maxList).map(function(ex) {
-          const parts = [];
-          parts.push(ex.product_name || ex.title || 'Product');
-          if (ex.rating) parts.push((ex.rating + '⭐'));
-          if (ex.is_favorite) parts.push('💖');
-          return parts.join(' ');
+          const nameBrand = (ex.product_name || ex.title || 'Product') + (ex.brand ? (' — ' + ex.brand) : '');
+          return nameBrand;
         });
         const moreCount = expiries.length - items.length;
-        const expiryLine = 'Expiring: ' + items.join(', ') + (moreCount > 0 ? (' and ' + moreCount + ' more') : '');
+        const expiryLine = 'Expiring: ' + items.join(' || ') + (moreCount > 0 ? (' and ' + moreCount + ' more') : '');
         tooltip += ' • ' + expiryLine;
       }
 
       // Accessibility: add title and aria-label for screen readers/tooltips
       cell.title = tooltip;
       cell.setAttribute('aria-label', tooltip);
-
-      cell.addEventListener('click', function(e) {
-        showDetails(this.dataset.date);
-      });
 
       grid.appendChild(cell);
     }
@@ -517,11 +510,7 @@ function initNavigation() {
 
     root.appendChild(grid);
 
-    // Add details section
-    const details = document.createElement('div');
-    details.className = 'sc-details';
-    details.style.display = 'none';
-    root.appendChild(details);
+  // Removed clickable details panel to keep calendar hover-only
 
     // Today highlight uses default styling (no user-configurable options)
   }
@@ -530,90 +519,7 @@ function initNavigation() {
    * Shows event details for a specific date
    * @param {string} dateKey - Date in YYYY-MM-DD format
    */
-  function showDetails(dateKey) {
-    const details = root.querySelector('.sc-details');
-    const ev = eventsByDate[dateKey];
-    details.innerHTML = '';
-
-    const parts = dateKey.split('-');
-    const display = parts[2] + '-' + parts[1] + '-' + parts[0].slice(2);
-    const heading = document.createElement('h4');
-    heading.textContent = display;
-    details.appendChild(heading);
-
-    let found = false;
-    
-    // Show weekly routine info if present
-    const weeklyList = Array.isArray(weeklyDueDates) && weeklyDueDates.length ? weeklyDueDates : (Array.isArray(window.weeklyDueDates) ? window.weeklyDueDates : []);
-    if (weeklyList && weeklyList.forEach) {
-      weeklyList.forEach(function(item) {
-        if (item.date === dateKey) {
-          const div = document.createElement('div');
-          div.className = 'sc-event';
-          div.innerHTML = '<b>Weekly Routine Step:</b> ' + item.step_name + 
-                        ' <span class="badge badge-warning">(' + item.routine_type + ')</span>';
-          details.appendChild(div);
-          found = true;
-        }
-      });
-    }
-    
-    // Show monthly routine info if present
-    const monthlyList = Array.isArray(monthlyDueDates) && monthlyDueDates.length ? monthlyDueDates : (Array.isArray(window.monthlyDueDates) ? window.monthlyDueDates : []);
-    if (monthlyList && monthlyList.forEach) {
-      monthlyList.forEach(function(item) {
-        if (item.date === dateKey) {
-          const div = document.createElement('div');
-          div.className = 'sc-event';
-          div.innerHTML = '<b>Monthly Routine Step:</b> ' + item.step_name + 
-                        ' <span class="badge badge-info">(' + item.routine_type + ')</span>';
-          details.appendChild(div);
-          found = true;
-        }
-      });
-    }
-
-    // Show expiry items for this day
-    const expiries = expiryByDate[dateKey] || [];
-    expiries.forEach(function(ex) {
-      const div = document.createElement('div');
-      div.className = 'sc-event';
-      const left = document.createElement('div');
-      left.innerHTML = '<b>Expiry:</b> ' + (ex.product_name || ex.title || 'Product');
-      const right = document.createElement('div');
-      const bits = [];
-      if (ex.rating) bits.push(ex.rating + '⭐');
-      if (ex.is_favorite) bits.push('💖');
-      if (typeof ex.days_until === 'number') bits.push((ex.days_until === 0 ? 'Today' : (ex.days_until + ' days')));
-      right.textContent = bits.join(' · ');
-      div.appendChild(left);
-      div.appendChild(right);
-      details.appendChild(div);
-      found = true;
-    });
-
-    if (!ev && !found) {
-      const p = document.createElement('p');
-      p.textContent = 'No events';
-      details.appendChild(p);
-    } else if (ev) {
-      const div = document.createElement('div');
-      div.className = 'sc-event';
-      
-      const name = document.createElement('div');
-      name.textContent = ev.eventName || '(Unnamed)';
-      
-      const status = document.createElement('div');
-      status.textContent = (ev.status === 'completed') ? 'Completed' : 'Missed';
-      status.className = (ev.status === 'completed') ? 'sc-ok' : 'sc-miss';
-      
-      div.appendChild(name);
-      div.appendChild(status);
-      details.appendChild(div);
-    }
-    
-    details.style.display = 'block';
-  }
+  // Removed showDetails() and related UI to avoid pop-ups; hover tooltips only
 
   /**
    * Converts year, month, day to date key string

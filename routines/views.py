@@ -16,7 +16,6 @@ from datetime import date
 
 @login_required
 def dashboard(request):
-    # Beginner-friendly: Query routines for each category
     weekly_routine = Routine.objects.filter(user=request.user, routine_type='weekly').first()
     monthly_routine = Routine.objects.filter(user=request.user, routine_type='monthly').first()
     hair_routine = Routine.objects.filter(user=request.user, routine_type='hair').first()
@@ -64,7 +63,6 @@ def dashboard(request):
         completions = DailyCompletion.objects.none()
 
     # === CALCULATE TODAY'S PROGRESS ===
-    # Get today's completed steps
     today_completions = DailyCompletion.objects.filter(user=request.user, date=today)
     total_steps_today = 0
     completed_steps_today = 0
@@ -89,7 +87,6 @@ def dashboard(request):
         today_progress = int((completed_steps_today / total_steps_today) * 100)
 
     # === CALCULATE CURRENT STREAK ===
-    # Count consecutive days with all routines completed
     current_streak = 0
     check_date = today
     
@@ -242,8 +239,6 @@ def dashboard(request):
     routine_events_json = json.dumps(routine_events)
 
     # === HANDLE FORM SUBMISSIONS (EXISTING FUNCTIONALITY) ===
-    # This handles the old-style form submissions from routine checklists
-    # We keep this to maintain backward compatibility
     if request.method == 'POST':
         # Original completion tracking functionality
         try:
@@ -284,7 +279,6 @@ def dashboard(request):
         return redirect(request.path)
 
     # === PREPARE STEP COMPLETION DATA FOR TEMPLATE ===
-    # Get today's completed step IDs for easy lookup in template
     today_completed_step_ids = set(
         today_completions.filter(completed=True).values_list('routine_step_id', flat=True)
     )
@@ -333,14 +327,11 @@ def dashboard(request):
             'product_name': product.name,
             'brand': product.brand,
             'days_until': days_until_expiry,
-            # Extra fields for calendar display
             'expiry_date': product.expiry_date.strftime('%Y-%m-%d'),
-            'rating': getattr(product, 'rating', None),
-            'is_favorite': getattr(product, 'is_favorite', False),
         })
 
     # === FAVORITE PRODUCT USAGE IN CALENDAR ===
-    # Add favorite product usage to calendar events
+
     for event in routine_events:
         event_date = event.get('date')
         if event_date and event.get('status') in ['completed', 'morning', 'evening']:
@@ -370,7 +361,6 @@ def dashboard(request):
         'milestone_emoji': milestone_emoji,
         'week_progress': week_progress,
         'today_completed_step_ids': today_completed_step_ids,
-        # New product-related data
         'user_skin_type': user_skin_type,
         'skin_type_products': skin_type_products,
         'favorite_products': favorite_products,
