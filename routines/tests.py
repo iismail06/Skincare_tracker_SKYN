@@ -184,7 +184,8 @@ class RoutineChecklistCompletionTest(TestCase):
     def test_dashboard_includes_routine_events_json(self):
         url = reverse('routines:dashboard')
         response = self.client.get(url)
-        self.assertContains(response, 'window.ROUTINE_EVENTS')
+        # The dashboard now embeds data via JSON script tags instead of legacy globals
+        self.assertContains(response, 'id="routine-events"')
 
     def test_user_cannot_update_another_users_routine(self):
         other_user = User.objects.create_user(username='other', password='otherpass')
