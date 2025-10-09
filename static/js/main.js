@@ -760,8 +760,16 @@ function updateProgressDisplay() {
  * @param {Event} event - The form submission event
  */
 function handleRoutineFormSubmit(event) {
-  event.preventDefault();
   const form = event.target;
+  // Allow classic browser submit (server redirect) when form opts out of AJAX
+  // Usage: add data-no-ajax="true" attribute on the form element
+  if (form && (form.dataset.noAjax === 'true' || form.getAttribute('data-no-ajax') === 'true')) {
+    return; // do not prevent default; let the form submit normally
+  }
+  event.preventDefault();
+  
+  
+  
   const formData = new FormData(form);
   
   fetch(form.action, {

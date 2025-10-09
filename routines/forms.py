@@ -48,6 +48,47 @@ class RoutineCreateForm(forms.Form):
         empty_label="-- No product selected --"
     )
 
+    # Extended steps 6-10
+    step6 = forms.CharField(max_length=200, required=False, label='Step 6')
+    product6 = forms.ModelChoiceField(
+        queryset=Product.objects.none(), 
+        required=False, 
+        label='Product (optional)',
+        empty_label="-- No product selected --"
+    )
+    
+    step7 = forms.CharField(max_length=200, required=False, label='Step 7')
+    product7 = forms.ModelChoiceField(
+        queryset=Product.objects.none(), 
+        required=False, 
+        label='Product (optional)',
+        empty_label="-- No product selected --"
+    )
+    
+    step8 = forms.CharField(max_length=200, required=False, label='Step 8')
+    product8 = forms.ModelChoiceField(
+        queryset=Product.objects.none(), 
+        required=False, 
+        label='Product (optional)',
+        empty_label="-- No product selected --"
+    )
+    
+    step9 = forms.CharField(max_length=200, required=False, label='Step 9')
+    product9 = forms.ModelChoiceField(
+        queryset=Product.objects.none(), 
+        required=False, 
+        label='Product (optional)',
+        empty_label="-- No product selected --"
+    )
+    
+    step10 = forms.CharField(max_length=200, required=False, label='Step 10')
+    product10 = forms.ModelChoiceField(
+        queryset=Product.objects.none(), 
+        required=False, 
+        label='Product (optional)',
+        empty_label="-- No product selected --"
+    )
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -55,8 +96,10 @@ class RoutineCreateForm(forms.Form):
         # Show only the user's products
         if user:
             user_products = Product.objects.filter(user=user)
-            for i in range(1, 6):
-                self.fields[f'product{i}'].queryset = user_products
+            for i in range(1, 11):
+                field = self.fields.get(f'product{i}')
+                if field:
+                    field.queryset = user_products
 
     def clean(self):
         cleaned = super().clean()
@@ -67,7 +110,7 @@ class RoutineCreateForm(forms.Form):
         if not rtype:
             raise forms.ValidationError('Please select a routine type.')
         # Ensure at least one step provided
-        steps = [cleaned.get(f'step{i}') for i in range(1, 6)]
+        steps = [cleaned.get(f'step{i}') for i in range(1, 11)]
         if not any(steps):
             raise forms.ValidationError('Add at least one step for the routine.')
         return cleaned

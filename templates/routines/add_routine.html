@@ -19,7 +19,7 @@
     </h1>
     
     <div class="form-card">
-        <form method="post" class="routine-form">
+        <form method="post" class="routine-form" {% if is_editing %}data-no-ajax="true"{% endif %}>
             {% csrf_token %}
             
             <div class="form-group">
@@ -35,6 +35,12 @@
                     <option value="">Choose routine type</option>
                     <option value="morning" {% if form.routine_type.value == 'morning' %}selected{% endif %}>Morning</option>
                     <option value="evening" {% if form.routine_type.value == 'evening' %}selected{% endif %}>Evening</option>
+                    <option value="weekly" {% if form.routine_type.value == 'weekly' %}selected{% endif %}>Weekly</option>
+                    <option value="monthly" {% if form.routine_type.value == 'monthly' %}selected{% endif %}>Monthly</option>
+                    <option value="hair" {% if form.routine_type.value == 'hair' %}selected{% endif %}>Hair</option>
+                    <option value="body" {% if form.routine_type.value == 'body' %}selected{% endif %}>Body</option>
+                    <option value="special" {% if form.routine_type.value == 'special' %}selected{% endif %}>Special</option>
+                    <option value="seasonal" {% if form.routine_type.value == 'seasonal' %}selected{% endif %}>Seasonal</option>
                 </select>
             </div>
 
@@ -75,6 +81,42 @@
                     {{ form.step5 }}
                     <label for="product5">Product</label>
                     {{ form.product5 }}
+                </div>
+
+                <!-- Extended steps 6-10 -->
+                <div class="form-group">
+                    <label for="step6">Step 6</label>
+                    {{ form.step6 }}
+                    <label for="product6">Product</label>
+                    {{ form.product6 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step7">Step 7</label>
+                    {{ form.step7 }}
+                    <label for="product7">Product</label>
+                    {{ form.product7 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step8">Step 8</label>
+                    {{ form.step8 }}
+                    <label for="product8">Product</label>
+                    {{ form.product8 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step9">Step 9</label>
+                    {{ form.step9 }}
+                    <label for="product9">Product</label>
+                    {{ form.product9 }}
+                </div>
+
+                <div class="form-group">
+                    <label for="step10">Step 10</label>
+                    {{ form.step10 }}
+                    <label for="product10">Product</label>
+                    {{ form.product10 }}
                 </div>
             </div>
 

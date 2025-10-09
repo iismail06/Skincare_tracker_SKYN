@@ -388,7 +388,7 @@ def add_routine(request):
             else:
                 inferred_freq = 'daily'
 
-            for i in range(1, 6):
+            for i in range(1, 11):
                 step_text = data.get(f'step{i}')
                 product = data.get(f'product{i}')
                 if step_text:
@@ -461,35 +461,57 @@ def edit_routine(request, pk):
         form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
             data = form.cleaned_data
-            
-            # Update the routine
+
+            # Update the routine core fields
             routine.name = data['routine_name']
             routine.routine_type = data['routine_type']
             routine.save()
-            
-            # Delete existing steps and create new ones
-            routine.steps.all().delete()
-            
-            order = 1
-            # Infer step frequency from routine type for calendar reminders
-            if data['routine_type'] in ('weekly', 'monthly'):
-                inferred_freq = data['routine_type']
-            else:
-                inferred_freq = 'daily'
 
-            for i in range(1, 6):
-                step_text = data.get(f'step{i}')
+            # Build desired steps from submitted data (1..10), skipping blanks
+            desired_steps = []  # list of dicts: {name, product}
+            for i in range(1, 11):
+                name = data.get(f'step{i}')
                 product = data.get(f'product{i}')
-                if step_text:
+                if name:
+                    desired_steps.append({'name': name, 'product': product})
+
+            # Determine default frequency for new steps based on routine type
+            if routine.routine_type in ('weekly', 'monthly'):
+                default_freq = routine.routine_type
+            else:
+                default_freq = 'daily'
+
+            # Load existing steps ordered
+            existing_steps = list(routine.steps.all().order_by('order'))
+
+            # Update/create/delete to match desired state while preserving frequencies for existing positions
+            max_len = max(len(existing_steps), len(desired_steps))
+            for idx in range(max_len):
+                desired = desired_steps[idx] if idx < len(desired_steps) else None
+                existing = existing_steps[idx] if idx < len(existing_steps) else None
+
+                position = idx + 1
+
+                if desired and existing:
+                    # Update in place: keep existing frequency
+                    existing.step_name = desired['name']
+                    existing.product = desired['product']
+                    existing.order = position
+                    # preserve existing.frequency
+                    existing.save()
+                elif desired and not existing:
+                    # Create new step with default frequency
                     RoutineStep.objects.create(
-                        routine=routine, 
-                        step_name=step_text, 
-                        order=order,
-                        product=product,
-                        frequency=inferred_freq
+                        routine=routine,
+                        step_name=desired['name'],
+                        order=position,
+                        product=desired['product'],
+                        frequency=default_freq
                     )
-                    order += 1
-            
+                elif existing and not desired:
+                    # Remove surplus existing step
+                    existing.delete()
+
             # Redirect back to dashboard
             return redirect('routines:dashboard')
         else:
