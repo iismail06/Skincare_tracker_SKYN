@@ -404,9 +404,6 @@ def add_routine(request):
                         frequency=inferred_freq
                     )
                     order += 1
-            # store created routine id in session so profile view can show richer inline success
-            request.session['last_added_routine_id'] = routine.id
-
             # If this is an AJAX request, return JSON so client can update UI without full reload
             if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -417,20 +414,27 @@ def add_routine(request):
                     'detail_url': reverse('routines:dashboard')
                 })
 
-            return redirect(reverse('users:profile'))
+            # For non-AJAX: show success on add page itself and redirect (PRG)
+            # Also store the last created routine name to show a clear CTA banner
+            request.session['last_added_routine_name'] = routine.name
+            messages.success(request, f'Added "{routine.name}" routine. View it on your dashboard: {reverse("routines:dashboard")}')
+            return redirect(reverse('routines:add'))
         else:
-            # For non-AJAX requests, store a minimal errors/data snapshot in session and redirect
-            errors = {k: list(v) for k, v in form.errors.items()}
-            non_field = list(form.non_field_errors())
-            request.session['add_routine_errors'] = errors
-            request.session['add_routine_non_field_errors'] = non_field
-            # store posted data to re-populate the form
-            request.session['add_routine_data'] = {k: v for k, v in request.POST.items()}
-
+            # For non-AJAX invalid submissions, show inline errors on the same page
             if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': errors, 'non_field_errors': non_field}, status=400)
+                errors = {k: list(v) for k, v in form.errors.items()}
+                return JsonResponse({'success': False, 'errors': errors, 'non_field_errors': list(form.non_field_errors())}, status=400)
 
-            return redirect(reverse('users:profile'))
+            # Surface non-field errors (from clean) as messages so tests find them
+            for err in form.non_field_errors():
+                messages.error(request, err)
+
+            context = {
+                'form': form,
+                'is_editing': False,
+                'page_title': 'Create New Routine',
+            }
+            return render(request, 'routines/add_routine.html', context)
 
     # For GET, show the dedicated add form
     # Preselect routine type if provided as query param
@@ -439,10 +443,13 @@ def add_routine(request):
     if pre_type:
         initial['routine_type'] = pre_type
     form = RoutineCreateForm(initial=initial, user=request.user)
+    # Pull any recently created routine name for inline success CTA
+    just_created_name = request.session.pop('last_added_routine_name', None)
     context = {
         'form': form,
         'is_editing': False,
         'page_title': 'Create New Routine',
+        'just_created_name': just_created_name,
     }
     return render(request, 'routines/add_routine.html', context)
 

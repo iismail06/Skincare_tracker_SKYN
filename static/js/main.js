@@ -1100,6 +1100,11 @@ function initPageSpecificFunctions() {
   if (document.getElementById('product-form') || document.getElementById('category-browse')) {
     initProducts();
   }
+
+  // Initialize add routine page enhancements (datalist name suggestions)
+  if (document.querySelector('.add-routine-page')) {
+    initRoutineNameSuggestions();
+  }
 }
 
 /**
@@ -1128,6 +1133,70 @@ function setupCommonElements() {
   
   // Setup routine step dropdowns for profile page
   setupRoutineStepDropdowns();
+}
+
+/**
+ * Initialize routine name suggestions on add routine page
+ * Supports datalist dropdown and clickable chips, adapts to routine type
+ */
+function initRoutineNameSuggestions() {
+  const nameInput = document.getElementById('routine_name');
+  const typeSelect = document.getElementById('routine_type');
+  const datalist = document.getElementById('routine-name-suggestions');
+  if (!(nameInput && typeSelect && datalist)) return;
+
+  // Original custom phrases you mentioned
+  const custom = {
+    morning: [
+      'Busy Morning',
+      'Coming Morning',
+      'Routine Morning for Work',
+      'Going Morning to Work',
+      'Morning for Work',
+      'Morning Before Work',
+      'Early AM Reset',
+      'Sunrise Routine'
+    ],
+    evening: [
+      'Night Shift',
+      'Post Night Shift Morning',
+      'Late Night Reset',
+      'Evening Wind Down',
+      'Post-Shift Night Care'
+    ],
+    weekly: ['Weekly Treatment', 'Sunday Reset', 'Weekly Exfoliation'],
+    monthly: ['Monthly Refresh', 'Monthly Mask', 'Monthly Reset'],
+    hair: ['Hair Care', 'Scalp Soothe', 'Glossy Hair Routine'],
+    body: ['Body Care', 'Body Glow', 'Self-care Body Routine'],
+    special: ['Special Care', 'Event Prep', 'SOS Routine'],
+    seasonal: ['Seasonal Routine', 'Winter Care', 'Summer Skin']
+  };
+
+  function getSuggestions() {
+    const type = (typeSelect.value || '').toLowerCase();
+    const list = custom[type];
+    // Fallback baseline list
+    return Array.isArray(list) && list.length
+      ? list
+      : ['Morning Routine', 'Evening Reset', 'Weekly Treatment', 'Monthly Refresh'];
+  }
+
+  function renderDatalist() {
+    if (!datalist) return;
+    const items = getSuggestions();
+    datalist.innerHTML = '';
+    items.forEach(text => {
+      const opt = document.createElement('option');
+      opt.value = text;
+      datalist.appendChild(opt);
+    });
+  }
+
+  // Initial render and on-change wiring
+  renderDatalist();
+  typeSelect.addEventListener('change', function() {
+    renderDatalist();
+  });
 }
 
 /**

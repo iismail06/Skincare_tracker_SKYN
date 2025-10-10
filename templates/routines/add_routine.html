@@ -5,7 +5,7 @@
 {% block title %}{% if is_editing %}Edit Routine{% else %}Add Routine{% endif %} - SKYN{% endblock %}
 
 {% block content %}
-<div class="form-container">
+<div class="form-container add-routine-page">
     <div class="back-link-wrap">
         <a href="{% url 'routines:dashboard' %}" class="back-link">← Back to Dashboard</a>
     </div>
@@ -17,19 +17,44 @@
             Create New Routine
         {% endif %}
     </h1>
+        {% if just_created_name %}
+            <div class="inline-success" role="status" aria-live="polite" style="margin-bottom:1rem;">
+                <div class="d-flex" style="align-items:center; gap:.75rem; justify-content:space-between; flex-wrap:wrap;">
+                    <div>
+                        <strong>{{ just_created_name }}</strong> was added. <span class="muted">You can view it on your dashboard.</span>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-primary" href="{% url 'routines:dashboard' %}">View on Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     
     <div class="form-card">
-        <form method="post" class="routine-form" {% if is_editing %}data-no-ajax="true"{% endif %}>
+                {# Display Django form errors inline #}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for err in form.non_field_errors %}
+                            <div>{{ err }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" class="routine-form" {% if is_editing %}data-no-ajax="true"{% endif %}>
             {% csrf_token %}
             
-            <div class="form-group">
+                        <div class="form-group">
                 <label for="routine_name">Routine Name</label>
-                <input type="text" id="routine_name" name="routine_name" 
+                                <input type="text" id="routine_name" name="routine_name" 
                        value="{{ form.routine_name.value|default:'' }}"
-                       placeholder="e.g., My Morning Glow Routine" required>
+                                             placeholder="e.g., My Morning Glow Routine" required list="routine-name-suggestions">
+                                <datalist id="routine-name-suggestions"></datalist>
+                                {% if form.routine_name.errors %}
+                                    <div class="field-error">{{ form.routine_name.errors|striptags }}</div>
+                                {% endif %}
             </div>
 
-            <div class="form-group">
+                        <div class="form-group">
                 <label for="routine_type">Routine Type</label>
                 <select id="routine_type" name="routine_type" required>
                     <option value="">Choose routine type</option>
@@ -42,6 +67,9 @@
                     <option value="special" {% if form.routine_type.value == 'special' %}selected{% endif %}>Special</option>
                     <option value="seasonal" {% if form.routine_type.value == 'seasonal' %}selected{% endif %}>Seasonal</option>
                 </select>
+                {% if form.routine_type.errors %}
+                  <div class="field-error">{{ form.routine_type.errors|striptags }}</div>
+                {% endif %}
             </div>
 
             <div class="steps-section">
@@ -53,6 +81,9 @@
                     {{ form.step1 }}
                     <label for="product1">Product</label>
                     {{ form.product1 }}
+                                        {% if form.step1.errors %}
+                                            <div class="field-error">{{ form.step1.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -60,6 +91,9 @@
                     {{ form.step2 }}
                     <label for="product2">Product</label>
                     {{ form.product2 }}
+                                        {% if form.step2.errors %}
+                                            <div class="field-error">{{ form.step2.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -67,6 +101,9 @@
                     {{ form.step3 }}
                     <label for="product3">Product</label>
                     {{ form.product3 }}
+                                        {% if form.step3.errors %}
+                                            <div class="field-error">{{ form.step3.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -74,6 +111,9 @@
                     {{ form.step4 }}
                     <label for="product4">Product</label>
                     {{ form.product4 }}
+                                        {% if form.step4.errors %}
+                                            <div class="field-error">{{ form.step4.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -81,6 +121,9 @@
                     {{ form.step5 }}
                     <label for="product5">Product</label>
                     {{ form.product5 }}
+                                        {% if form.step5.errors %}
+                                            <div class="field-error">{{ form.step5.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <!-- Extended steps 6-10 -->
@@ -89,6 +132,9 @@
                     {{ form.step6 }}
                     <label for="product6">Product</label>
                     {{ form.product6 }}
+                                        {% if form.step6.errors %}
+                                            <div class="field-error">{{ form.step6.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -96,6 +142,9 @@
                     {{ form.step7 }}
                     <label for="product7">Product</label>
                     {{ form.product7 }}
+                                        {% if form.step7.errors %}
+                                            <div class="field-error">{{ form.step7.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -103,6 +152,9 @@
                     {{ form.step8 }}
                     <label for="product8">Product</label>
                     {{ form.product8 }}
+                                        {% if form.step8.errors %}
+                                            <div class="field-error">{{ form.step8.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -110,6 +162,9 @@
                     {{ form.step9 }}
                     <label for="product9">Product</label>
                     {{ form.product9 }}
+                                        {% if form.step9.errors %}
+                                            <div class="field-error">{{ form.step9.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
 
                 <div class="form-group">
@@ -117,6 +172,9 @@
                     {{ form.step10 }}
                     <label for="product10">Product</label>
                     {{ form.product10 }}
+                                        {% if form.step10.errors %}
+                                            <div class="field-error">{{ form.step10.errors|striptags }}</div>
+                                        {% endif %}
                 </div>
             </div>
 
