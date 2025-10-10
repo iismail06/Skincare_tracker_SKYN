@@ -158,10 +158,10 @@ class ProductBrowseByCategoryAPIView(generics.ListAPIView):
     def get_queryset(self):
         category = self.kwargs.get('category', 'moisturizer')
         
-        # Get products from database first
+        # Get products from database first 
         db_products = Product.objects.filter(
             product_type=category
-        ).distinct('name', 'brand')[:10]
+        ).order_by('brand', 'name')[:10]
         
         # If we have enough products, return them
         if len(db_products) >= 4:
@@ -418,7 +418,6 @@ class ProductBrowseByCategoryAPIView(generics.ListAPIView):
             suggestions.append(product)
         
         return suggestions
-
 
 @login_required
 def quick_add_product(request):

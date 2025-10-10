@@ -1236,6 +1236,28 @@ function initProductSelectsForProfile() {
     }
   } catch (_) {}
 
+  // Fallback: if no JSON-provided products, try to infer from existing select options
+  if (!products.length) {
+    const firstSel = stepsContainer.querySelector('select.product-select, select[id^="product"]');
+    if (firstSel && firstSel.options && firstSel.options.length > 1) {
+      const arr = [];
+      for (const opt of firstSel.options) {
+        if (!opt.value) continue; // skip placeholder
+        const label = (opt.textContent || '').trim();
+        // Expect format "Brand - Name" from Product.__str__
+        let brand = '';
+        let name = label;
+        const idx = label.indexOf(' - ');
+        if (idx > -1) {
+          brand = label.slice(0, idx).trim();
+          name = label.slice(idx + 3).trim();
+        }
+        arr.push([opt.value, brand, name]);
+      }
+      if (arr.length) products = arr;
+    }
+  }
+
   function buildOptionsHtml(selectedVal) {
     const hasSelection = !!selectedVal;
     let html = `<option value="" disabled${hasSelection ? '' : ' selected'}>Add product</option>`;
@@ -1284,13 +1306,16 @@ function initProductSelectsForProfile() {
   function populateAll() {
     const selects = stepsContainer.querySelectorAll('select.product-select');
     selects.forEach(sel => {
+      // If the select already has multiple options (server-rendered), don't wipe them
+      const existingOptions = sel.options ? sel.options.length : 0;
+      if (!products.length || existingOptions > 1) return;
       const pre = sel.getAttribute('data-selected') || sel.value || '';
       sel.innerHTML = buildOptionsHtml(pre);
       if (pre) sel.value = pre; // re-apply selected if any
     });
   }
 
-  // Initial population
+  // Initial population (only if we have explicit product list and empty selects)
   populateAll();
 
   // No toggle logic needed; select is always visible and compact
@@ -1460,13 +1485,14 @@ function initProductSelectsForProfile() {
   }
 
   function getStepAndProductSelectsFromItem(item) {
-    const stepSel = item.querySelector('select[id^="step"]');
-    let productSel = item.querySelector('select.product-select');
-    if (!productSel && stepSel) {
-      const n = (stepSel.id || '').replace('step','');
-      productSel = item.querySelector(`#product${n}`);
+    // Support both select-based step pickers and plain text inputs
+    let stepField = item.querySelector('select[id^="step"]');
+    if (!stepField) {
+      // Django default IDs are like id_step1
+      stepField = item.querySelector('input[id^="id_step"], input[name^="step"]');
     }
-    return { stepSel, productSel };
+    let productSel = item.querySelector('select.product-select, select[id^="product"]');
+    return { stepField, productSel };
   }
 
   function setProductSelectOptions(productSel, selectedVal, suggestions) {
@@ -1511,10 +1537,11 @@ function initProductSelectsForProfile() {
   }
 
   function wireSuggestionsForItem(item) {
-    const { stepSel, productSel } = getStepAndProductSelectsFromItem(item);
-    if (!(stepSel && productSel)) return;
-    // Initialize suggestions for current step value
-    const currentCat = mapStepToCategory(stepSel.value);
+    const { stepField, productSel } = getStepAndProductSelectsFromItem(item);
+    if (!productSel) return;
+    // Determine current category from step text/value
+    const stepValue = stepField ? (stepField.value || '') : '';
+    const currentCat = mapStepToCategory(stepValue);
     const currentVal = productSel.getAttribute('data-selected') || productSel.value || '';
     if (currentCat) {
       fetchSuggestions(currentCat).then(sugs => setProductSelectOptions(productSel, currentVal, sugs));
@@ -1523,19 +1550,24 @@ function initProductSelectsForProfile() {
     }
     // Wire selection handler (quick-add on suggestion)
     handleSuggestionSelection(productSel);
-    // On step change, refresh suggestions
-    stepSel.addEventListener('change', async function() {
-      const cat = mapStepToCategory(stepSel.value);
-      const selVal = productSel.value || '';
-      const sugs = await fetchSuggestions(cat);
-      setProductSelectOptions(productSel, selVal, sugs);
-    });
+    // On step change or input, refresh suggestions
+    if (stepField) {
+      const handler = async function() {
+        const cat = mapStepToCategory(stepField.value);
+        const selVal = productSel.value || '';
+        const sugs = await fetchSuggestions(cat);
+        setProductSelectOptions(productSel, selVal, sugs);
+      };
+      const evt = stepField.tagName === 'SELECT' ? 'change' : 'input';
+      stepField.addEventListener(evt, handler);
+    }
 
     // Fallback: on first focus of product select, fetch suggestions for current step
     let fetchedOnFocus = false;
     productSel.addEventListener('focus', async function() {
       if (fetchedOnFocus) return;
-      const cat = mapStepToCategory(stepSel.value);
+      const text = stepField ? (stepField.value || '') : '';
+      const cat = mapStepToCategory(text);
       if (!cat) return; // no category derived
       const sugs = await fetchSuggestions(cat);
       if (sugs && sugs.length) {
@@ -1546,7 +1578,7 @@ function initProductSelectsForProfile() {
     }, { once: false });
   }
 
-  // Wire all existing step rows
+  // Wire all existing step rows to enrich selects with suggestions without removing existing options
   stepsContainer.querySelectorAll('.step-item').forEach(wireSuggestionsForItem);
 }
 

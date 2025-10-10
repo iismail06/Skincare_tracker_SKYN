@@ -548,7 +548,8 @@ def edit_routine(request, pk):
     
     else:
         # GET request - populate form with existing data
-        existing_steps = list(routine.steps.all()[:5])  # Get up to 5 steps
+        # Load all existing steps in order
+        existing_steps = list(routine.steps.all().order_by('order'))
         
         # Prepare initial data for the form
         initial_data = {

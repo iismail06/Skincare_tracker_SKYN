@@ -13,7 +13,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step2 = forms.CharField(max_length=200, required=False, label='Step 2')
@@ -21,7 +22,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step3 = forms.CharField(max_length=200, required=False, label='Step 3')
@@ -29,7 +31,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step4 = forms.CharField(max_length=200, required=False, label='Step 4')
@@ -37,7 +40,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step5 = forms.CharField(max_length=200, required=False, label='Step 5')
@@ -45,7 +49,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
 
     # Extended steps 6-10
@@ -54,7 +59,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step7 = forms.CharField(max_length=200, required=False, label='Step 7')
@@ -62,7 +68,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step8 = forms.CharField(max_length=200, required=False, label='Step 8')
@@ -70,7 +77,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step9 = forms.CharField(max_length=200, required=False, label='Step 9')
@@ -78,7 +86,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
     
     step10 = forms.CharField(max_length=200, required=False, label='Step 10')
@@ -86,7 +95,8 @@ class RoutineCreateForm(forms.Form):
         queryset=Product.objects.none(), 
         required=False, 
         label='Product (optional)',
-        empty_label="-- No product selected --"
+        empty_label="-- No product selected --",
+        widget=forms.Select(attrs={'class': 'product-select'})
     )
 
     def __init__(self, *args, **kwargs):

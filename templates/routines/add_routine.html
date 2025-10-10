@@ -72,11 +72,11 @@
                 {% endif %}
             </div>
 
-            <div class="steps-section">
+            <div class="steps-section" id="steps-container">
                 <h3>Routine Steps</h3>
-                <p class="steps-help">Add up to 5 steps for your routine (leave blank if not needed)</p>
+                <p class="steps-help">Add up to 10 steps for your routine (leave blank if not needed)</p>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="1">
                     <label for="step1">Step 1</label>
                     {{ form.step1 }}
                     <label for="product1">Product</label>
@@ -86,7 +86,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="2">
                     <label for="step2">Step 2</label>
                     {{ form.step2 }}
                     <label for="product2">Product</label>
@@ -96,7 +96,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="3">
                     <label for="step3">Step 3</label>
                     {{ form.step3 }}
                     <label for="product3">Product</label>
@@ -106,7 +106,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="4">
                     <label for="step4">Step 4</label>
                     {{ form.step4 }}
                     <label for="product4">Product</label>
@@ -116,7 +116,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="5">
                     <label for="step5">Step 5</label>
                     {{ form.step5 }}
                     <label for="product5">Product</label>
@@ -127,7 +127,7 @@
                 </div>
 
                 <!-- Extended steps 6-10 -->
-                <div class="form-group">
+                <div class="form-group step-item" data-step="6">
                     <label for="step6">Step 6</label>
                     {{ form.step6 }}
                     <label for="product6">Product</label>
@@ -137,7 +137,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="7">
                     <label for="step7">Step 7</label>
                     {{ form.step7 }}
                     <label for="product7">Product</label>
@@ -147,7 +147,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="8">
                     <label for="step8">Step 8</label>
                     {{ form.step8 }}
                     <label for="product8">Product</label>
@@ -157,7 +157,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="9">
                     <label for="step9">Step 9</label>
                     {{ form.step9 }}
                     <label for="product9">Product</label>
@@ -167,7 +167,7 @@
                                         {% endif %}
                 </div>
 
-                <div class="form-group">
+                <div class="form-group step-item" data-step="10">
                     <label for="step10">Step 10</label>
                     {{ form.step10 }}
                     <label for="product10">Product</label>
