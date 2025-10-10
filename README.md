@@ -1,265 +1,401 @@
-# SKYN - Skincare Tracker
+# SKYN – Skincare Routine Tracker
 
-A Django-based web application for tracking and managing skincare routines. SKYN helps users monitor their daily skincare products, track their skin's response over time, and receive personalized insights for better skincare management.
+SKYN is a web-based skincare routine tracker built with Django. It lets users build morning/evening routines, manage products, mark completion, and visualize progress over time. It also includes a small REST API and product import from Open Beauty Facts.
 
-<!-- Screenshot removed --><!-- Images removed from project -->
+- Live Demo: your-deployed-url-here
+- Project Board: [https://github.com/users/iismail06/projects/5/views/1](https://github.com/users/iismail06/projects/5/views/1)
 
-## 🌟 Features
+---
 
-- **Routine Tracking**: Create and manage morning and evening skincare routines
-- **Product Management**: Add and organize skincare products with detailed information
-- **Progress Monitoring**: Track your skin's response to different products over time
-- **User Authentication**: Secure user registration and login system
-- **Responsive Design**: Optimized for desktop and mobile devices
-- **Dark/Light Theme**: Toggle between light and dark modes for better user experience
-- **Calendar Integration**: The dashboard features a calendar that highlights daily, weekly, and monthly routines. Clicking on highlighted days opens popups with detailed routine steps and product info.
-- **User Profile & Questionnaire**: Includes a user profile page and a questionnaire to personalize recommendations and routine suggestions.
-- **Progress Tracking**: Users can monitor routine completion and view historical data to track improvements in their skincare journey.
-- **Other Dashboard Features**: Quick access to routine management, product overview, and user settings for streamlined navigation.
+## Project Overview
 
-## 🚀 Live Demo
+The goal of SKYN is to help users build consistent skincare habits by tracking their routines and progress. Users can create personalized routines for morning and evening, manage products, and track completion rates.
 
-[View Live Application](your-deployed-url-here) <!-- Add when deployed -->
+---
 
-## 📚 User Stories
+## Features
 
-### First Time Visitor
+- User authentication (signup, login, logout)
+- Create and manage skincare routines (AM/PM)
+- Add, edit, and delete products; link them to routines
+- Track daily completion with visual progress
+- Calendar view for activity tracking with popups
+- Dark/Light theme toggle
+- Responsive design (mobile/desktop)
+- REST API for products (DRF)
+- Default product suggestions when database is empty
 
-- As a first-time visitor, I want to understand what SKYN does immediately upon landing
-- As a new user, I want to easily create an account and start tracking my routine
+---
 
-### Registered User
+## Technologies Used
 
-- As a registered user, I want to create and manage my skincare routines
-- As a user, I want to track my skin's response to different products
-- As a user, I want to switch between light and dark themes for comfortable viewing
+- Backend: Django, Django REST Framework
+- Frontend: HTML5, CSS3, Bootstrap, JavaScript
+- Database: SQLite (development), PostgreSQL (production)
+- Deployment: Heroku, Gunicorn, WhiteNoise
+- Utilities: dj-database-url, requests
+- Tooling: Git & GitHub, VS Code
 
-### Returning User
+---
 
-- As a returning user, I want to quickly access my existing routines
-- As a user, I want to see my progress and skin improvements over time
+## Setup Instructions
 
-## � Agile Development
+```bash
+# Clone the repository
+git clone https://github.com/iismail06/Skincare_tracker_SKYN.git
+cd Skincare_tracker_SKYN
 
-This project was developed using Agile methodology with continuous iteration and user feedback integration.
+# Create and activate a virtual environment
+python -m venv venv
+# macOS/Linux
+source venv/bin/activate
+# Windows
+# venv\Scripts\activate
 
-### Project Management
+# Install dependencies
+pip install -r requirements.txt
 
-- **GitHub Project Board**: [View Project Board](https://github.com/users/iismail06/projects/5/views/1)
-- **Board Visibility**: Set to public for transparency and collaboration
-- **Workflow Columns**: Backlog → Todo → In Progress → Done
+# Apply migrations
+python manage.py migrate
 
-### User Story Mapping
+# (Optional) Create a superuser for admin access
+python manage.py createsuperuser
 
-All user stories from the above section have been mapped to the GitHub project board as individual issues/items:
+# Start the development server
+python manage.py runserver
+```
 
-- ✅ **First-time visitor stories** - Mapped to onboarding and homepage features
-- ✅ **Registered user stories** - Mapped to core CRUD functionality
-- ✅ **Returning user stories** - Mapped to dashboard and progress tracking features
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
-### Development Task Breakdown
+### Environment Variables
 
-Each user story has been broken down into specific development tasks:
+Create an `env.py` or environment variables file. Minimum:
 
-- Database model design and implementation
-- View and URL configuration
-- Template creation and styling
-- Form handling and validation
-- Authentication and authorization
-- API integration and testing
+```env
+SECRET_KEY=change-me
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+DATABASE_URL=sqlite:///db.sqlite3
+```
 
-### Prioritization System (MoSCoW)
+Notes:
 
-Features were prioritized using the MoSCoW method:
+- Do not commit your secrets.
+- Production settings automatically enable HTTPS and secure cookies when `DEBUG=False`.
 
-- **Must Have**: User authentication, basic CRUD operations, responsive design
-- **Should Have**: Product search, routine tracking, user profiles
-- **Could Have**: Progress analytics, social features, API integrations
-- **Won't Have**: Advanced AI recommendations, mobile app (for this iteration)
+### Project Structure
 
-## �🛠️ Technologies Used
-
-- **Backend**: Django, Python
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Database**: PostgreSQL,  SQLite (development)
-- **Icons**: Font Awesome
-- **Styling**: Custom CSS with CSS Variables for theming
-- **Version Control**: Git & GitHub
-
-## 📋 Installation & Setup
-
-### Prerequisites
-
-- Python 3.8+
-- pip (Python package manager)
-
-### Local Development Setup
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/iismail06/Skincare_tracker_SKYN.git
-   cd Skincare_tracker_SKYN
-   ```
-
-2. **Create virtual environment**
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Run migrations**
-
-   ```bash
-   python manage.py migrate
-   ```
-
-5. **Create superuser (optional)**
-
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. **Run development server**
-
-   ```bash
-   python manage.py runserver
-   ```
-
-7. **Access the application**
-   - Open your browser and navigate to `http://127.0.0.1:8000`
-
-## 🗂️ Project Structure
-
+```text
 Skincare_tracker_SKYN/
-├── config/                 # Django project settings
-├── users/                  # User authentication app
-├── routines/              # Skincare routines management
-├── products/              # Product tracking and management
-├── static/                # Static files (CSS, JS, images)
-├── templates/             # HTML templates
-├── requirements.txt       # Python dependencies
-├── manage.py             # Django management script
-└── README.md
+├── config/
+├── users/
+├── routines/
+├── products/
+├── static/
+├── templates/
+├── manage.py
+├── requirements.txt
+├── Procfile
+└── runtime.txt
+```
 
-## 🎨 Design & Styling
+---
 
-- **Color Palette**: Earthy tones with light (#e9e9e9) and dark (#3a2618) theme support
-- **Typography**: Inter font family for modern, clean readability
-- **Responsive**: Mobile-first design with standard breakpoints (600px, 768px, 992px, 1200px)
-- **Accessibility**: High contrast ratios and semantic HTML structure
+## 👤 User Stories
 
-## 🧪 Testing
+All user stories were developed using Agile methodology. The full workflow is available on the Project Board.
 
-Testing documentation will be completed during the development phase.
+### User Story 1 – User Registration
 
-| Test Area  | Description                                      | Status |
-| ---------- | ------------------------------------------------ | ------ |
-| **Models** | Check model creation, relationships, validations | ✅      |
-| **Views**  | Test routine creation, listing, and detail pages | ✅      |
-| **Forms**  | Ensure forms validate correctly                  | ✅      |
-| **Auth**   | Test login/logout and registration               | ✅      |
+- As a visitor, I want to register an account so I can save my skincare routines.
 
-## 🙏 Accreditations
+Acceptance Criteria:
 
-### Images & Assets
+- Users can register using a unique email and password.
+- Duplicate accounts are prevented.
+- Invalid data shows helpful errors.
 
-This project no longer stores project images in the repository. Favicons and small assets may still be present in `static/images/favicon`.
+Testing Performed:
+
+- ✅ User can register: Account created and user redirected to login.
+- ✅ Validation errors: Invalid input shows errors.
+
+---
+
+### User Story 2 – User Login
+
+- As a registered user, I want to log in so I can access my dashboard.
+
+Acceptance Criteria:
+
+- Only registered users can log in.
+- Invalid login shows error.
+- Logout works correctly.
+
+Testing Performed:
+
+- ✅ Valid login: Redirects to dashboard.
+- ✅ Invalid login: Error message displayed.
+- ✅ Logout: Redirects to home page.
+
+---
+
+### User Story 3 – Create & Manage Routines
+
+- As a user, I want to create, edit, and delete routines.
+
+Acceptance Criteria:
+
+- Add routine with name and type (AM/PM).
+- Edit or delete routines.
+- Display routines on dashboard.
+
+Testing Performed:
+
+- ✅ Add routine: Routine saved and displayed.
+- ✅ Edit routine: Changes reflected.
+- ✅ Delete routine: Routine removed.
+
+---
+
+### User Story 4 – Product Management
+
+- As a user, I want to manage products linked to my routines.
+
+Acceptance Criteria:
+
+- Add, edit, and delete products.
+- Link products to routines.
+- Validation prevents empty fields.
+
+Testing Performed:
+
+- ✅ Add product: Product saved and linked.
+- ✅ Edit product: Changes reflected.
+- ✅ Delete product: Product removed.
+
+---
+
+### User Story 5 – Progress Tracking
+
+- As a user, I want to mark routines complete and see my progress.
+
+Acceptance Criteria:
+
+- Progress displayed as a percentage bar.
+- Completed routines stored in the database.
+- Feedback updates dynamically.
+
+Testing Performed:
+
+- ✅ Mark complete: Progress bar updates.
+- ✅ Refresh page: Data persists.
+
+---
+
+### User Story 6 – Calendar View
+
+- As a user, I want to view routines on a calendar.
+
+Acceptance Criteria:
+
+- Calendar highlights completed routines.
+- Clicking a day shows routine details.
+- Navigate between months.
+
+Testing Performed:
+
+- ✅ Calendar render: Shows routines.
+- ✅ Click day: Shows details.
+- ✅ Mobile view: Responsive.
+
+---
+
+### User Story 7 – Dark/Light Theme
+
+- As a user, I want to toggle dark/light themes.
+
+Acceptance Criteria:
+
+- Toggle works site-wide.
+- Preference saved locally.
+
+Testing Performed:
+
+- ✅ Toggle theme: Changes colors.
+- ✅ Reload: Preference persists.
+
+---
+
+### User Story 8 – Responsive Design
+
+- As a user, I want the site to work on all devices.
+
+Acceptance Criteria:
+
+- Layout adapts to all screen sizes.
+- Buttons and forms remain usable.
+
+Testing Performed:
+
+- ✅ Desktop: Layout intact.
+- ✅ Tablet: Layout intact.
+- ✅ Mobile: Layout intact.
+
+---
+
+## API – Products
+
+Base URL: `/api/products/`
+
+Endpoints:
+
+- GET `/api/products/` — list your products
+- POST `/api/products/` — create a product
+- GET `/api/products/<id>/` — retrieve
+- PUT/PATCH `/api/products/<id>/` — update
+- DELETE `/api/products/<id>/` — delete
+- GET `/api/products/browse/<category>/` — public suggestions
+
+Example (create):
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/products/ \
+ -H "Content-Type: application/json" \
+ -b "sessionid=<your-session-cookie>" \
+ -d '{"name":"Hydrating Cleanser","brand":"CeraVe","product_type":"cleanser"}'
+```
+
+---
+
+## Import Products from Open Beauty Facts
+
+```bash
+python manage.py import_openbeautyfacts moisturizer
+python manage.py import_openbeautyfacts "vitamin c" --limit 20
+python manage.py import_openbeautyfacts cleanser --user myusername
+python manage.py import_openbeautyfacts sunscreen --overwrite
+```
+
+---
+
+## Deployment (Heroku)
+
+1. Create a Heroku app and connect the GitHub repo
+2. Add Postgres database (Heroku Postgres add-on)
+3. Set Config Vars:
+    - `SECRET_KEY`
+    - `DEBUG` (False)
+    - `ALLOWED_HOSTS` (your-app.herokuapp.com)
+    - `DATABASE_URL` (set by add-on)
+4. Deploy the main branch
+5. Run `python manage.py collectstatic` if needed
+
+WhiteNoise serves static files automatically in production.
+
+---
+
+## Manual Testing
+
+| Feature | Expected Result | Outcome | Screenshot |
+|----------|----------------|----------|-------------|
+| User Registration | New user can sign up successfully | ✅ Pass | ![Signup Screenshot](path/to/image.png) |
+| User Login / Logout | User can log in and out securely | ✅ Pass | ![Login Screenshot](path/to/image.png) |
+| Add Routine | Routine saved and displayed on dashboard | ✅ Pass | ![Add Routine Screenshot](path/to/image.png) |
+| Edit / Delete Routine | Routine updates or removes correctly | ✅ Pass | ![Edit Routine Screenshot](path/to/image.png) |
+| Add Product | Product added and linked to routine | ✅ Pass | ![Add Product Screenshot](path/to/image.png) |
+| Progress Tracking | Progress bar updates dynamically | ✅ Pass | ![Progress Screenshot](path/to/image.png) |
+| Calendar Integration | Routines appear correctly by date | ✅ Pass | ![Calendar Screenshot](path/to/image.png) |
+| Theme Toggle (Dark/Light) | Theme changes site-wide | ✅ Pass | ![Dark Mode Screenshot](path/to/image.png) |
+| Responsive Design | Displays correctly on all devices | ✅ Pass | ![Responsive Screenshot](path/to/image.png) |
+
+### Code Validation
+
+Suggested validators and linters to run during development:
+
+| Tool | Area |
+|------|------|
+| W3C HTML Validator | HTML templates |
+| W3C CSS Validator | CSS files |
+| flake8 | Python code style |
+| ruff or pylint (optional) | Python static checks |
+| JSHint/ESLint | JavaScript |
+
+Add actual results/screenshots here when you run them.
+
+### Lighthouse Testing
+
+Use Google Lighthouse to test Performance, Accessibility, Best Practices, and SEO.
+
+Add your actual scores and screenshots here after running Lighthouse on key pages (Home, Dashboard, Profile).
+
+### User Story Testing
+
+Each user story was tested manually to confirm it meets all acceptance criteria.
+
+| User Story | Test Performed | Result |
+|-------------|----------------|---------|
+| Registration | User registers with valid credentials | ✅ |
+| Login | User logs in successfully | ✅ |
+| Add Routine | Routine created, visible on dashboard | ✅ |
+| Add Product | Product linked to correct routine | ✅ |
+| Calendar | Displays correct dates | ✅ |
+| Theme Toggle | Dark/Light modes function properly | ✅ |
+| Responsive Layout | Tested on multiple devices | ✅ |
+
+### Browser Compatibility
+
+SKYN was tested across the following browsers to ensure consistent performance:
+
+| Browser | Result |
+|----------|--------|
+| Google Chrome | ✅ Fully Functional |
+| Mozilla Firefox | ✅ Fully Functional |
+| Microsoft Edge | ✅ Fully Functional |
+| Safari (Mac) | ✅ Fully Functional |
+| Mobile Safari (iOS) | ✅ Fully Functional |
+
+### Bugs and Fixes
+
+| Issue | Cause | Fix |
+|-------|--------|-----|
+| Routine progress not saving | Missing field in form submission | Added correct form field mapping |
+| Calendar not updating | JavaScript event not triggering | Added event listener for date selection |
+| Dark mode flicker | CSS variable loading late | Cached theme preference in local storage |
+
+### Summary
+
+All features passed testing successfully with no critical issues remaining. The site performs well across devices, browsers, and screen sizes.
+
+---
+
+## Credits
 
 ### Code Resources
 
-- Django documentation: [docs.djangoproject.com](https://docs.djangoproject.com/)
-- CSS Grid techniques: [CSS-Tricks Grid Guide](https://css-tricks.com/snippets/css/complete-guide-grid/)
-- Font Awesome icons: [FontAwesome](https://fontawesome.com/)
+- [Django Documentation](https://docs.djangoproject.com/) – For backend structure and authentication setup
+- [Bootstrap Documentation](https://getbootstrap.com/docs/) – For responsive layout and components
+- [Font Awesome](https://fontawesome.com/) – For icons used across the app
+- [CSS-Tricks Grid Guide](https://css-tricks.com/snippets/css/complete-guide-grid/) – For layout techniques
+- [MDN Web Docs](https://developer.mozilla.org/) – For JavaScript and CSS references
 
-### Design Inspiration
+### Tutorials & Learning Resources
 
-- Color palette inspired by modern skincare brand aesthetics
-- Typography choices based on accessibility best practices
+- [YouTube: Django CRUD Tutorial – Dennis Ivy](https://www.youtube.com/watch?v=F5mRW0jo-U4)
+- [YouTube: Django Forms & Validation – Codemy.com](https://www.youtube.com/watch?v=UIpKQ7fSxkY)
+- [YouTube: Bootstrap Modals & JS Events](https://www.youtube.com/watch?v=Jyvffr3aCp0)
+- [Real Python – Django Templates](https://realpython.com/django-templates/)
 
-## 📖 Inspiration & Acknowledgments
+## Future Enhancements
 
-This project was developed as a **learning exercise**. I combined ideas from multiple tutorials, blog posts, and online snippets, adapting them into a skincare routine tracker.
+- Product recommendations by skin type
+- Progress photos & analytics
+- Export routines to PDF
+- Social sharing
+- Enhanced API auth
 
-### Popups with Routine Details
+---
 
-- [Bootstrap Modal Tutorial (YouTube)](https://www.youtube.com/watch?v=Jyvffr3aCp0)
-- [JavaScript Popups & Event Listeners (YouTube)](https://www.youtube.com/watch?v=K8Q4KX1Tu7w)
+## Author
 
-### Product Management (Add/Edit/Delete)
-
-- [Django CRUD Tutorial (YouTube)](https://www.youtube.com/watch?v=F5mRW0jo-U4)
-- [Django Admin & Forms (YouTube)](https://www.youtube.com/watch?v=UIpKQ7fSxkY)
-
-### User Profile & Questionnaire
-
-- [Django Custom User Model Tutorial (YouTube)](https://www.youtube.com/watch?v=Hshbjg5P4d4)
-- [Django Forms & Validation (YouTube)](https://www.youtube.com/watch?v=UIpKQ7fSxkY)
-
-#### Dashboard & Tracking Features
-
-- [Django Dashboard Tutorial (YouTube)](https://www.youtube.com/watch?v=6WruncSoCdI)
-- [JavaScript Dynamic Dashboard (YouTube)](https://www.youtube.com/watch?v=0ik6X4DJKCc)
-
-### Calendar & JavaScript Tutorials
-
-- [YouTube: JavaScript DOM Crash Course](https://www.youtube.com/watch?v=0ik6X4DJKCc) — Learn how to manipulate HTML and CSS with JavaScript.
-- [MDN Web Docs: Introduction to Django](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction) — Django basics for beginners.
-- [Real Python: Django Templates Tutorial](https://realpython.com/django-templates/) — How Django templates work and how to pass data from views to HTML.
-- [YouTube: Django Forms Tutorial](https://www.youtube.com/watch?v=UIpKQ7fSxkY) — How to create and use forms in Django.
-- [YouTube: JavaScript Event Listeners Explained](https://www.youtube.com/watch?v=jq4V6Iu6AmE) — How to handle clicks and other events in JS.
-- [MDN Web Docs: Using Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) — How to send and receive data between JS and backend.
-
-- [YouTube: Build a Calendar in JavaScript](https://www.youtube.com/watch?v=K8Q4KX1Tu7w) — Shows how to build and style a calendar, add events, and handle clicks.
-- [YouTube: Django Calendar App Tutorial](https://www.youtube.com/watch?v=Q3u1n6b1xGk) — Shows how to pass data from Django to JS and display events.
-- [MDN Web Docs: Manipulating documents with JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents) — Explains how to update HTML and add interactivity.
-
-This skincare tracker demonstrates several fundamental Django concepts:
-
-### API Implemented
-
-- **REST API Endpoints** - Following [DRF Quickstart Guide](https://www.django-rest-framework.org/tutorial/quickstart/)
-- **Custom Management Commands** - Based on [Django's official documentation](https://docs.djangoproject.com/en/5.2/howto/custom-management-commands/)
-- **External API Integration** - Using patterns from [Real Python's API Integration Guide](https://realpython.com/api-integration-in-python/)
-- **Model Extensions** - Standard Django model fields as shown in [Django Models Tutorial](https://docs.djangoproject.com/en/5.2/topics/db/models/)
-
-### Learning Resources
-
-If you want to understand or extend this code, these tutorials cover all the concepts used:
-
-1. [Django REST Framework Tutorial Series](https://www.django-rest-framework.org/tutorial/1-serialization/) - For API development
-2. [Real Python Django Series](https://realpython.com/get-started-with-django-1/) - For Django fundamentals
-3. [Python Requests Documentation](https://requests.readthedocs.io/en/latest/) - For API calls
-
-### Open Beauty Facts API
-
-- [Open Beauty Facts API Documentation](https://world.openbeautyfacts.org/data)
-- [API Usage Examples](https://wiki.openbeautyfacts.org/API)
-
-## 🤖 AI Contribution  
-
-- **Automated Testing**: AI was used to help structure and organize the test cases into logical sections.  
-- *All AI-generated code was reviewed, understood, and modified by the developer to ensure learning objectives were met.*
-
-## 🔧 Future Enhancements
-
-- Product recommendation system based on skin type
-- Progress photos and visual tracking
-- Export routine data to PDF
-- Social features for sharing routines
-- Integration with skincare product databases
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👤 Author
-
-**Idil** - [GitHub Profile](https://github.com/iismail06)
+Idil – [https://github.com/iismail06](https://github.com/iismail06)
