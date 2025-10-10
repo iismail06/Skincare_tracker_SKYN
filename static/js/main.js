@@ -1404,6 +1404,8 @@ function initProductSelectsForProfile() {
       'gentle cleanse': 'cleanser',
       'double cleanse': 'cleanser',
       'deep cleanse': 'cleanser',
+      'cleanser': 'cleanser',
+      'face wash': 'cleanser',
       'toner': 'toner',
       'essence': 'essence',
       'vitamin c serum': 'vitamin_c',
@@ -1413,6 +1415,8 @@ function initProductSelectsForProfile() {
       'moisturizer': 'moisturizer',
       'spf / sunscreen': 'sunscreen',
       'retinol / acid treatment': 'retinol',
+      'active': 'serum',
+      'actives': 'serum',
       'spot treatment': 'spot_treatment',
       'eye cream': 'eye_cream',
       'face oil': 'oil',
@@ -1467,20 +1471,20 @@ function initProductSelectsForProfile() {
     if (exactMap[v]) return exactMap[v];
 
     // Fallback heuristics for custom steps
-    if (v.includes('cleanse')) return 'cleanser';
+  if (v.includes('cleanse') || v.includes('wash')) return 'cleanser';
     if (v.includes('toner')) return 'toner';
     if (v.includes('essence')) return 'essence';
-    if (v.includes('vitamin c')) return 'vitamin_c';
-    if (v.includes('serum')) return 'serum';
-    if (v.includes('moistur')) return 'moisturizer';
+  if (v.includes('vitamin c') || v.includes('ascorbic')) return 'vitamin_c';
+  if (v.includes('serum') || v.includes('active') || v.includes('niacinamide') || v.includes('hyaluronic') || v.includes('azelaic') || v.includes('tranexamic')) return 'serum';
+  if (v.includes('moistur')) return 'moisturizer';
     if (v.includes('spf') || v.includes('sunscreen')) return 'sunscreen';
-    if (v.includes('retinol') || v.includes('retinoid')) return 'retinol';
-    if (v.includes('acid') || v.includes('exfol')) return 'exfoliant';
+  if (v.includes('retinol') || v.includes('retinoid')) return 'retinol';
+  if (v.includes('acid') || v.includes('exfol') || v.includes('aha') || v.includes('bha') || v.includes('salicylic') || v.includes('glycolic') || v.includes('lactic')) return 'exfoliant';
     if (v.includes('mask')) return 'mask';
     if (v.includes('eye')) return 'eye_cream';
-    if (v.includes('lip')) return 'lip_treatment';
-    if (v.includes('oil')) return 'oil';
-    if (v.includes('spot')) return 'spot_treatment';
+  if (v.includes('lip')) return 'lip_treatment';
+  if (v.includes('oil') || v.includes('squalane')) return 'oil';
+  if (v.includes('spot') || v.includes('benzoyl')) return 'spot_treatment';
     if (v.includes('body') && v.includes('wash')) return 'body_wash';
     if (v.includes('body') && v.includes('scrub')) return 'body_scrub';
     if (v.includes('body') && (v.includes('lotion') || v.includes('cream'))) return 'body_lotion';
@@ -1495,7 +1499,15 @@ function initProductSelectsForProfile() {
   }
 
   async function fetchSuggestions(category) {
-    if (!category) return [];
+    // If no category inferred, provide a small default set so the user always sees something
+    if (!category) {
+      return [
+        { name: 'Gentle Skin Cleanser', brand: 'Cetaphil', product_type: 'cleanser' },
+        { name: 'Niacinamide 10% + Zinc 1%', brand: 'The Ordinary', product_type: 'serum' },
+        { name: 'Daily Facial Moisturizing Lotion', brand: 'CeraVe', product_type: 'moisturizer' },
+        { name: 'UV Clear Broad-Spectrum SPF 46', brand: 'EltaMD', product_type: 'sunscreen' }
+      ];
+    }
     if (suggestionCache[category]) return suggestionCache[category];
     try {
       const resp = await fetch(`/api/products/browse/${encodeURIComponent(category)}/`, {
@@ -1517,7 +1529,13 @@ function initProductSelectsForProfile() {
       return suggestionCache[category];
     } catch (_) {
       console.debug('Suggestion fetch error for category:', category);
-      return [];
+      // On network/API error, offer a safe baseline set
+      return [
+        { name: 'Gentle Skin Cleanser', brand: 'Cetaphil', product_type: 'cleanser' },
+        { name: 'Niacinamide 10% + Zinc 1%', brand: 'The Ordinary', product_type: 'serum' },
+        { name: 'Daily Facial Moisturizing Lotion', brand: 'CeraVe', product_type: 'moisturizer' },
+        { name: 'UV Clear Broad-Spectrum SPF 46', brand: 'EltaMD', product_type: 'sunscreen' }
+      ];
     }
   }
 

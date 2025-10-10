@@ -730,15 +730,17 @@ def delete_routine(request, pk):
                 return JsonResponse({'success': True, 'message': f'Routine "{routine_name}" deleted successfully'})
             else:
                 messages.success(request, f'Routine "{routine_name}" deleted successfully')
-                return redirect('users:profile')
+                # Send the user back to the dashboard after delete
+                return redirect('routines:dashboard')
                 
         except Exception as e:
             if request.headers.get('Content-Type') == 'application/json':
                 return JsonResponse({'success': False, 'error': str(e)})
             else:
                 messages.error(request, 'Error deleting routine. Please try again.')
-                return redirect('users:profile')
+                # Fall back to dashboard on error as well
+                return redirect('routines:dashboard')
     else:
-        # GET request - redirect to profile
-        return redirect('users:profile')
+        # GET request - redirect to dashboard
+        return redirect('routines:dashboard')
 
