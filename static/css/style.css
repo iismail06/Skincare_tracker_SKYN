@@ -46,11 +46,6 @@
     box-sizing: border-box;
 }
 
-/* Prevent content from sitting under fixed navbar. Adjust if your navbar is taller. */
-/* main {
-    padding-top: 0.5px; /* approximate navbar height 
-} */
-
 
 .custom-navbar .nav-right {
     display: flex !important;
@@ -339,18 +334,16 @@
     margin-top: 1.4rem;
 }
 
-/* Profile: narrower centered container and button adjustments */
 .profile-container {
-    max-width: 760px; /* comfortable reading width */
+    max-width: 760px; 
     margin: 2rem auto; /* center container with top/bottom margin */
     padding: 1.5rem;
-    /* Apply uniform glass effect to main container */
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    background: transparent !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: none !important;
     /* Prevent overflow issues */
     box-sizing: border-box;
     width: calc(100% - 2rem); /* Account for page margins */
@@ -579,8 +572,7 @@ label {
 /* Buttons */
 .btn {
     display: inline-block;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
+    padding: 1.4rem;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -630,9 +622,6 @@ label {
     color: #ffffff !important;
 }
 
-
-
-/* Secondary: outline or muted alternate */
 
 .btn-secondary {
     /* Minimal override: just use .btn glass effect, only color override if needed */
@@ -1412,373 +1401,189 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
     18. PROFILE PAGE And profile-related components
    ========================================================================== */
 
-/* Quick actions label and row */
-.quick-actions-label {
-    margin-top: 0.5rem;
-    color: var(--text-light);
+/* Page title: softer shadow + faint accent underline */
+.profile-container .profile-header-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 1rem;
+}
+
+.profile-container .page-title {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    font-weight: 700;
+    margin-bottom: 1.1rem;
+    color: var(--text) !important; /* ensure readable title in light mode */
+}
+
+.profile-container .page-title::after {
+    content: "";
+    display: block;
+    height: 3px;
+    margin: 0.6rem auto 0;
+    width: 80px;
+    border-radius: 3px;
+    background: rgba(var(--accent-color-rgb, 150, 154, 139), 0.25);
+}
+
+/* Unify section shells and spacing */
+.profile-container .dashboard-section {
+    background: var(--card-bg, rgba(255, 255, 255, 0.82));
+    border: 1px solid var(--border, rgba(0,0,0,0.08));
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 1.25rem;
+    margin: 1.1rem 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.profile-container .section-title {
+    color: var(--text);
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+}
+
+/* Quick actions: segmented buttons with equal width */
+.profile-container .profile-actions-row {
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.profile-container .profile-actions-row .btn-wide,
+.profile-container .profile-actions-row .edit-btn,
+.profile-container .profile-actions-row .add-routine-btn {
+    min-width: 160px; /* smaller, consistent size */
+    height: 44px;
+    padding: 0 1rem;
+    border: 1.5px solid var(--accent-color-bg, #676B5D) !important;
+    background: transparent !important;
+    color: var(--accent-color-text, #222) !important;
+    border-radius: 10px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.95rem;
 }
 
-.profile-actions-row {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.btn-wide { min-width: 180px; text-align: center; }
-
-/* Streak mini card */
-.streak-card {
-    padding: 0.75rem 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Journal textarea and actions */
-.journal-textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 8px;
-    border: 1px solid rgba(200,200,200,0.7);
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(8px);
-}
-
-.form-actions-row {
-    margin-top: 0.75rem;
-    display: flex;
-    gap: 10px;
-}
-
-.muted-note { margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-light); }
-
-/* Utility spacers used on profile */
-.u-mt-sm { margin-top: 0.5rem; }
-.u-mt-md { margin-top: 1rem; }
-.u-mt-lg { margin-top: 2rem; }
-/* Ensure all buttons on profile page have consistent styling */
-.form-card .btn,
-.routines-list .btn {
-    min-width: 140px;
-    padding: 0.8rem 1.8rem !important;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 6px;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: 1.5px solid var(--accent-color-bg) !important;
-    background: transparent !important;
-    color: var(--accent-color-text) !important;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    transition: all 0.3s ease;
-}
-
-.form-card .btn:hover,
-.routines-list .btn:hover {
+.profile-container .profile-actions-row a:hover,
+.profile-container .profile-actions-row a:focus-visible {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-    background: rgba(var(--accent-color-strong-rgb), 0.12) !important;
+    background: rgba(var(--accent-color-rgb, 150, 154, 139), 0.12) !important;
     text-decoration: none;
-    color: var(--accent-color-text) !important;
 }
 
-.form-card .btn:focus,
-.routines-list .btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.25);
+.profile-container .quick-actions-label {
+    color: var(--gray, #666);
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    margin-top: 0.25rem;
 }
 
-/* Custom styling for routine list and buttons */
-.routines-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    backdrop-filter: blur(10px);
-}
-
-.routine-info {
-    flex: 1;
-    font-size: 16px;
-}
-
-.routine-actions {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-
-.routine-actions .btn {
-    min-width: 140px;
-    padding: 0.8rem 1.8rem !important;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 6px;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: 1.5px solid var(--accent-color-bg) !important;
-    background: transparent !important;
-    color: var(--accent-color-text) !important;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    transition: all 0.3s ease;
-}
-
-.routine-actions .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-    background: rgba(var(--accent-color-strong-rgb), 0.12) !important;
-    text-decoration: none;
-    color: var(--accent-color-text) !important;
-}
-
-.routine-actions .btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.25);
-}
-
-/* Style for routines list at the bottom of the profile page */
-.routines-list {
-    /* Use same glass effect as other profile components */
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+/* Streak chip: compact glass badge */
+.profile-container .streak-card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.82));
+    border: 1px solid var(--border, rgba(0,0,0,0.08));
     border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    /* Consistent sizing and spacing within parent container */
-    margin-top: 1.5rem;
-    margin-bottom: 0; /* Remove bottom margin to prevent overflow */
-    padding: 1.5rem;
-    list-style: none;
-    width: 100%; /* Use full width of parent */
-}
-.routines-list li {
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid #eee;
-}
-.routines-list li:last-child {
-    border-bottom: none;
+    padding: 0.45rem 0.8rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    min-width: 160px;
+    justify-content: center;
 }
 
-/* Inline editing form styles */
-.routine-edit-form {
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    margin-top: 10px;
+/* Streak icon sizing moved from inline style in profile.html */
+.profile-container .streak-card .streak-icon {
+    font-size: 1.3em;
+    line-height: 1;
 }
 
-.edit-form-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: end;
+/* Journal: glass textarea with accent focus and tidy actions */
+.profile-container .journal-textarea {
+    background: var(--card-bg, rgba(255, 255, 255, 0.82));
+    border: 1px solid var(--border, rgba(0,0,0,0.08));
+    color: var(--text);
+    min-height: 180px;
 }
 
-.edit-form-content .form-group {
-    flex: 1;
-    min-width: 150px;
-}
-
-.edit-form-content .form-group label {
-    display: block;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.edit-form-content .form-control {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: white;
-    padding: 8px 12px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-}
-
-.edit-form-content .form-control:focus {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+.profile-container .journal-textarea:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color-bg, #676B5D);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 150, 154, 139), 0.12);
 }
 
-.edit-form-content .form-control option {
-    background: #2c3e50;
-    color: white;
+.profile-container .form-actions-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+    gap: 0.6rem;
 }
 
-.edit-form-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
+.profile-container .form-actions-row .add-routine-btn,
+.profile-container .form-actions-row .edit-btn {
+    border: 1.5px solid var(--accent-color-bg, #676B5D) !important;
+    background: transparent !important;
+    color: var(--accent-color-text, #222) !important;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
 }
 
-.edit-form-actions .btn {
-    padding: 8px 16px;
-    font-size: 13px;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+/* Unified profile button style */
+.profile-container .btn-profile {
+    min-width: 160px;
+    height: 44px;
+    padding: 0 1rem;
+    border: 1.5px solid var(--accent-color-bg, #676B5D) !important;
+    background: transparent !important;
+    color: var(--accent-color-text, #222) !important;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+.profile-container .btn-profile:hover,
+.profile-container .btn-profile:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+    background: rgba(var(--accent-color-rgb, 150, 154, 139), 0.12) !important;
+    text-decoration: none;
 }
 
-.edit-form-actions .btn-success {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    border: none;
-    color: white;
+.profile-container .form-actions-row .add-routine-btn:hover,
+.profile-container .form-actions-row .edit-btn:hover {
+    background: rgba(var(--accent-color-rgb, 150, 154, 139), 0.12) !important;
 }
 
-.edit-form-actions .btn-success:hover {
-    background: linear-gradient(135deg, #218838, #1ea581);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+/* Slight extra breathing room for the entire profile container */
+.profile-container {
+    padding: 1.4rem;
+    position: relative; /* allow absolute positioning of streak chip */
 }
 
-.edit-form-actions .btn-secondary {
-    background: #6c757d;
-    border: none;
-    color: white;
+/* Product widgets: force three compact cards in a row on profile */
+.profile-container .product-widgets {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
 }
+.profile-container .product-widget {
+    padding: 0.9rem !important;
+    border: 1px solid var(--border, rgba(0,0,0,0.1)) !important; /* thinner border */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.profile-container .product-widget h4 { font-size: 0.9rem !important; margin-bottom: 0.5rem !important; }
+.profile-container .product-mini-card { padding: 0.5rem !important; }
+.profile-container .product-name { font-size: 0.85rem !important; }
 
-.edit-form-actions .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
-}
 
-/* Enhanced routine list item styling for editing states */
-.routines-list li[data-routine-id] {
-    transition: all 0.3s ease;
-}
 
-.routines-list li[data-routine-id]:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-/* Smooth transitions for show/hide */
-.routine-display,
-.routine-edit-form {
-    transition: opacity 0.2s ease;
-}
-
-/* Loading state for save button */
-.save-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.save-btn .fa-spinner {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Dynamic Step Management Styles */
-.steps-container {
-    margin: 15px 0;
-}
-
-.step-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
-}
-
-.step-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.step-select {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    color: white;
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-.step-select:focus {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
-    outline: none;
-}
-
-.custom-step-input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    color: white;
-    padding: 8px 12px;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.custom-step-input:focus {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.5);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
-}
-
-.step-count {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-}
-/* ====== LIGHT MODE - ENSURE TEXT VISIBILITY  ======= */
-
-/*  Ensure all text elements are dark and readable */
-.profile-container label,
-.profile-container .form-group label,
-.profile-container .steps-header label,
-.profile-container p,
-.profile-container h1,
-.profile-container h2,
-.profile-container h3,
-.profile-container .routine-info,
-.profile-container .step-count {
-    color: var(--text) !important;
-}
-
-/*  Ensure form elements have dark text */
-.profile-container input,
-.profile-container select,
-.profile-container textarea {
-    color: var(--text) !important;
-}
-
-/* Select options should be dark */
-.profile-container select option {
-    color: var(--text) !important;
-    background: #fff !important;
-}
 /* ==========================================================================
    20.  Dark Mode Styles
    ========================================================================== */
+
 body.dark-theme {
     --background-color: #2a2418;
     --background-color-rgb: 42, 36, 24;
@@ -1957,17 +1762,14 @@ body.dark-theme .warning-message {
 
 /* Profile container and basic layout */
 body.dark-theme .profile-container {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
+    background: transparent !important;
+    border: none !important;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+    box-shadow: none !important;
 }
 
 /* Dark mode: Ensure routines list matches the glass effect */
-body.dark-theme .routines-list {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-}
+/* removed: body.dark-theme .routines-list (unused) */
 
 /* Profile page title */
 body.dark-theme .profile-container .page-title {
@@ -1987,36 +1789,7 @@ body.dark-theme .profile-info strong {
     color: var(--secondary-color-darker) !important;
 }
 
-/*  Profile routines section */
-body.dark-theme .profile-routines h2 {
-    color: var(--secondary-color-darker) !important;
-}
 
-/*  Routines list items */
-body.dark-theme .routines-list {
-    background: transparent !important;
-}
-
-body.dark-theme .routines-list li {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-}
-
-/* Routine display items */
-body.dark-theme .routine-display {
-    background: transparent !important;
-}
-
-body.dark-theme .routine-info {
-    color: var(--text) !important;
-}
-
-body.dark-theme .routine-info strong {
-    color: var(--secondary-color-darker) !important;
-}
 
 /* Inline success messages */
 body.dark-theme .inline-success {
@@ -2038,9 +1811,7 @@ body.dark-theme .step-count {
     color: var(--accent-color-lighter) !important;
 }
 
-body.dark-theme .steps-header label {
-    color: var(--text) !important;
-}
+/* removed: body.dark-theme .steps-header label (unused) */
 
 /* Step items and selects */
 body.dark-theme .step-item select,
@@ -2057,16 +1828,7 @@ body.dark-theme .step-select option {
 }
 
 /* Edit form content */
-body.dark-theme .edit-form-content {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 8px;
-    padding: 1rem;
-}
-
-body.dark-theme .edit-form-content label {
-    color: var(--text) !important;
-}
+/* removed: body.dark-theme .edit-form-content and label (unused) */
 
 /* Form labels and inputs in profile forms */
 body.dark-theme .form-card label {
@@ -2196,6 +1958,46 @@ body.dark-theme .badge.success {
     .custom-navbar #theme-toggle {
         font-size: 0.8rem !important;
         padding: 0.3rem 0.6rem !important;
+    }
+}
+/* Profile: responsive fallback: 2 cols then 1 col */
+@media (max-width: 900px) {
+  .profile-container .product-widgets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .profile-container .product-widgets { grid-template-columns: 1fr; }
+  .profile-container section[aria-label="At a glance"] .streak-card { position: static; margin: 0.5rem auto 0; }
+}
+
+/* Profile: mobile-friendly buttons and layout */
+@media (max-width: 640px) {
+    /* Stack header content */
+    .profile-container .profile-header-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    /* Make quick action buttons wrap and fill width nicely */
+    .profile-container .profile-actions-row {
+        display: grid;
+        grid-template-columns: 1fr; /* one per row by default */
+        gap: 0.5rem;
+    }
+    .profile-container .profile-actions-row .btn,
+    .profile-container .profile-actions-row .btn-profile {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    /* Form action buttons in journal: stack full width */
+    .profile-container .form-actions-row {
+        grid-template-columns: 1fr;
+    }
+    .profile-container .form-actions-row .btn,
+    .profile-container .form-actions-row .btn-profile {
+        width: 100%;
+        min-width: 0;
     }
 }
 

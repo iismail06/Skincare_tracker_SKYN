@@ -11,50 +11,46 @@
 {% block content %}
 <div class="container">
   <div class="profile-container">
-  <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
+    <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
 
-    <!-- Profile info card -->
+    <!-- Profile info card with streak at top right -->
     <section class="dashboard-section" aria-label="Profile information">
-      <div class="profile-info">
-        {% if profile %}
-          {% if profile.date_of_birth %}
-            <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
+  <div class="profile-header-row">
+        <div class="profile-info">
+          {% if profile %}
+            {% if profile.date_of_birth %}
+              <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
+            {% endif %}
+            {% if profile.skin_type %}
+            {% endif %}
+            {% if profile.skin_concerns %}
+              <p><strong>Skin Concerns:</strong> {{ profile.skin_concerns }}</p>
+            {% endif %}
+          {% else %}
+            <p>You haven’t set up your profile yet.</p>
           {% endif %}
-          {% if profile.skin_type %}
-            <p><strong>Skin Type:</strong> {{ profile.get_skin_type_display }}</p>
-          {% endif %}
-          {% if profile.skin_concerns %}
-            <p><strong>Skin Concerns:</strong> {{ profile.skin_concerns }}</p>
-          {% endif %}
-        {% else %}
-          <p>You haven’t set up your profile yet.</p>
-        {% endif %}
+        </div>
+        <div class="card streak-card" aria-label="Current streak">
+          <div>
+            <span class="streak-icon">🔥</span>
+            <strong>{{ current_streak|default:0 }}</strong> day{{ current_streak|pluralize }} streak
+          </div>
+        </div>
       </div>
 
-      <!-- Action buttons with glass effect -->
+      <!-- Quick actions -->
       <div class="quick-actions-label">Quick actions</div>
       <div class="profile-actions profile-actions-row">
-        <a href="{% url 'users:profile_edit' %}" class="edit-btn btn-wide">✏️ Edit Profile</a>
-        <a href="{% url 'routines:dashboard' %}" class="add-routine-btn btn-wide">📊 Go to Dashboard</a>
-        <a href="{% url 'routines:add' %}" class="add-routine-btn btn-wide">➕ Add Routine</a>
-      </div>
-    </section>
-
-    <!-- At a glance: small streak card -->
-    <section class="dashboard-section u-mt-sm" aria-label="At a glance">
-      <h2 class="section-title">At a glance</h2>
-      <div class="profile-actions-row" style="gap:12px;">
-        <div class="card streak-card">
-          <span style="font-size:1.1rem;">🔥</span>
-          <div><strong>{{ current_streak|default:0 }}</strong> day{{ current_streak|pluralize }} streak</div>
-        </div>
+        <a href="{% url 'users:profile_edit' %}" class="btn btn-profile">Edit Profile</a>
+        <a href="{% url 'routines:dashboard' %}" class="btn btn-profile">Go to Dashboard</a>
+        <a href="{% url 'routines:add' %}" class="btn btn-profile">Add Routine</a>
       </div>
     </section>
 
     <!-- Personalized widgets (read-only previews) -->
     <section class="product-widgets-section">
       <div class="product-widgets">
-        <!-- Favorites Preview -->
+        <!-- Favorites -->
         <div class="product-widget favorites-widget">
           <h4>💖 Your Favorites</h4>
           {% if favorite_products %}
@@ -73,7 +69,7 @@
           {% endif %}
         </div>
 
-        <!-- Expiring Soon Preview -->
+        <!-- Expiring Soon -->
         <div class="product-widget expiry-widget">
           <h4>⚠️ Expiring Soon</h4>
           {% if expiry_preview %}
@@ -130,14 +126,15 @@
         <div class="form-group">
           <label for="additional_notes" class="sr-only">Your notes</label>
           <textarea id="additional_notes" name="additional_notes" rows="6" class="journal-textarea">{{ profile.additional_notes|default_if_none:'' }}</textarea>
-      <p class="muted-note">Use this space to journal about products, routines, skin reactions, or anything you notice.</p>
+          <p class="muted-note">Use this space to journal about products, routines, skin reactions, or anything you notice.</p>
         </div>
         <div class="form-actions-row">
-          <button type="submit" class="add-routine-btn">Save Notes</button>
-          <button type="reset" class="edit-btn">Cancel</button>
+          <button type="submit" class="btn btn-profile">Save Notes</button>
+          <button type="reset" class="btn btn-profile">Cancel</button>
         </div>
       </form>
     </section>
+
   </div>
 </div>
 {% endblock %}
