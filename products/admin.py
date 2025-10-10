@@ -15,7 +15,16 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'brand', 'product_type')
         }),
         ('Details', {
-            'fields': ('notes', 'image')
+            'fields': (
+                'notes',
+                'ingredients',
+                'description',
+                'rating',
+                'expiry_date',
+                'is_favorite',
+                'skin_type',
+                'external_id',
+            )
         }),
         ('Metadata', {
             'fields': ('user', 'created_at', 'updated_at'),
