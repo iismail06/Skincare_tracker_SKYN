@@ -693,9 +693,22 @@ main {
 
 .messages {
     position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1250; /* above navbar and menus without changing navbar */
+    max-height: 50vh; /* prevent tall stacks from going off-screen */
+    overflow-y: auto;
+    width: min(320px, 90vw); /* narrow and mobile-friendly */
+}
+
+
+.messages .alert {
+    background: #ffffff !important; /* requested white background */
+    color: #222 !important;         /* dark text for readability in all themes */
+    border: 1.5px solid #ffffff !important; /* requested white border */
+    border-radius: 10px;            /* match site’s rounded cards */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
 /* Small utility message classes used by JS-inserted content */
@@ -704,25 +717,6 @@ main {
 }
 .error-message {
     color: var(--error-color);
-}
-
-/* Badge helpers (used by JS for inline annotations) */
-.badge.badge-warning {
-    background: transparent;
-    color: var(--accent-color-bg-lighter);
-}
-.badge.badge-info {
-    background: transparent;
-    color: var(--accent-color-bg);
-}
-
-.message {
-    background: var(--accent-color-bg);
-    color: white;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 /* ==========================================================================
@@ -1316,12 +1310,7 @@ main {
   display: inline-block;
 }
 
-.muted-message { color: var(--gray); }
-.error-message { color: var(--error-color); }
-
-/* small helper badges used by JS string building */
-.badge.badge-warning { background: var(--accent-step-weekly); color: var(--background-color); padding: 0.15rem 0.4rem; border-radius: 6px; }
-.badge.badge-info { background: var(--accent-step-monthly); color: var(--background-color); padding: 0.15rem 0.4rem; border-radius: 6px; }
+/* Removed duplicate helper styles: .muted-message, .error-message, and badge helpers moved to unified message section */
 
 /* Loading and heading helpers used by template */
 .suggestions-loading { display: none; text-align: center; padding: 1rem; }
@@ -1959,6 +1948,9 @@ body.dark-theme .badge.success {
         font-size: 0.8rem !important;
         padding: 0.3rem 0.6rem !important;
     }
+
+    /* If the navbar is taller on mobile, reflect that for message offset */
+    /* removed old message offset variables */
 }
 /* Profile: responsive fallback: 2 cols then 1 col */
 @media (max-width: 900px) {
