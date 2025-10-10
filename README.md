@@ -80,7 +80,6 @@ DATABASE_URL=sqlite:///db.sqlite3
 
 Notes:
 
-- Do not commit your secrets.
 - Production settings automatically enable HTTPS and secure cookies when `DEBUG=False`.
 
 ### Project Structure
