@@ -414,10 +414,9 @@ def add_routine(request):
                     'detail_url': reverse('routines:dashboard')
                 })
 
-            # For non-AJAX: show success on add page itself and redirect (PRG)
-            # Also store the last created routine name to show a clear CTA banner
+            # For non-AJAX: redirect (PRG) and store the last created routine name
+            # We'll show a clean inline banner on the add page instead of global Django messages
             request.session['last_added_routine_name'] = routine.name
-            messages.success(request, f'Added "{routine.name}" routine. View it on your dashboard: {reverse("routines:dashboard")}')
             return redirect(reverse('routines:add'))
         else:
             # For non-AJAX invalid submissions, show inline errors on the same page

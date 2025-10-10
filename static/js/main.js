@@ -795,24 +795,58 @@ function handleRoutineFormSubmit(event) {
   })
   .then(response => response.json())
   .then(data => {
-    if (data.status === 'success') {
-      showSuccessMessage(data.message || 'Routine saved successfully');
-      
-      // If redirect URL provided, navigate to it
-      if (data.redirect_url) {
-        window.location.href = data.redirect_url;
-      } else {
-        // Otherwise, update the UI as needed
-        if (data.html) {
-          const container = document.querySelector('#routines-container');
-          if (container) {
-            container.innerHTML = data.html;
-            initRoutines(); // Re-initialize listeners for new content
+    // Align with backend: data.success and optional detail_url/redirect_url
+    if (data && (data.success === true || data.status === 'success')) {
+      // On add routine page, show an inline success banner (no global toast, no redirect)
+      try {
+        const container = document.querySelector('.form-container.add-routine-page');
+        if (container) {
+          let banner = container.querySelector('.inline-success');
+          if (!banner) {
+            banner = document.createElement('div');
+            banner.className = 'inline-success';
+            banner.setAttribute('role', 'status');
+            banner.setAttribute('aria-live', 'polite');
+            banner.style.marginBottom = '1rem';
+            container.insertBefore(banner, container.querySelector('.form-card'));
           }
+          const routineName = (data.name || '').trim();
+          const detailUrl = data.detail_url || data.redirect_url || '/routines/dashboard/';
+          banner.innerHTML =
+            '<div class="d-flex" style="align-items:center; gap:.75rem; justify-content:space-between; flex-wrap:wrap;">' +
+              '<div>' +
+                (routineName ? ('<strong>' + escapeHtml(routineName) + '</strong> — Added. ') : 'Routine — Added. ') +
+                '<span class="muted">You can view it on your dashboard.</span>' +
+              '</div>' +
+              '<div class="actions">' +
+                '<a class="btn btn-primary" href="' + detailUrl + '">View on Dashboard</a>' +
+              '</div>' +
+            '</div>';
+        }
+      } catch (_) { /* non-fatal */ }
+      // Optionally, clear step fields and product selections
+      try {
+        const formEl = form;
+        for (let i = 1; i <= 10; i++) {
+          const step = formEl.querySelector('[name="step' + i + '"]');
+          const prod = formEl.querySelector('[name="product' + i + '"]');
+          if (step) step.value = '';
+          if (prod) prod.value = '';
+        }
+        // Keep routine name/type so the user can add another quickly
+      } catch (_) { /* ignore */ }
+      // If partial HTML was returned (other contexts), update UI
+      if (data.html) {
+        const container = document.querySelector('#routines-container');
+        if (container) {
+          container.innerHTML = data.html;
+          initRoutines();
         }
       }
     } else {
-      showErrorMessage(data.message || 'Error saving routine');
+      // Show inline-validation style feedback via toast only on error
+      const msg = (data && (data.error || data.message)) || 'Error saving routine';
+      showErrorMessage(msg);
     }
   })
   .catch(error => {
@@ -1291,15 +1325,18 @@ function initProductSelectsForProfile() {
       html += '</optgroup>';
     }
     // Suggestions
+    html += '<optgroup label="Suggestions">';
     if (Array.isArray(suggestions) && suggestions.length) {
-      html += '<optgroup label="Suggestions">';
       suggestions.forEach((sug, idx) => {
         const label = `${(sug.brand || '').trim()}${sug.brand && sug.name ? ' — ' : ''}${(sug.name || '').trim()}` || 'Suggested Product';
         const val = `suggestion::${idx}`;
         html += `<option value="${val}" data-sug-name="${(sug.name||'').replace(/"/g,'&quot;')}" data-sug-brand="${(sug.brand||'').replace(/"/g,'&quot;')}" data-sug-type="${(sug.product_type||'').replace(/"/g,'&quot;')}">${label}</option>`;
       });
-      html += '</optgroup>';
+    } else {
+      // Explicit placeholder to show suggestions are supported even if none are available for now
+      html += '<option value="" disabled>No suggestions for this step yet</option>';
     }
+    html += '</optgroup>';
     return html;
   }
 
@@ -1508,7 +1545,21 @@ function initProductSelectsForProfile() {
       const opt = productSel.options[productSel.selectedIndex];
       const name = (opt.getAttribute('data-sug-name') || '').trim();
       const brand = (opt.getAttribute('data-sug-brand') || '').trim();
-      const product_type = (opt.getAttribute('data-sug-type') || '').trim() || 'other';
+      const rawType = (opt.getAttribute('data-sug-type') || '').trim() || 'other';
+      // Normalize product type to match backend allowed choices and length
+      const allowedTypes = new Set(['cleanser','toner','serum','moisturizer','sunscreen','exfoliant','mask','eye_cream','oil','essence','spot_treatment','retinol','vitamin_c','other']);
+      let product_type = rawType;
+      if (!allowedTypes.has(product_type) || product_type.length > 20) {
+        // Heuristics: map common families to closest core type
+        if (product_type.includes('vitamin')) product_type = 'vitamin_c';
+        else if (product_type.includes('retinol')) product_type = 'retinol';
+        else if (product_type.includes('mask')) product_type = 'mask';
+        else if (product_type.includes('exfol')) product_type = 'exfoliant';
+        else if (product_type.includes('toner')) product_type = 'toner';
+        else if (product_type.includes('essence')) product_type = 'essence';
+        else if (product_type.includes('serum') || product_type.includes('treatment')) product_type = 'serum';
+        else product_type = 'other';
+      }
       if (!name || !brand) return;
       // Persist via quick-add, then select the new product id
       try {

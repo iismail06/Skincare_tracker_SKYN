@@ -4,6 +4,9 @@
 
 {% block title %}{% if is_editing %}Edit Routine{% else %}Add Routine{% endif %} - SKYN{% endblock %}
 
+{# Suppress global Django messages on this page to avoid duplicate success notices #}
+{% block flash_messages %}{% endblock %}
+
 {% block content %}
 <div class="form-container add-routine-page">
     <div class="back-link-wrap">
@@ -21,7 +24,7 @@
             <div class="inline-success" role="status" aria-live="polite" style="margin-bottom:1rem;">
                 <div class="d-flex" style="align-items:center; gap:.75rem; justify-content:space-between; flex-wrap:wrap;">
                     <div>
-                        <strong>{{ just_created_name }}</strong> was added. <span class="muted">You can view it on your dashboard.</span>
+                        <strong>{{ just_created_name }}</strong> — Added. <span class="muted">You can view it on your dashboard.</span>
                     </div>
                     <div class="actions">
                         <a class="btn btn-primary" href="{% url 'routines:dashboard' %}">View on Dashboard</a>
