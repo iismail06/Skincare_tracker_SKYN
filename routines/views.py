@@ -371,7 +371,11 @@ def dashboard(request):
 
 @login_required
 def add_routine(request):
-    """Accept POSTs from profile inline form; validate and create routine or render profile with errors."""
+    """Create a routine.
+
+    - GET: render the add form (optionally preselect routine_type via ?type=)
+    - POST: validate and create, then redirect appropriately
+    """
     if request.method == 'POST':
         form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
@@ -428,8 +432,19 @@ def add_routine(request):
 
             return redirect(reverse('users:profile'))
 
-    # For GET, redirect to profile (form lives there)
-    return redirect(reverse('users:profile'))
+    # For GET, show the dedicated add form
+    # Preselect routine type if provided as query param
+    initial = {}
+    pre_type = request.GET.get('type')
+    if pre_type:
+        initial['routine_type'] = pre_type
+    form = RoutineCreateForm(initial=initial, user=request.user)
+    context = {
+        'form': form,
+        'is_editing': False,
+        'page_title': 'Create New Routine',
+    }
+    return render(request, 'routines/add_routine.html', context)
 
 
 @login_required

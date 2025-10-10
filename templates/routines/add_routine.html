@@ -121,14 +121,27 @@
             </div>
 
             <div class="form-actions">
-                <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">Cancel</a>
-                <button type="submit" class="btn btn-primary">
+                                <a href="{% url 'routines:dashboard' %}" class="add-routine-btn">Cancel</a>
+                                                {% if is_editing %}
+                                                    <button type="submit" class="edit-btn">Update Routine</button>
+                                                    <!-- Delete button: same glass shell with red border; uses formaction to POST to delete URL -->
+                                      <button type="submit"
+                                          class="add-routine-btn btn-danger-glass"
+                                                                    formaction="{% url 'routines:delete' routine.pk %}"
+                                                                    formmethod="post"
+                                                                    formnovalidate
+                                                  onclick="return confirm('Delete {{ routine.name|escapejs }}? This cannot be undone.');">
+                                                        Delete
+                                                    </button>
+                                                {% else %}
+                                    <button type="submit" class="add-routine-btn">
                     {% if is_editing %}
-                        Update Routine
+                                                Update Routine
                     {% else %}
                         Create Routine
                     {% endif %}
-                </button>
+                                    </button>
+                                {% endif %}
             </div>
         </form>
     </div>

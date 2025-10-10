@@ -1,4 +1,4 @@
-{# users/profile.html - main user profile page, shows account info and routines #}
+{# users/profile.html - profile page with actions and notes #}
 {% extends 'base.html' %}
 {% load static %}
 
@@ -10,278 +10,136 @@
 
 {% block content %}
 <div class="container">
-    <div class="profile-container">
-    <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
-    <div class="profile-info">
+  <div class="profile-container">
+  <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
+
+    <!-- Profile info card -->
+    <section class="dashboard-section" aria-label="Profile information">
+      <div class="profile-info">
         {% if profile %}
-            {% if profile.date_of_birth %}
-                <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
-            {% endif %}
-            {% if profile.skin_type %}
-                <p><strong>Skin Type:</strong> {{ profile.get_skin_type_display }}</p>
-            {% endif %}
-            {% if profile.skin_concerns %}
-                <p><strong>Skin Concerns:</strong> {{ profile.skin_concerns }}</p>
-            {% endif %}
+          {% if profile.date_of_birth %}
+            <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
+          {% endif %}
+          {% if profile.skin_type %}
+            <p><strong>Skin Type:</strong> {{ profile.get_skin_type_display }}</p>
+          {% endif %}
+          {% if profile.skin_concerns %}
+            <p><strong>Skin Concerns:</strong> {{ profile.skin_concerns }}</p>
+          {% endif %}
+        {% else %}
+          <p>You haven’t set up your profile yet.</p>
         {% endif %}
-    </div>
-    
-    <div class="profile-actions">
-    <a href="{% url 'users:profile_edit' %}" class="btn btn-secondary">Edit Profile</a>
-    <a href="{% url 'routines:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-    </div>
+      </div>
 
-    <div class="profile-routines u-margin-top-xl">
-            <h2>My Routines {% if added_ok %}<span class="badge success">Added ✓</span>{% endif %}</h2>
-    </div> <!-- /.profile-routines -->
-    {% if last_added_routine %}
-        <div id="inline-success" class="inline-success inline-success-bottom">
-            <div>
-                <small class="muted-success">Added</small>
-                <div><strong id="inline-success-name">{{ last_added_routine.name }}</strong></div>
-            </div>
-            <div class="inline-success-actions">
-                <a id="inline-success-view" href="{% url 'routines:dashboard' %}" class="btn btn-secondary">View</a>
-                <button type="button" class="inline-dismiss" id="inline-success-dismiss" aria-label="Dismiss">✕</button>
-            </div>
+      <!-- Action buttons with glass effect -->
+      <div class="quick-actions-label">Quick actions</div>
+      <div class="profile-actions profile-actions-row">
+        <a href="{% url 'users:profile_edit' %}" class="edit-btn btn-wide">✏️ Edit Profile</a>
+        <a href="{% url 'routines:dashboard' %}" class="add-routine-btn btn-wide">📊 Go to Dashboard</a>
+        <a href="{% url 'routines:add' %}" class="add-routine-btn btn-wide">➕ Add Routine</a>
+      </div>
+    </section>
+
+    <!-- At a glance: small streak card -->
+    <section class="dashboard-section u-mt-sm" aria-label="At a glance">
+      <h2 class="section-title">At a glance</h2>
+      <div class="profile-actions-row" style="gap:12px;">
+        <div class="card streak-card">
+          <span style="font-size:1.1rem;">🔥</span>
+          <div><strong>{{ current_streak|default:0 }}</strong> day{{ current_streak|pluralize }} streak</div>
         </div>
-    {% endif %}
-            <!-- Inline add-routine form (consolidated) -->
-            <div class="form-card">
-                <form id="add-routine-form" method="post" action="{% url 'routines:add' %}" class="routine-form" data-ajax-url="{% url 'routines:add' %}">
-                    {% csrf_token %}
-                    {% comment %} If the view attached a form (`added_routine_form`), use it to show errors. Otherwise show blank inputs. {% endcomment %}
-                    {% if added_routine_form %}
-                        {% with form=added_routine_form %}
-                            {% if form.non_field_errors %}
-                                <div class="form-errors non-field-errors">
-                                    {% for err in form.non_field_errors %}
-                                        <div class="error">{{ err }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+      </div>
+    </section>
 
-                            <div class="form-group">
-                                <label for="routine_name">Routine name</label>
-                                <div class="dropdown-input-wrap">
-                                    <input type="text" id="routine_name" name="routine_name" value="{{ added_routine_form.data.routine_name|default_if_none:'' }}" list="routine-name-options" autocomplete="off" required>
-                                    <span class="dropdown-arrow">&#9662;</span>
-                                </div>
-                                <datalist id="routine-name-options">
-                                    <option value="Busy Morning">
-                                    <option value="Morning Routine for Work">
-                                    <option value="Morning Routine for School">
-                                    <option value="Morning Shift">
-                                    <option value="Busy Night">
-                                    <option value="Weekend Glow">
-                                    <option value="Holiday Routine">
-                                    <option value="Night Shift">
-                                    <option value="Quick Refresh">
-                                    <option value="Self-Care Sunday">
-                                    <option value="After Workout">
-                                    <option value="Travel Mode">
-                                </datalist>
-                                {% if form.errors.routine_name %}
-                                    <div class="error">{{ form.errors.routine_name|join:", " }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="routine_type">Type</label>
-                                <select id="routine_type" name="routine_type" required>
-                                    <option value="">Choose</option>
-                                    <option value="morning" {% if added_routine_form.data.routine_type == 'morning' %}selected{% endif %}>Morning</option>
-                                    <option value="evening" {% if added_routine_form.data.routine_type == 'evening' %}selected{% endif %}>Evening</option>
-                                    <option value="weekly" {% if added_routine_form.data.routine_type == 'weekly' %}selected{% endif %}>Weekly</option>
-                                    <option value="monthly" {% if added_routine_form.data.routine_type == 'monthly' %}selected{% endif %}>Monthly</option>
-                                    <option value="hair" {% if added_routine_form.data.routine_type == 'hair' %}selected{% endif %}>Hair</option>
-                                    <option value="body" {% if added_routine_form.data.routine_type == 'body' %}selected{% endif %}>Body</option>
-                                    <option value="special" {% if added_routine_form.data.routine_type == 'special' %}selected{% endif %}>Special</option>
-                                    <option value="seasonal" {% if added_routine_form.data.routine_type == 'seasonal' %}selected{% endif %}>Seasonal</option>
-                                </select>
-                                {% if form.errors.routine_type %}
-                                    <div class="error">{{ form.errors.routine_type|join:", " }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="steps-section">
-                                <div class="steps-header">
-                                    <label>Routine Steps</label>
-                                </div>
-                                <div id="steps-container">
-                                    <div class="step-item" data-step="1">
-                                        <select id="step1" name="step1" class="step-select"></select>
-                                        <select id="product1" name="product1" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product1|default_if_none:'' }}"{% endif %}></select>
-                                    </div>
-                                    <div class="step-item" data-step="2">
-                                        <select id="step2" name="step2" class="step-select"></select>
-                                        <select id="product2" name="product2" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product2|default_if_none:'' }}"{% endif %}></select>
-                                    </div>
-                                    <div class="step-item" data-step="3">
-                                        <select id="step3" name="step3" class="step-select"></select>
-                                        <select id="product3" name="product3" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product3|default_if_none:'' }}"{% endif %}></select>
-                                    </div>
-                                    <div class="step-item" data-step="4">
-                                        <select id="step4" name="step4" class="step-select"></select>
-                                        <select id="product4" name="product4" class="product-select" data-bs-toggle="tooltip" title="Option to add the product" {% if added_routine_form %}data-selected="{{ added_routine_form.data.product4|default_if_none:'' }}"{% endif %}></select>
-                                    </div>
-                                </div>
-                            </div>
-
-                                <div class="form-actions">
-                                <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
-                                <button type="button" id="add-step-btn" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i> Add Step
-                                </button>
-                                <button type="button" id="remove-step-btn" class="btn btn-primary">
-                                    <i class="fas fa-minus"></i> Remove Last Step
-                                </button>
-                            </div>
-                        {% endwith %}
-                    {% else %}
-                        <div class="form-group">
-                            <label for="routine_name">Routine name</label>
-                            <div class="dropdown-input-wrap">
-                                <input type="text" id="routine_name" name="routine_name" placeholder="e.g., Morning Glow" required list="routine-name-options" autocomplete="off">
-                                <span class="dropdown-arrow">&#9662;</span>
-                            </div>
-                            <datalist id="routine-name-options">
-                                <option value="Busy Morning">
-                                <option value="Morning Routine for Work">
-                                <option value="Morning Routine for School">
-                                <option value="Morning Shift">
-                                <option value="Busy Night">
-                                <option value="Weekend Glow">
-                                <option value="Holiday Routine">
-                                <option value="Night Shift">
-                                <option value="Quick Refresh">
-                                <option value="Self-Care Sunday">
-                                <option value="After Workout">
-                                <option value="Travel Mode">
-                            </datalist>
-                        </div>
-                        <div class="form-group">
-                            <label for="routine_type">Type</label>
-                            <select id="routine_type" name="routine_type" required>
-                                <option value="">Choose</option>
-                                <option value="morning">Morning</option>
-                                <option value="evening">Evening</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="hair">Hair</option>
-                                <option value="body">Body</option>
-                                <option value="special">Special</option>
-                                <option value="seasonal">Seasonal</option>
-                            </select>
-                        </div>
-                        <div class="steps-section">
-                            <div class="steps-header">
-                                <label>Routine Steps</label>
-                            </div>
-                            <div id="steps-container">
-                                <div class="step-item" data-step="1">
-                                    <select id="step1" name="step1" class="step-select"></select>
-                                    <select id="product1" name="product1" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
-                                </div>
-                                <div class="step-item" data-step="2">
-                                    <select id="step2" name="step2" class="step-select"></select>
-                                    <select id="product2" name="product2" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
-                                </div>
-                                <div class="step-item" data-step="3">
-                                    <select id="step3" name="step3" class="step-select"></select>
-                                    <select id="product3" name="product3" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
-                                </div>
-                                <div class="step-item" data-step="4">
-                                    <select id="step4" name="step4" class="step-select"></select>
-                                    <select id="product4" name="product4" class="product-select" data-bs-toggle="tooltip" title="Option to add the product"></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-actions u-margin-top-sm">
-                            <button type="submit" class="btn btn-primary" id="add-routine-submit">Add Routine</button>
-                            <button type="button" id="add-step-btn" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add Step
-                            </button>
-                            <button type="button" id="remove-step-btn" class="btn btn-primary">
-                                <i class="fas fa-minus"></i> Remove Last Step
-                            </button>
-                        </div>
-                    {% endif %}
-                </form>
+    <!-- Personalized widgets (read-only previews) -->
+    <section class="product-widgets-section">
+      <div class="product-widgets">
+        <!-- Favorites Preview -->
+        <div class="product-widget favorites-widget">
+          <h4>💖 Your Favorites</h4>
+          {% if favorite_products %}
+            <div class="product-mini-cards">
+              {% for product in favorite_products %}
+                <div class="product-mini-card" data-tooltip="{% if product.rating %}Rating: {{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.expiry_date %} | Expires: {{ product.expiry_date }}{% endif %}">
+                  <span class="product-name">{{ product.name }}</span>
+                </div>
+              {% endfor %}
             </div>
-            
-            {% if routines %}
-                <ul class="routines-list">
-                    {% for routine in routines %}
-                        <li data-routine-id="{{ routine.pk }}">
-                            <!-- Normal view mode -->
-                            <div class="routine-display">
-                                <div class="routine-info">
-                                    <strong>{{ routine.name }}</strong> - {{ routine.routine_type|title }}
-                                </div>
-                                <div class="routine-actions">
-                                    <button type="button" class="btn btn-primary edit-btn" 
-                                            data-routine-id="{{ routine.pk }}" 
-                                            data-routine-name="{{ routine.name|escapejs }}" 
-                                            data-routine-type="{{ routine.routine_type }}">
-                                        Edit
-                                    </button>
-                                    <a href="{% url 'routines:dashboard' %}" class="btn btn-primary">View</a>
-                                    <button type="button" class="btn btn-primary delete-btn" 
-                                            data-routine-id="{{ routine.pk }}" 
-                                            data-routine-name="{{ routine.name|escapejs }}">
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Inline edit form (hidden by default) -->
-                            <div class="routine-edit-form" style="display: none;">
-                                <form class="inline-edit-form" data-routine-id="{{ routine.pk }}">
-                                    {% csrf_token %}
-                                    <div class="edit-form-content">
-                                        <div class="form-group">
-                                            <label>Routine Name</label>
-                                            <input type="text" name="routine_name" class="form-control" value="{{ routine.name }}" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Type</label>
-                                            <select name="routine_type" class="form-control" required>
-                                                <option value="">Choose</option>
-                                                <option value="morning" {% if routine.routine_type == 'morning' %}selected{% endif %}>Morning</option>
-                                                <option value="evening" {% if routine.routine_type == 'evening' %}selected{% endif %}>Evening</option>
-                                                <option value="weekly" {% if routine.routine_type == 'weekly' %}selected{% endif %}>Weekly</option>
-                                                <option value="monthly" {% if routine.routine_type == 'monthly' %}selected{% endif %}>Monthly</option>
-                                                <option value="hair" {% if routine.routine_type == 'hair' %}selected{% endif %}>Hair</option>
-                                                <option value="body" {% if routine.routine_type == 'body' %}selected{% endif %}>Body</option>
-                                                <option value="special" {% if routine.routine_type == 'special' %}selected{% endif %}>Special</option>
-                                                <option value="seasonal" {% if routine.routine_type == 'seasonal' %}selected{% endif %}>Seasonal</option>
-                                            </select>
-                                        </div>
-                                        <div class="edit-form-actions">
-                                            <button type="submit" class="btn btn-success btn-sm save-btn">Save</button>
-                                            <button type="button" class="btn btn-secondary btn-sm cancel-btn">Cancel</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+          {% else %}
+            <div class="empty-widget">
+              <p class="empty-message">Mark products as favorites with the 💖 heart to see them here.</p>
+              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-pink">Add Favorite Product</a>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Expiring Soon Preview -->
+        <div class="product-widget expiry-widget">
+          <h4>⚠️ Expiring Soon</h4>
+          {% if expiry_preview %}
+            <div class="product-mini-cards">
+              {% for product in expiry_preview %}
+                <div class="product-mini-card expiry-warning" data-tooltip="Expires: {{ product.expiry_date }}{% if product.rating %} | Rating: {{ product.rating }}/5⭐{% endif %}">
+                  <span class="product-name">{{ product.name }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-widget">
+              <p class="empty-message">Products expiring in the next 90 days will appear here.</p>
+              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-warning">Add Products with Expiry</a>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Perfect for your skin -->
+        <div class="product-widget skin-type-widget">
+          {% if user_skin_type %}
+            <h4>🎯 Perfect for {{ user_skin_type|title }} Skin</h4>
+            {% if skin_type_products %}
+              <div class="product-mini-cards">
+                {% for product in skin_type_products %}
+                  <div class="product-mini-card" data-tooltip="{% if product.rating %}Rating: {{ product.rating }}/5⭐{% else %}Not rated{% endif %}">
+                    <span class="product-name">{{ product.name }}</span>
+                  </div>
+                {% endfor %}
+              </div>
             {% else %}
-                <p>No routines found. <a href="#" class="btn btn-secondary add-routine-cta">Add a Routine</a></p>
+              <div class="empty-widget">
+                <p class="empty-message">Add products that match your {{ user_skin_type }} skin type to see recommendations here.</p>
+                <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-info">Add Products</a>
+              </div>
             {% endif %}
-    </div>
-    </div> 
+          {% else %}
+            <h4>🎯 Perfect for Your Skin Type</h4>
+            <div class="empty-widget">
+              <p class="empty-message">Set your skin type in your profile to see personalized picks here.</p>
+              <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-info">Set Skin Type</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Journal section -->
+    <section class="dashboard-section u-mt-lg" aria-label="Journal">
+      <h2 class="section-title">Journal</h2>
+      <form method="post" action="" style="margin-top: 1rem;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_notes">
+        <div class="form-group">
+          <label for="additional_notes" class="sr-only">Your notes</label>
+          <textarea id="additional_notes" name="additional_notes" rows="6" class="journal-textarea">{{ profile.additional_notes|default_if_none:'' }}</textarea>
+      <p class="muted-note">Use this space to journal about products, routines, skin reactions, or anything you notice.</p>
+        </div>
+        <div class="form-actions-row">
+          <button type="submit" class="add-routine-btn">Save Notes</button>
+          <button type="reset" class="edit-btn">Cancel</button>
+        </div>
+      </form>
+    </section>
+  </div>
 </div>
-
-
-
 {% endblock %}
 
-{% block extra_js %}
-<!-- Initialize user products data for JS -->
-<script id="user-products-data" type="application/json">
-{{ user_products_json|safe }}
-</script>
-{% endblock %}
+{% block extra_js %}{% endblock %}

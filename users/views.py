@@ -7,7 +7,7 @@ from .forms import CustomUserCreationForm
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from routines.forms import RoutineCreateForm
-from routines.models import Routine, RoutineStep
+from routines.models import Routine, RoutineStep, DailyCompletion
 from django.urls import reverse
 
 def home(request):
@@ -75,114 +75,92 @@ def simple_logout(request):
 
 @login_required
 def profile_view(request):
-    profile = getattr(request.user, 'profile', None)
+    """Simplified profile page: show user info and allow saving personal notes."""
+    # Get existing profile if present
+    profile = UserProfile.objects.filter(user=request.user).first()
+
+    # Handle notes save only
+    if request.method == 'POST' and request.POST.get('action') == 'save_notes':
+        notes = request.POST.get('additional_notes', '').strip()
+        # Ensure a profile exists before saving notes
+        profile, _created = UserProfile.objects.get_or_create(user=request.user)
+        profile.additional_notes = notes
+        profile.save()
+        messages.success(request, 'Your notes have been saved.')
+        return redirect('users:profile')
+
+    # Optional: provide light routine counts (no heavy logic)
     routines = request.user.routine_set.all()
-    # Handle inline add-routine form submission here for a cleaner flow.
-    added_ok = False
-    form = RoutineCreateForm(user=request.user)  # Initialize form with user
-    last_added_routine = None
+    routine_counts = {
+        'total': routines.count(),
+        'morning': routines.filter(routine_type='morning').count(),
+        'evening': routines.filter(routine_type='evening').count(),
+        'weekly': routines.filter(routine_type='weekly').count(),
+        'monthly': routines.filter(routine_type='monthly').count(),
+        'hair': routines.filter(routine_type='hair').count(),
+        'body': routines.filter(routine_type='body').count(),
+        'special': routines.filter(routine_type='special').count(),
+        'seasonal': routines.filter(routine_type='seasonal').count(),
+    }
 
-    # If redirected from routines.add_routine, it can set a session id for the last added routine
-    last_added_id = request.session.pop('last_added_routine_id', None)
-    if last_added_id:
-        last_added_routine = Routine.objects.filter(pk=last_added_id, user=request.user).first()
-    
-    if request.method == 'POST':
-        # Check if this is an edit routine submission
-        if request.POST.get('action') == 'edit_routine':
-            from django.shortcuts import get_object_or_404
-            form = RoutineCreateForm(request.POST, user=request.user)
-            
-            if form.is_valid():
-                routine_id = request.POST.get('routine_id')
-                routine = get_object_or_404(Routine, pk=routine_id, user=request.user)
-                
-                data = form.cleaned_data
-                # Update the routine
-                routine.name = data['routine_name']
-                routine.routine_type = data['routine_type']
-                routine.save()
-                
-                # Delete existing steps and create new ones
-                routine.steps.all().delete()
-                
-                order = 1
-                for i in range(1, 6):
-                    step_text = data.get(f'step{i}')
-                    product = data.get(f'product{i}')
-                    if step_text:
-                        RoutineStep.objects.create(
-                            routine=routine, 
-                            step_name=step_text, 
-                            order=order,
-                            product=product
-                        )
-                        order += 1
-                
-                messages.success(request, f'Routine "{routine.name}" updated successfully!')
-                return redirect('users:profile')
-            else:
-                messages.error(request, 'There was an error updating your routine. Please try again.')
-                return redirect('users:profile')
-        
-        # Handle add routine form submission
-        form = RoutineCreateForm(request.POST, user=request.user)
-        if form.is_valid():
-            data = form.cleaned_data
-            routine = Routine.objects.create(
-                user=request.user,
-                name=data['routine_name'],
-                routine_type=data['routine_type']
-            )
-            order = 1
-            for i in range(1, 6):
-                step_text = data.get(f'step{i}')
-                if step_text:
-                    RoutineStep.objects.create(routine=routine, step_name=step_text, order=order)
-                    order += 1
-            messages.success(request, 'Routine added successfully.')
-            added_ok = True
-            # expose the created routine so the template can show its name/link inline
-            last_added_routine = routine
-            # refresh routines queryset
-            routines = request.user.routine_set.all()
+    # Lightweight widgets for profile (duplicated from dashboard at a small scale)
+    # 1) Streak calculation (based on morning/evening routines)
+    from datetime import date, timedelta
+    today = date.today()
+    morning_routine = routines.filter(routine_type='morning').first()
+    evening_routine = routines.filter(routine_type='evening').first()
+    current_streak = 0
+    check_date = today
+    while True:
+        day_completions = DailyCompletion.objects.filter(user=request.user, date=check_date)
+        daily_total = 0
+        daily_completed = 0
+        if morning_routine:
+            daily_total += morning_routine.steps.count()
+            daily_completed += day_completions.filter(routine_step__routine=morning_routine, completed=True).count()
+        if evening_routine:
+            daily_total += evening_routine.steps.count()
+            daily_completed += day_completions.filter(routine_step__routine=evening_routine, completed=True).count()
+        if daily_total > 0 and daily_completed == daily_total:
+            current_streak += 1
+            check_date -= timedelta(days=1)
         else:
-            # form with errors will be passed to template
-            pass
+            break
 
-    # If redirected back from routines.add_routine with errors/data in session, reconstruct a form
-    add_errors = request.session.pop('add_routine_errors', None)
-    add_non_field = request.session.pop('add_routine_non_field_errors', None)
-    add_data = request.session.pop('add_routine_data', None)
-    if add_data is not None:
-        # create a bound form so template can show errors and previous values
-        form = RoutineCreateForm(add_data, user=request.user)
-        if add_errors:
-            # manually set form._errors from session data
-            from django.forms.utils import ErrorDict, ErrorList
-            ed = ErrorDict()
-            for k, v in (add_errors or {}).items():
-                ed[k] = ErrorList(v)
-            form._errors = ed
-        if add_non_field:
-            # non-field errors
-            form._non_form_errors = ErrorList(add_non_field)
-    
-    # Prepare user products data for JavaScript
-    import json
-    user_products = []
-    for product in request.user.products.all():
-        user_products.append([product.id, product.brand or '', product.name or ''])
-    user_products_json = json.dumps(user_products)
+    # 2) Skin-type products and favorites preview
+    from products.models import Product
+    user_skin_type = None
+    try:
+        user_skin_type = profile.skin_type if profile else None
+    except Exception:
+        user_skin_type = None
+    skin_type_products = Product.objects.filter(
+        user=request.user,
+        skin_type=user_skin_type
+    ).exclude(skin_type__isnull=True).exclude(skin_type='')[:3] if user_skin_type else []
+
+    favorite_products = Product.objects.filter(user=request.user, is_favorite=True)[:3]
+
+    # 3) Expiring soon preview (next 90 days)
+    expiry_preview = []
+    from datetime import timedelta as _td
+    expiry_threshold = today + _td(days=90)
+    for product in Product.objects.filter(
+        user=request.user,
+        expiry_date__lte=expiry_threshold,
+        expiry_date__gte=today
+    ).order_by('expiry_date')[:4]:
+        expiry_preview.append(product)
 
     return render(request, 'users/profile.html', {
         'user': request.user,
         'profile': profile,
-        'routines': routines,
-        'added_ok': added_ok,
-        'added_routine_form': form,
-        'last_added_routine': last_added_routine,
-        'user_products_json': user_products_json,
+        'routine_counts': routine_counts,
+        'current_streak': current_streak,
+        'skin_type_products': skin_type_products,
+        'favorite_products': favorite_products,
+        'expiry_preview': expiry_preview,
+        'user_skin_type': user_skin_type,
     })
 
 

@@ -943,6 +943,12 @@ main {
     border-top: 2px solid var(--background-color);
 }
 
+/* --- Add Routine: glass danger button (delete on edit page) --- */
+.btn-danger-glass {
+    border-color: #d9534f !important;
+    color: #d9534f !important;
+}
+
 
 /* ==========================================================================
    15. PRODUCT MANAGEMENT STYLES
@@ -1403,9 +1409,56 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
 
 
 /* ==========================================================================
-  19. PROFILE PAGE STYLES
+    18. PROFILE PAGE And profile-related components
    ========================================================================== */
 
+/* Quick actions label and row */
+.quick-actions-label {
+    margin-top: 0.5rem;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.profile-actions-row {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-wide { min-width: 180px; text-align: center; }
+
+/* Streak mini card */
+.streak-card {
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Journal textarea and actions */
+.journal-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(200,200,200,0.7);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px);
+}
+
+.form-actions-row {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 10px;
+}
+
+.muted-note { margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-light); }
+
+/* Utility spacers used on profile */
+.u-mt-sm { margin-top: 0.5rem; }
+.u-mt-md { margin-top: 1rem; }
+.u-mt-lg { margin-top: 2rem; }
 /* Ensure all buttons on profile page have consistent styling */
 .form-card .btn,
 .routines-list .btn {
