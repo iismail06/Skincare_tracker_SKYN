@@ -621,10 +621,6 @@ h2 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-body.dark-theme .auth-container {
-    background: var(--card-bg);
-}
-
 .auth-container h1 {
     color: var(--primary);
     margin-bottom: 0.5rem;
@@ -657,7 +653,6 @@ body.dark-theme .auth-container {
 .auth-container form label { display:block; margin-bottom: 0.5rem; font-weight: 600; }
 .auth-container form .form-group { margin-bottom: 1.25rem; }
 .auth-container form :is(input, textarea)::placeholder { color: var(--gray); opacity: 0.85; }
-.auth-container form .checkbox-inline { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ==========================================================================
     10. MESSAGES
@@ -721,8 +716,6 @@ body.dark-theme .auth-container {
 }
 
 .social-link {
-    color: var(--secondary-color-darker);
-    text-decoration: none;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     padding: 0.5rem;
     border-radius: 50%;
@@ -744,7 +737,6 @@ body.dark-theme .auth-container {
 
 .footer-copyright {
     font-size: 0.9rem;
-    color: var(--secondary-color-darker);
 }
 
 .footer-copyright p {
@@ -753,7 +745,7 @@ body.dark-theme .auth-container {
 
 
 /* ==========================================================================
-   13. ROUTINE STEPS & CHECKLIST ITEMS
+   11. ROUTINE STEPS & CHECKLIST ITEMS
    ========================================================================== */
 .steps-list {
     display: flex;
@@ -811,7 +803,7 @@ body.dark-theme .auth-container {
 }
 
 /* ==========================================================================
-   14. ADD ROUTINE FORM STYLES
+   12. ADD ROUTINE FORM STYLES
    ========================================================================== */
 
 .form-container {
@@ -978,7 +970,7 @@ body.dark-theme .add-routine-page .edit-btn { color: #fff; border-color: rgba(25
 
 
 /* ==========================================================================
-   15. PRODUCT MANAGEMENT STYLES
+   14. PRODUCT MANAGEMENT STYLES
    ========================================================================== */
 
 /* Product List & Grid */
