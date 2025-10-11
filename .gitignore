@@ -61,6 +61,21 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 staticfiles/
+media/
+*.sqlite3-*
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+__pycache__
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+
+# Django production files
+collected_static/
+static_root/
+media_root/
 
 # Flask stuff:
 instance/
@@ -243,6 +258,54 @@ routines/management/__init__.py
 routines/management/commands/__init__.py
 
 # Ignore Python test files and folders (user request)
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.vs/
+*.swp
+*.swo
+*~
+.netbeans/
+nbproject/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Large media files
+*.mp4
+*.mov
+*.wmv
+*.flv
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.zip
+*.tar.gz
+*.rar
+
+# Logs and databases
+*.log.*
+log/
+logs/
+*.bak
+*.backup
+*.old
+
+# Heroku specific
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 **/tests/
 **/tests/**
 **/test_*.py
