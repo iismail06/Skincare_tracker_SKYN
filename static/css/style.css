@@ -5,24 +5,147 @@
    ========================================================================== */
 
 :root {
-    --background-color: #e9e9e9;      
-    --background-color-rgb: 233, 233, 233;
-    --background-color-darker: #dddddd;
-    --background-color-darker-rgb: 221, 221, 221;
-    --text: #080604;
-    --secondary-color: #3a2618;
-    --secondary-color-lighter: #f0d3bc;
-    --secondary-color-darker: #080604;
-    --secondary-color-darker-rgb: 8, 6, 4;
-    --accent-color: #969a8b;
-    --accent-color-rgb: 150, 154, 139;
-    --accent-color-lighter: #a0a68f;
-    /* Navbar glass controls */
-    --navbar-bg-rgb: 0, 0, 0; /* neutral dark glass in light mode */
-    --navbar-opacity: 0.12;  /*   light mode */
+    --background-color: #e9e9e9;      /* Light page background (used by body and panels). */
+    --background-color-rgb: 233, 233, 233;       /* RGB helper for translucent layers (e.g., hovers). */
+    --background-color-darker: #dddddd;         /* Slightly darker surface (hover states, panels). */
+    --background-color-darker-rgb: 221, 221, 221;   /* RGB helper for translucent hovers. */
+    --text: #080604;                 /* default text color across the app */
+    --secondary-color: #3a2618;     /* brand tint (used in some headings/icons) */
+    --secondary-color-lighter: #f0d3bc;         /* lighter brand tint (subtle accents) */   
+    --secondary-color-darker: #080604;          /* brand dark text (nav links, brand text, accents) */
+    --secondary-color-darker-rgb: 8, 6, 4;        /* RGB helper for translucent brand tints */
+    --accent-color: #969a8b;                   /* primary accent hue (buttons, highlights, outlines) */
+    --accent-color-rgb: 150, 154, 139;           /* RGB helper for accent overlays/shadows */
+    --accent-color-lighter: #a0a68f;           /* lighter accent (hover/focus backgrounds) */
+
+    /* Accent tokens (used across buttons, links, and badges) */
+    --accent-color-text: var(--secondary-color-darker);         /* text color on accent backgrounds (readable contrast) */
+    --accent-color-bg: var(--accent-color);                     /* accent background for buttons/badges */
+    --accent-color-bg-lighter: var(--accent-color-lighter);     /* softer accent background (subtle states) */
+    --accent-color-strong-rgb: 103, 107, 93;                    /* darker greenish for hover tints */
+
+    /* Glass tokens (used by nav, cards, and panels) */
+    --glass-bg: rgba(255, 255, 255, 0.6);                       /* glass background fill for panels */  
+    --glass-bg-subtle: rgba(255, 255, 255, 0.4);                /* softer glass fill (subtle states or alt panels) */
+    --glass-border: rgba(0, 0, 0, 0.08);                        /* outline for glass panels/cards */
+    --glass-gradient-top: rgba(255, 255, 255, 0.55);            /* vertical glass sheen */
+    --glass-gradient-bottom: rgba(255, 255, 255, 0.35);         /* vertical glass sheen */
+
+    /* Surfaces & borders */
+    --card-bg: #ffffff;                 /* default panel/card background (cards, containers) */
+    --border: rgba(0, 0, 0, 0.1);      /* generic border color (cards, inputs, separators) */
+    --gray: #6c757d;                   /* muted text color (help text, meta labels) */
+    --primary: var(--accent-color);     /* alias to accent; used where “primary” is expected by rules */
+    
+    /* Feedback / status colors */
+    --error-color: #d32f2f;         /* error highlights */
+    --success-color: #2e7d32;       /* success highlights */
+
+    /* Hero imagery (shared across pages) */
+    /* Use local static asset so it’s fingerprinted and served by Django/WhiteNoise */
+    --site-hero-image: url("../images/hero/hero.webp");
+
+    /* Navbar glass controls (light mode defaults) */
+    --navbar-bg-rgb: 0, 0, 0;  /* neutral dark glass in light mode */
+    --navbar-opacity: 0.12;    /* light mode opacity */
     
 }
 
+
+/* ==========================================================================
+     2. BASIC RESET & LAYOUT
+     -------------------------------------------------------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    /* Use dynamic navbar height with a sensible fallback to minimize gaps */
+    padding-top: var(--nav-height, 56px);
+}
+
+main {
+    flex: 1;
+}
+
+/* ==========================================================================
+   BOOTSTRAP OVERRIDES - Fix conflicts with our custom design
+   ========================================================================== */
+
+/* Prevent Bootstrap from adding unwanted margins/padding (in use by templates
+   listed above; keep to avoid unexpected gutters and max-width caps) */
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: none !important;
+}
+
+/* ==========================================================================
+   3. TYPOGRAPHY & LINKS
+   ========================================================================== */
+a {
+    text-decoration: none;
+    color: var(--secondary-color-darker);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: rgba(8, 6, 4, 0.7);
+    cursor: pointer;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2rem;
+    color: var(--text);
+}
+
+/* ==========================================================================
+   4. SCROLLBAR STYLING
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #aaaaaa;
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color-lighter);
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+/* ==========================================================================
+    5. NAVIGATION
+    ========================================================================== */
 /* Base navbar layout (desktop) */
 .custom-navbar {
     position: fixed;
@@ -30,126 +153,129 @@
     left: 0;
     right: 0;
     z-index: 1100;
-    width: 100%;
-    /*  opacity glass bar (dark neutral, avoids milky white tint) */
-    background: rgba(var(--navbar-bg-rgb, 0, 0, 0), var(--navbar-opacity, 0.25));
+    background: rgba(var(--navbar-bg-rgb, 0, 0, 0), var(--navbar-opacity, 0.12));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
 
+/* Position brand on the left and everything else on the right */
 .custom-navbar .nav-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
     padding: 0 1rem;
-    width: 100%;
-    box-sizing: border-box;
 }
 
-
 .custom-navbar .nav-right {
-    display: flex !important;
-    align-items: center !important;
-    gap: 2rem !important;
-    margin-left: auto !important;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
 }
 
 .custom-navbar .nav-brand {
-    color: #ffffff !important; /* white logo in light mode */
-    text-decoration: none !important;
-    font-size: 1.5rem !important;
-    font-weight: bold !important;
-    flex-shrink: 0 !important; /* Prevent logo from shrinking */
-    margin-right: auto !important;
-    display: block !important;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+    color: #ffffff; /* improve contrast on glass nav in light mode */
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-shrink: 0; /* Prevent logo from shrinking */
+    margin-right: auto;
+    display: block;
+    text-shadow: none;
 }
 
 .custom-navbar .nav-brand:hover {
-    color: #ffffff !important;
+    color: #ffffff;
     opacity: 0.9;
-    text-decoration: none !important;
 }
 
 .custom-navbar .nav-links {
-    display: flex !important;
-    gap: 0.5rem !important; /* SMALL gap between navigation links - close together */
-    list-style: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    align-items: center !important;
+    display: flex;
+    gap: 0.5rem; /* SMALL gap between navigation links - close together */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
 }
 
 .custom-navbar .nav-links a {
-    color: var(--secondary-color-darker) !important;
-    text-decoration: none !important;
-    padding: 0.5rem 1rem !important;
-    border-radius: 4px !important;
-    transition: all 0.3s ease !important;
-    font-size: 1.1rem !important;
-    display: inline-block !important;
+    color: #ffffff; /* white links for readability in light mode */
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    font-size: 1.1rem;
+    display: inline-block;
 }
 
 .custom-navbar .nav-links a:hover {
-    background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.8) !important;
-    color: var(--accent-color-text) !important;
-    transform: translateY(-2px) !important;
-    text-decoration: none !important;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateY(-2px);
 }
 
 /* Hamburger Menu Button */
 .custom-navbar .hamburger-menu {
-    display: none !important;
-    flex-direction: column !important;
-    background: none !important;
-    border: none !important;
-    cursor: pointer !important;
-    padding: 0.5rem !important;
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
 }
 
 .custom-navbar .hamburger-line {
-    width: 25px !important;
-    height: 3px !important;
-    background-color: var(--secondary-color-darker) !important;
-    margin: 3px 0 !important;
-    transition: 0.3s !important;
-    border-radius: 2px !important;
+    width: 25px;
+    height: 3px;
+    background-color: var(--secondary-color-darker);
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
 }
 
 /* Theme Toggle Button */
 .custom-navbar #theme-toggle {
-    background: rgba(var(--secondary-color-darker-rgb, 8, 6, 4), 0.15) !important;
-    border: 2px solid var(--secondary-color-darker) !important;
-    color: var(--secondary-color-darker) !important;
-    padding: 0.4rem 0.8rem !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    font-size: 0.9rem !important;
-    transition: all 0.3s ease !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    display: inline-block !important;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: inline-block;
 }
 
 .custom-navbar #theme-toggle:hover {
-    background: var(--accent-color-bg) !important;
-    color: white !important;
-    border-color: var(--accent-color-bg) !important;
-    transform: translateY(-2px) !important;
+    background: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    border-color: #ffffff;
+    transform: translateY(-2px);
 }
+
+/* Accessible focus styles for keyboard users */
+.custom-navbar .nav-links a:focus-visible,
+.custom-navbar #theme-toggle:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
+}
+
+
 
 /* ==========================================================================
    6. HERO SECTION
    ========================================================================== */
 
 .hero-header {
-    width: 100vw;
-    height: 100vh;
-    background-image: url(https://images.pexels.com/photos/7479915/pexels-photo-7479915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
+    width: 100%;
+    min-height: calc(100svh - var(--nav-height, 56px));
+    background-image: var(--site-hero-image);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    filter: brightness(95%) saturate(110%) contrast(110%);
+    /* Use an overlay instead of expensive full-viewport filters */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -157,9 +283,15 @@
     padding: 0;
 }
 
-/* Reusable hero background for other pages. */
-:root {
-    --site-hero-image: url(https://images.pexels.com/photos/7479915/pexels-photo-7479915.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
+/* Lightweight readability overlay for hero (cheaper than filter()) */
+.hero-header::before,
+.site-hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .site-hero-bg {
@@ -167,10 +299,12 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    filter: brightness(95%) saturate(105%) contrast(105%);
+    /* Avoid full-surface filter on initial paint; use overlay below */
+    position: relative;
     padding: 3rem 0;
     min-height: calc(100vh - 120px);
 }
+
 
 /* Keep content readable on the hero background by using a semi-opaque panel */
 .site-hero-bg .container {
@@ -179,6 +313,8 @@
     border-radius: 8px;
     box-shadow: none;
     margin: 0 auto; /* ensure hero container centers too */
+    position: relative;
+    z-index: 1; /* keep content above the overlay */
 }
 
 /* Ensure important hero headings remain readable on the hero image. */
@@ -190,33 +326,6 @@
     text-shadow: 0 1px 4px rgba(0,0,0,0.45);
 }
 
-.steps-list {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.step-item label {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem;
-    border-radius: 6px;
-}
-
-.step-item input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 8px;
-}
 
 .hero-content {
     position: relative;
@@ -235,10 +344,6 @@
 .hero-title::after {
     content: ".";
     animation: period 0.85s step-end infinite;
-}
-
-.hero-title:hover:after {
-    content: "";
 }
 
 .hero-title:hover .brand-highlight {
@@ -286,14 +391,14 @@
     font-size: 2rem;
     margin-bottom: 1rem;
     font-weight: 600;
-    color: var(--background-color);
+    color: #ffffff;
 }
 
 .hero-actions p {
     font-size: 1.1rem;
     margin-bottom: 2rem;
     opacity: 0.8;
-    color: var(--background-color);
+    color: #ffffff;
 }
 
 .hero-buttons {
@@ -305,10 +410,13 @@
 
 /* Hero Animations */
 @keyframes period {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
 
-    html, body {
-    }
-
+@keyframes blink {
+    0%, 49% { border-right-color: transparent; }
+    50%, 100% { border-right-color: var(--background-color); }
 }
 
 /* ==========================================================================
@@ -674,22 +782,8 @@ body.dark-theme .auth-container {
 }
 
 /* ==========================================================================
-   10. MAIN CONTENT LAYOUT
-   ========================================================================== */
-
-main {
-    flex: 1;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto; /* center the main container in the viewport */
-    padding: 0 0.2rem;
-}
-
-/* ==========================================================================
-   11. MESSAGES
-   ========================================================================== */
+    10. MESSAGES
+    ========================================================================== */
 
 .messages {
     position: fixed;
@@ -720,7 +814,7 @@ main {
 }
 
 /* ==========================================================================
-   12. FOOTER
+   11. FOOTER
    ========================================================================== */
 
 .footer {
@@ -731,7 +825,7 @@ main {
     padding: 2rem 0;
     margin-top: auto;
     box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .footer-content {
@@ -751,7 +845,7 @@ main {
 .social-link {
     color: var(--secondary-color-darker);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     padding: 0.5rem;
     border-radius: 50%;
     display: flex;
@@ -1335,7 +1429,7 @@ body.dark-theme .add-routine-page .edit-btn { color: #fff; border-color: rgba(25
   border-radius: 8px;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -1676,7 +1770,7 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
 
 
 /* ==========================================================================
-   20.  Dark Mode Styles
+   19.  Dark Mode Styles
    ========================================================================== */
 
 body.dark-theme {
@@ -1728,14 +1822,14 @@ body.dark-theme {
 
 /* Dark theme nav links & form inputs: subtle glass accents */
 body.dark-theme .custom-navbar .nav-links a {
-    background: transparent !important;
-    color: var(--text) !important;
-    border-radius: 8px !important;
+    background: transparent;
+    color: var(--text);
+    border-radius: 8px;
 }
 
 /* Keep brand readable in dark mode as well */
 body.dark-theme .custom-navbar .nav-brand {
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 body.dark-theme .form-control,
@@ -1773,6 +1867,7 @@ body.dark-theme #signup-form select {
 /* ===  adjustments for Buttons === */
 
 /* Dark mode: All button text should be white for readability */
+
 body.dark-theme .btn,
 body.dark-theme .btn-primary,
 body.dark-theme .btn-secondary,
@@ -1863,9 +1958,6 @@ body.dark-theme .profile-container {
     box-shadow: none !important;
 }
 
-/* Dark mode: Ensure routines list matches the glass effect */
-/* removed: body.dark-theme .routines-list (unused) */
-
 /* Profile page title */
 body.dark-theme .profile-container .page-title {
     color: var(--secondary-color-darker) !important;
@@ -1906,7 +1998,6 @@ body.dark-theme .step-count {
     color: var(--accent-color-lighter) !important;
 }
 
-/* removed: body.dark-theme .steps-header label (unused) */
 
 /* Step items and selects */
 body.dark-theme .step-item select,
@@ -1922,8 +2013,6 @@ body.dark-theme .step-select option {
     color: var(--text) !important;
 }
 
-/* Edit form content */
-/* removed: body.dark-theme .edit-form-content and label (unused) */
 
 /* Form labels and inputs in profile forms */
 body.dark-theme .form-card label {
@@ -1963,7 +2052,7 @@ body.dark-theme .badge.success {
 
 
 /* ==========================================================================
-   21. RESPONSIVE DESIGN - ALL MEDIA QUERIES
+   20. RESPONSIVE DESIGN - ALL MEDIA QUERIES
    ========================================================================== */
 /* product page Styles */
 
@@ -1986,78 +2075,82 @@ body.dark-theme .badge.success {
 /* Mobile Navigation Styles */
 @media (max-width: 768px) {
     .custom-navbar .nav-container {
-        padding: 0 1rem !important;
+        padding: 0 1rem;
     }
     
     .custom-navbar .nav-right {
-        gap: 1rem !important;
+        gap: 1rem;
     }
     
     .custom-navbar .hamburger-menu {
-        display: flex !important;
-        z-index: 1001 !important;
+        display: flex;
+        position: relative; /* ensure z-index applies */
+        z-index: 1300;      /* above the nav-links overlay (1200) */
     }
     
     .custom-navbar .nav-links {
-        position: fixed !important;
-        top: 0 !important;
-        left: -100% !important;
-        width: 100% !important;
-        height: 100vh !important;
-        z-index: 1200 !important;
-        background-color: rgba(var(--background-color-rgb, 233, 233, 233), 0.98) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        transition: left 0.3s ease !important;
-        gap: 2rem !important;
-        list-style: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        z-index: 1200;
+        background-color: rgba(var(--background-color-rgb, 233, 233, 233), 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: left 0.3s ease;
+        gap: 2rem;
     }
     
     .custom-navbar .nav-links.active {
-        left: 0 !important;
+        left: 0;
     }
     
     .custom-navbar .nav-links a {
-        font-size: 1.3rem !important;
-        padding: 1rem 2rem !important;
-        width: 200px !important;
-        text-align: center !important;
-        border-radius: 8px !important;
-        background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.5) !important;
-        margin: 0.5rem 0 !important;
+        font-size: 1.3rem;
+        padding: 1rem 2rem;
+        width: 200px;
+        text-align: center;
+        border-radius: 8px;
+        background-color: rgba(var(--background-color-darker-rgb, 221, 221, 221), 0.5);
+        color: var(--secondary-color-darker); /* dark text against light panel */
+        margin: 0.5rem 0;
     }
     
     .custom-navbar .nav-links a:hover {
-        transform: scale(1.05) !important;
-        background-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.8) !important;
+        transform: scale(1.05);
+        background-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.8);
     }
     
     /* Hamburger animation when active */
     .custom-navbar .hamburger-menu.active .hamburger-line:nth-child(1) {
-        transform: rotate(-45deg) translate(-6px, 6px) !important;
+        transform: rotate(-45deg) translate(-6px, 6px);
     }
     
     .custom-navbar .hamburger-menu.active .hamburger-line:nth-child(2) {
-        opacity: 0 !important;
+        opacity: 0;
     }
     
     .custom-navbar .hamburger-menu.active .hamburger-line:nth-child(3) {
-        transform: rotate(45deg) translate(-6px, -6px) !important;
+        transform: rotate(45deg) translate(-6px, -6px);
     }
     
     .custom-navbar #theme-toggle {
-        font-size: 0.8rem !important;
-        padding: 0.3rem 0.6rem !important;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
     }
 
-    /* If the navbar is taller on mobile, reflect that for message offset */
-    /* removed old message offset variables */
 }
+/* Ensure focus ring is visible on light mobile overlay */
+@media (max-width: 768px) {
+    .custom-navbar .nav-links a:focus-visible {
+        box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.4);
+    }
+}
+
 /* Profile: responsive fallback: 2 cols then 1 col */
 @media (max-width: 900px) {
   .profile-container .product-widgets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
