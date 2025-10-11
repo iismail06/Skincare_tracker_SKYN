@@ -52,10 +52,21 @@ if not DEBUG and not SECRET_KEY:
     raise RuntimeError('The SECRET_KEY environment variable is required in production.')
 
 # ALLOWED_HOSTS can be provided as a comma-separated environment variable
+def _normalize_host(host: str) -> str:
+    # Remove scheme and any trailing slash if mistakenly provided
+    host = host.strip()
+    for scheme in ("https://", "http://"):
+        if host.startswith(scheme):
+            host = host[len(scheme):]
+    return host.rstrip('/')
 
 raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
 if raw_allowed_hosts:
-    ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(',') if h.strip()]
+    ALLOWED_HOSTS = [
+        _normalize_host(h)
+        for h in raw_allowed_hosts.split(',')
+        if h and _normalize_host(h)
+    ]
 else:
     ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost']
 
@@ -160,7 +171,9 @@ CSRF_TRUSTED_ORIGINS = [
 # Allow extending CSRF trusted origins via environment (comma-separated)
 raw_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS')
 if raw_csrf_origins:
-    extra_origins = [o.strip() for o in raw_csrf_origins.split(',') if o.strip()]
+    def _norm_origin(o: str) -> str:
+        return o.strip().rstrip('/')
+    extra_origins = [_norm_origin(o) for o in raw_csrf_origins.split(',') if _norm_origin(o)]
     # Deduplicate while preserving order
     existing = set(CSRF_TRUSTED_ORIGINS)
     CSRF_TRUSTED_ORIGINS += [o for o in extra_origins if o not in existing]
