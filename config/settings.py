@@ -57,7 +57,7 @@ raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
 if raw_allowed_hosts:
     ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(',') if h.strip()]
 else:
-    ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
+    ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -122,9 +122,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
-}
+# Prefer DATABASE_URL; fall back to local SQLite for development
+_db_from_env = dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+if _db_from_env:
+    DATABASES = {
+        'default': _db_from_env
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Use SQLite for tests (convert Path to string)
 if 'test' in sys.argv:
@@ -137,6 +147,8 @@ if 'test' in sys.argv:
 CSRF_TRUSTED_ORIGINS = [
     "https://*.codeinstitute-ide.net/",
     "https://*.herokuapp.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
     "http://127.0.0.1:8002",
     "http://localhost:8002",
     "http://127.0.0.1:8003",
