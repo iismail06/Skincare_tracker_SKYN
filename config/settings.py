@@ -45,7 +45,7 @@ def str_to_bool(val):
     return str(val).strip().lower() in ('1', 'true', 'yes', 'on')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Temporarily set to True for troubleshooting
+DEBUG = False # Temporarily set to True for troubleshooting
 
 # Fail fast if SECRET_KEY is missing in production
 if not DEBUG and not SECRET_KEY:
