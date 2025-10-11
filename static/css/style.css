@@ -95,6 +95,8 @@ main {
     max-width: none !important;
 }
 
+
+
 /* ==========================================================================
    3. TYPOGRAPHY & LINKS
    ========================================================================== */
@@ -447,7 +449,7 @@ h2 {
     min-height: 1px; /* prevent collapse in some browsers */
     width: 100%;
     position: relative;
-    background-image: url("../images/features/features.jpg");
+    background-image: url("../images/features/features.webp");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -497,60 +499,8 @@ h2 {
 }
 
 /* ==========================================================================
-   8. FORMS & BUTTONS
+   8. BUTTONS
    ========================================================================== */
-
-/* Form Controls */
-.form-control,
-input[type="text"],
-input[type="password"],
-input[type="email"],
-select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid var(--border);
-    border-radius: 4px;
-    font-size: 1rem;
-    font-family: inherit;
-    background-color: var(--card-bg);
-    color: var(--text);
-    transition: border-color 0.3s, background-color 0.3s;
-    box-sizing: border-box;
-    min-height: 48px;
-}
-
-.form-control:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-select:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-/* Form Groups and Labels */
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label,
-form p label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text);
-}
-
-form p {
-    margin-bottom: 1.5rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text);
-}
 
 /* Buttons */
 .btn {
@@ -565,27 +515,34 @@ label {
     margin: 0.25rem 0;
     /* glass base: semi-transparent panel */
     background: linear-gradient(180deg, var(--glass-gradient-top), var(--glass-gradient-bottom));
-    border: 1.5px solid #676B5D;
+    border: 1.5px solid var(--accent-color-bg);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
-.btn:hover,
-.badge:hover {
+/* Non-primary buttons subtle hover; avoid overriding .btn-primary */
+.btn:not(.btn-primary):hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    background: #676B5D !important;
-    color: #fff !important;
-    border-color: #676B5D !important;
+    background: rgba(var(--accent-color-strong-rgb), 0.06);
+    color: var(--accent-color-text);
+    border-color: var(--accent-color-bg);
+}
+
+/* Accessible focus styles for keyboard users */
+.btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.25);
+    border-radius: 8px;
 }
 
 /* Primary: the prominent filled button used on the home "My Routines" action */
 .btn-primary {
     padding: 0.8rem 1.8rem;
     /* transparent glass with accent border/text */
-    background: transparent;
+    background: transparent !important; /* override Bootstrap blue */
     color: var(--accent-color-text) !important;
-    border: 1.5px solid var(--accent-color-bg);
+    border: 1.5px solid var(--accent-color-bg) !important;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
@@ -593,7 +550,17 @@ label {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(0,0,0,0.10);
     /* darker green hover, avoid any blue tones */
-    background: rgba(var(--accent-color-strong-rgb), 0.12); /* rgba of --accent-color-strong */
+    background: rgba(var(--accent-color-strong-rgb), 0.12) !important; /* enforce greenish hover */
+    border-color: var(--accent-color-bg) !important;
+    color: var(--accent-color-text) !important;
+}
+
+/* Ensure focus/active states stay on our green system (no Bootstrap blue flash) */
+.btn-primary:focus,
+.btn-primary:active {
+    background: rgba(var(--accent-color-strong-rgb), 0.18) !important;
+    border-color: var(--accent-color-bg) !important;
+    color: var(--accent-color-text) !important;
 }
 
 /* Home hero: ensure primary button text is white in light mode for contrast */
@@ -602,6 +569,12 @@ label {
     text-shadow: 0 1px 3px rgba(0,0,0,0.35);
 }
 .hero-header .btn-primary:hover {
+    color: #ffffff !important;
+}
+
+/* Keep hero primary readable on focus/active as well */
+.hero-header .btn-primary:focus,
+.hero-header .btn-primary:active {
     color: #ffffff !important;
 }
 
@@ -617,15 +590,23 @@ label {
     background: rgba(var(--accent-color-strong-rgb),0.06);
 }
 
+/* Subtle badge hover independent from buttons */
+.badge:hover {
+    background: rgba(var(--accent-color-rgb, 150, 154, 139), 0.10);
+    border-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.25);
+    color: var(--accent-color-text);
+}
+
 /* Small button variant for inline controls */
 .form-card--wide { max-width:600px; margin:2rem auto; }
 
+
+/* UTILITIES & HELPERS */
 /* Small helpers used by JS when dynamically inserting elements */
 .u-margin-top-sm { margin-top: 0.5rem; }
 .u-margin-left-sm { margin-left: 0.5rem; }
 .u-margin-left-md { margin-left: 1rem; }
 .input-block { display:block; margin-top:0.25rem; width:100%; }
-
 
 /* ==========================================================================
    9. AUTHENTICATION PAGES
@@ -655,6 +636,28 @@ body.dark-theme .auth-container {
     margin-bottom: 1.5rem;
     color: var(--gray);
 }
+
+/* Auth/Questionnaire: scoped form controls */
+.auth-container form :is(.form-control, input, select, textarea) {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.7rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--card-bg);
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.auth-container form :is(.form-control, input, select, textarea):focus-visible {
+    outline: none;
+    border-color: var(--accent-color-bg);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 150, 154, 139), 0.18);
+}
+.auth-container form label { display:block; margin-bottom: 0.5rem; font-weight: 600; }
+.auth-container form .form-group { margin-bottom: 1.25rem; }
+.auth-container form :is(input, textarea)::placeholder { color: var(--gray); opacity: 0.85; }
+.auth-container form .checkbox-inline { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ==========================================================================
     10. MESSAGES
@@ -851,6 +854,19 @@ body.dark-theme .auth-container {
 .add-routine-page textarea,
 .form-group input,
 .form-group select {
+    background: #ffffff !important;
+    color: #111 !important;
+    border: 1.5px solid rgba(0,0,0,0.18) !important;
+    border-radius: 8px;
+    padding: 0.875rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Alias Bootstrap/Django forms to page styling */
+.add-routine-page .form-control {
+    width: 100%;
+    min-height: 48px;
     background: #ffffff !important;
     color: #111 !important;
     border: 1.5px solid rgba(0,0,0,0.18) !important;
@@ -1345,6 +1361,55 @@ body.dark-theme .add-routine-page .edit-btn { color: #fff; border-color: rgba(25
 .manual-form-section h3 { margin-bottom: 1rem; color: var(--secondary-color-darker); }
 .product-form { margin-top: 1rem; }
 
+/* Product form: base controls and aliases */
+.product-form :is(.form-control, input, select, textarea) {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: var(--card-bg);
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.product-form :is(.form-control, input, select, textarea):focus-visible {
+    outline: none;
+    border-color: var(--accent-color-bg);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 150, 154, 139), 0.18);
+}
+
+.product-form label { display:block; margin-bottom: 0.5rem; font-weight: 600; }
+.product-form .form-group { margin-bottom: 1.25rem; }
+
+.product-form :is(input, textarea)::placeholder { color: var(--gray); opacity: 0.85; }
+.product-form :is(.form-control, input, select, textarea)[disabled],
+.product-form :is(.form-control, input, select, textarea)[readonly] {
+    opacity: 0.8;
+    background-color: rgba(var(--background-color-rgb, 233,233,233), 0.4);
+    cursor: not-allowed;
+}
+
+/* Top suggestions select within the suggestions card */
+.form-container #category-browse.form-control,
+.form-container #category-browse {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--card-bg);
+    color: var(--text);
+}
+.form-container #category-browse:focus-visible {
+    outline: none;
+    border-color: var(--accent-color-bg);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 150, 154, 139), 0.18);
+}
+
 /* Make product form checkboxes clearly visible when toggled */
 .product-form input[type="checkbox"],
 .product-form .form-check-input {
@@ -1579,9 +1644,11 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
 }
 
 .profile-container .form-actions-row {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(160px, 1fr));
+    display: flex;
     gap: 0.6rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* prevent stretching; let buttons size to content */
 }
 
 .profile-container .form-actions-row .add-routine-btn,
@@ -1716,6 +1783,29 @@ body.dark-theme select {
     border: 1px solid var(--glass-border) !important;
     color: var(--text) !important;
 }
+
+/* Dark theme: product form controls */
+body.dark-theme .product-form :is(.form-control, input, select, textarea),
+body.dark-theme .form-container #category-browse {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
+
+/* Dark theme: routine page alias */
+body.dark-theme .add-routine-page :is(.form-control, input[type="text"], select, textarea),
+body.dark-theme .form-group :is(input, select) {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    color: #fff !important;
+}
+
+/* Dark theme: questionnaire/auth controls */
+body.dark-theme .auth-container form :is(.form-control, input, select, textarea) {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
 /* stronger glass contrast on key containers */
 body.dark-theme .custom-navbar,
 body.dark-theme .form-card,
@@ -1754,15 +1844,10 @@ body.dark-theme .btn-dark,
 body.dark-theme button {
     color: #fff !important;
 }
-/* Dark theme: ensure primary buttons show with light foreground */
-body.dark-theme .btn-primary {
-    color: #fff !important;
-}
 /* Dark mode: Specific button type adjustments */
 body.dark-theme .btn-primary {
     background: var(--accent-color-bg) !important;
     border-color: var(--accent-color-bg) !important;
-    color: #fff !important;
 }
 
 body.dark-theme .btn-secondary {
@@ -1787,8 +1872,6 @@ body.dark-theme .btn-success {
 
 /* Dark mode: Button hover states */
 body.dark-theme .btn:hover,
-body.dark-theme .btn-primary:hover,
-body.dark-theme .btn-secondary:hover,
 body.dark-theme button:hover {
     color: #fff !important;
 }
@@ -2193,10 +2276,6 @@ body.dark-theme .badge.success {
     
     .form-actions {
         flex-direction: column-reverse;
-    }
-    
-    .form-actions .btn {
-        width: 100%;
     }
     
     /* Products */
