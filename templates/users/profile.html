@@ -11,7 +11,7 @@
 {% block content %}
 <div class="container">
   <div class="profile-container">
-    <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
+  <h1 class="page-title" style="text-align:center; margin-bottom:2rem;">Welcome, {{ user.first_name|default:user.username }}!</h1>
 
     <!-- Profile info card with streak at top right -->
     <section class="dashboard-section" aria-label="Profile information">
@@ -20,6 +20,15 @@
           {% if profile %}
             {% if profile.date_of_birth %}
               <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y" }}</p>
+            {% endif %}
+            {% if user.email %}
+              <p><strong>Email:</strong> {{ user.email }}</p>
+            {% endif %}
+            {% if user.first_name or user.last_name %}
+              <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            {% endif %}
+            {% if profile.age_range %}
+              <p><strong>Age Range:</strong> {{ profile.get_age_range_display }}</p>
             {% endif %}
             {% if profile.skin_type %}
             {% endif %}
@@ -42,6 +51,7 @@
       <div class="quick-actions-label"></div>
       <div class="profile-actions profile-actions-row">
         <a href="{% url 'users:profile_edit' %}" class="btn btn-profile">Edit Profile</a>
+        <a href="{% url 'users:profile_questionnaire' %}" class="btn btn-profile">Edit Questionnaire</a>
         <a href="{% url 'routines:dashboard' %}" class="btn btn-profile">Go to Dashboard</a>
         <a href="{% url 'routines:add' %}" class="btn btn-profile">Add Routine</a>
       </div>

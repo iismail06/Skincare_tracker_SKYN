@@ -619,6 +619,19 @@ h2 {
     text-align: center;
 }
 
+/* Ensure questionnaire action buttons are consistent size */
+.questionnaire-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.questionnaire-actions .btn {
+    padding: 0.9rem 1.6rem !important; /* normalize vs .btn and .btn-primary */
+    min-width: 200px; /* same visual width */
+    text-align: center;
+}
+
 .auth-container p {
     text-align: center;
     margin-bottom: 1.5rem;

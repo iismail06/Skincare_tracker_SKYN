@@ -7,10 +7,51 @@
 {% block content %}
 <div class="container">
     <h1 class="page-title">Edit Your Profile</h1>
+
     <form method="post" class="form-card form-card--wide">
         {% csrf_token %}
-        {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save</button>
+
+        <fieldset class="form-section">
+            <legend>Account details</legend>
+            <div class="form-row">
+                <div class="form-group">{{ user_form.first_name.label_tag }} {{ user_form.first_name }}</div>
+                <div class="form-group">{{ user_form.last_name.label_tag }} {{ user_form.last_name }}</div>
+            </div>
+            <div class="form-group">{{ user_form.email.label_tag }} {{ user_form.email }}</div>
+        </fieldset>
+
+        <fieldset class="form-section">
+            <legend>Profile & preferences</legend>
+            <div class="form-row">
+                <div class="form-group">{{ profile_form.date_of_birth.label_tag }} {{ profile_form.date_of_birth }}</div>
+                <div class="form-group">{{ profile_form.age_range.label_tag }} {{ profile_form.age_range }}</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">{{ profile_form.skin_type.label_tag }} {{ profile_form.skin_type }}</div>
+                <div class="form-group">{{ profile_form.main_concern.label_tag }} {{ profile_form.main_concern }}</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">{{ profile_form.current_routine.label_tag }} {{ profile_form.current_routine }}</div>
+                <div class="form-group">{{ profile_form.main_goal.label_tag }} {{ profile_form.main_goal }}</div>
+            </div>
+
+            <div class="form-group">{{ profile_form.skin_concerns.label_tag }} {{ profile_form.skin_concerns }}</div>
+            <div class="form-group">{{ profile_form.additional_notes.label_tag }} {{ profile_form.additional_notes }}</div>
+
+            <div class="form-group">
+                <label class="checkbox-inline">
+                    {{ profile_form.prefers_natural }} {{ profile_form.prefers_natural.label }}
+                </label>
+            </div>
+        </fieldset>
+
+        <div class="form-actions-row">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'users:profile_questionnaire' %}" class="btn btn-secondary">Edit questionnaire</a>
+            <a href="{% url 'users:profile' %}" class="btn btn-secondary">Back to Profile</a>
+        </div>
     </form>
 </div>
 {% endblock %}

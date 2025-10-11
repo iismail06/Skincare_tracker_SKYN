@@ -160,17 +160,23 @@ def profile_view(request):
 def profile_edit(request):
     # Ensure we fetch the existing UserProfile by user to avoid creating duplicates
     profile = UserProfile.objects.filter(user=request.user).first()
-    from .forms import ProfileQuestionnaireForm
+    from .forms import ProfileDetailsForm, UserUpdateForm
 
     if request.method == 'POST':
-        form = ProfileQuestionnaireForm(request.POST, instance=profile)
-        if form.is_valid():
-            prof = form.save(commit=False)
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileDetailsForm(request.POST, instance=profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            prof = profile_form.save(commit=False)
             prof.user = request.user
             prof.save()
             messages.success(request, 'Profile updated successfully.')
-            return redirect('routines:dashboard')
+            return redirect('users:profile')
     else:
-        form = ProfileQuestionnaireForm(instance=profile)
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileDetailsForm(instance=profile)
 
-    return render(request, 'users/profile_edit.html', {'form': form})
+    return render(request, 'users/profile_edit.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    })

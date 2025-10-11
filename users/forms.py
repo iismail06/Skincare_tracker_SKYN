@@ -80,3 +80,73 @@ class ProfileQuestionnaireForm(forms.ModelForm):
         self.fields['main_concern'].empty_label = "Select your main concern"
         self.fields['current_routine'].empty_label = "Select one"
         self.fields['main_goal'].empty_label = "Select your main goal"
+
+
+class UserUpdateForm(forms.ModelForm):
+    """Allow editing of basic account fields like name and email"""
+
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['placeholder'] = field.label
+
+
+class ProfileDetailsForm(forms.ModelForm):
+    """Profile edit form that includes age fields plus questionnaire fields"""
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            'date_of_birth',
+            'age_range',
+            'skin_type',
+            'main_concern',
+            'current_routine',
+            'main_goal',
+            'skin_concerns',
+            'additional_notes',
+            'prefers_natural',
+        ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'age_range': forms.Select(attrs={'class': 'form-control'}),
+            'skin_type': forms.Select(attrs={'class': 'form-control'}),
+            'main_concern': forms.Select(attrs={'class': 'form-control'}),
+            'current_routine': forms.Select(attrs={'class': 'form-control'}),
+            'main_goal': forms.Select(attrs={'class': 'form-control'}),
+            'skin_concerns': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'additional_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+        labels = {
+            'date_of_birth': 'Date of birth (optional)',
+            'age_range': 'Age range',
+            'skin_type': 'Skin type',
+            'main_concern': 'Main concern',
+            'current_routine': 'Current routine level',
+            'main_goal': 'Main goal',
+            'skin_concerns': 'Other skin concerns',
+            'additional_notes': 'Additional notes',
+            'prefers_natural': 'I prefer natural/organic products',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Provide an empty option for selects
+        if 'age_range' in self.fields:
+            self.fields['age_range'].required = False
+        for name in ['skin_type', 'main_concern', 'current_routine', 'main_goal']:
+            if name in self.fields:
+                self.fields[name].empty_label = 'Select one'
