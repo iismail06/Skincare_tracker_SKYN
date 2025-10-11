@@ -50,67 +50,78 @@
     <!-- Personalized widgets (read-only previews) -->
     <section class="product-widgets-section">
       <div class="product-widgets">
-        <!-- Favorites -->
-        <div class="product-widget favorites-widget">
-          <h4>💖 Your Favorites</h4>
-          {% if favorite_products %}
+        <!-- Top Rated -->
+        <div class="product-widget top-rated-widget">
+          <h4>⭐ Top Rated</h4>
+          {% if top_rated %}
             <div class="product-mini-cards">
-              {% for product in favorite_products %}
-                <div class="product-mini-card" data-tooltip="{% if product.rating %}Rating: {{ product.rating }}/5⭐{% else %}Not rated{% endif %}{% if product.expiry_date %} | Expires: {{ product.expiry_date }}{% endif %}">
+              {% for product in top_rated %}
+                <div class="product-mini-card" data-tooltip="Rating: {{ product.rating|default:'-' }}/5⭐">
                   <span class="product-name">{{ product.name }}</span>
                 </div>
               {% endfor %}
             </div>
           {% else %}
             <div class="empty-widget">
-              <p class="empty-message">Mark products as favorites with the 💖 heart to see them here.</p>
-              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-pink">Add Favorite Product</a>
+              <p class="empty-message">Rate a few products to see your best performers here.</p>
+              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-info">Add a product</a>
             </div>
           {% endif %}
         </div>
 
-        <!-- Expiring Soon -->
-        <div class="product-widget expiry-widget">
-          <h4>⚠️ Expiring Soon</h4>
-          {% if expiry_preview %}
+        <!-- Recently Added -->
+        <div class="product-widget recently-added-widget">
+          <h4>🆕 Recently Added</h4>
+          {% if recent_products %}
             <div class="product-mini-cards">
-              {% for product in expiry_preview %}
-                <div class="product-mini-card expiry-warning" data-tooltip="Expires: {{ product.expiry_date }}{% if product.rating %} | Rating: {{ product.rating }}/5⭐{% endif %}">
+              {% for product in recent_products %}
+                <div class="product-mini-card" data-tooltip="Added: {{ product.created_at|date:'M d, Y' }}{% if product.rating %} | {{ product.rating }}⭐{% endif %}">
                   <span class="product-name">{{ product.name }}</span>
                 </div>
               {% endfor %}
             </div>
           {% else %}
             <div class="empty-widget">
-              <p class="empty-message">Products expiring in the next 90 days will appear here.</p>
-              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-warning">Add Products with Expiry</a>
+              <p class="empty-message">New products you add will show up here.</p>
+              <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-info">Add a product</a>
             </div>
           {% endif %}
         </div>
 
-        <!-- Perfect for your skin -->
-        <div class="product-widget skin-type-widget">
-          {% if user_skin_type %}
-            <h4>🎯 Perfect for {{ user_skin_type|title }} Skin</h4>
-            {% if skin_type_products %}
-              <div class="product-mini-cards">
-                {% for product in skin_type_products %}
-                  <div class="product-mini-card" data-tooltip="{% if product.rating %}Rating: {{ product.rating }}/5⭐{% else %}Not rated{% endif %}">
-                    <span class="product-name">{{ product.name }}</span>
-                  </div>
-                {% endfor %}
-              </div>
-            {% else %}
-              <div class="empty-widget">
-                <p class="empty-message">Add products that match your {{ user_skin_type }} skin type to see recommendations here.</p>
-                <a href="{% url 'products:create' %}" class="btn btn-sm btn-outline-info">Add Products</a>
-              </div>
-            {% endif %}
+        <!-- In Your Routines -->
+        <div class="product-widget in-routines-widget">
+          <h4>🧴 In Your Routines</h4>
+          {% if in_routines %}
+            <div class="product-mini-cards">
+              {% for product in in_routines %}
+                <div class="product-mini-card" data-tooltip="{{ product.brand }}{% if product.rating %} | {{ product.rating }}⭐{% endif %}">
+                  <span class="product-name">{{ product.name }}</span>
+                </div>
+              {% endfor %}
+            </div>
           {% else %}
-            <h4>🎯 Perfect for Your Skin Type</h4>
             <div class="empty-widget">
-              <p class="empty-message">Set your skin type in your profile to see personalized picks here.</p>
-              <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-info">Set Skin Type</a>
+              <p class="empty-message">Add products to your routines to see them here.</p>
+              <a href="{% url 'routines:add' %}" class="btn btn-sm btn-outline-info">Add a routine</a>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Unrated to rate -->
+        <div class="product-widget unrated-widget">
+          <h4>✍️ Unrated to rate</h4>
+          {% if unrated_to_rate %}
+            <div class="product-mini-cards">
+              {% for product in unrated_to_rate %}
+                <div class="product-mini-card" data-tooltip="Click product to edit and rate">
+                  <span class="product-name">{{ product.name }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-widget">
+              <p class="empty-message">Looks like everything’s rated. Nice!</p>
+              <a href="{% url 'products:list' %}" class="btn btn-sm btn-outline-info">View all products</a>
             </div>
           {% endif %}
         </div>

@@ -127,40 +127,32 @@ def profile_view(request):
         else:
             break
 
-    # 2) Skin-type products and favorites preview
+    # 2) Profile widgets (no duplication with dashboard)
     from products.models import Product
-    user_skin_type = None
-    try:
-        user_skin_type = profile.skin_type if profile else None
-    except Exception:
-        user_skin_type = None
-    skin_type_products = Product.objects.filter(
-        user=request.user,
-        skin_type=user_skin_type
-    ).exclude(skin_type__isnull=True).exclude(skin_type='')[:3] if user_skin_type else []
-
-    favorite_products = Product.objects.filter(user=request.user, is_favorite=True)[:3]
-
-    # 3) Expiring soon preview (next 90 days)
-    expiry_preview = []
-    from datetime import timedelta as _td
-    expiry_threshold = today + _td(days=90)
-    for product in Product.objects.filter(
-        user=request.user,
-        expiry_date__lte=expiry_threshold,
-        expiry_date__gte=today
-    ).order_by('expiry_date')[:4]:
-        expiry_preview.append(product)
+    # Top Rated: rating >= 4, sort by rating then recent updates
+    top_rated = Product.objects.filter(user=request.user, rating__gte=4).order_by('-rating', '-updated_at')[:3]
+    # Recently Added: newest first
+    recent_products = Product.objects.filter(user=request.user).order_by('-created_at')[:3]
+    # In Your Routines: distinct products referenced by any routine step
+    product_ids = (
+        RoutineStep.objects
+        .filter(routine__user=request.user, product__isnull=False)
+        .values_list('product_id', flat=True)
+        .distinct()[:3]
+    )
+    in_routines = Product.objects.filter(id__in=list(product_ids))
+    # Unrated to rate: products without a rating
+    unrated_to_rate = Product.objects.filter(user=request.user, rating__isnull=True)[:3]
 
     return render(request, 'users/profile.html', {
         'user': request.user,
         'profile': profile,
         'routine_counts': routine_counts,
         'current_streak': current_streak,
-        'skin_type_products': skin_type_products,
-        'favorite_products': favorite_products,
-        'expiry_preview': expiry_preview,
-        'user_skin_type': user_skin_type,
+        'top_rated': top_rated,
+        'recent_products': recent_products,
+        'in_routines': in_routines,
+        'unrated_to_rate': unrated_to_rate,
     })
 
 
