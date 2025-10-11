@@ -45,7 +45,7 @@ def str_to_bool(val):
     return str(val).strip().lower() in ('1', 'true', 'yes', 'on')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False # Temporarily set to True for troubleshooting
+DEBUG = False
 
 # Fail fast if SECRET_KEY is missing in production
 if not DEBUG and not SECRET_KEY:
@@ -104,8 +104,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # Temporarily commenting out until we confirm it's working on Heroku
-                # 'config.context_processors.vendor_mode',
+                'config.context_processors.vendor_mode',
             ],
         },
     },
@@ -203,15 +202,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Production hardening (only enabled when DEBUG is False)
 if not DEBUG:
-    # Temporarily disabled to troubleshoot 500 error
     # Redirect HTTP to HTTPS
-    SECURE_SSL_REDIRECT = False  # Changed to False for troubleshooting
-    SESSION_COOKIE_SECURE = False  # Changed to False for troubleshooting
-    CSRF_COOKIE_SECURE = False  # Changed to False for troubleshooting
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
     # HSTS (short value to start; increase after testing)
-    # SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 60))
-    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    # SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 60))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
     # Other recommended settings
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
