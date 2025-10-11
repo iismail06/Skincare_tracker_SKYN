@@ -18,15 +18,24 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
 
     <!-- Bootstrap CSS (load first) -->
+    {% if USE_LOCAL_VENDOR %}
+    <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    {% else %}
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
-        integrity="sha384-JsmE5Fzj1F/1C2tYdPqL6p3wgp9o3QJYb0Dn4h1f8Q7qQx9qIYwV9h8i7w4j2J1N"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
         crossorigin="anonymous">
+    {% endif %}
     
     <!-- Custom CSS (load after Bootstrap to override) -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=12">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-DyZ88mC6Up2uqS4h/KRgHuZ5uV1R9Y9ZC3GqfJrXNnZ3W0n3m0uH7w3wO0ODjWQXf8kF1X8eQHcZp7V7nMXb3w==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=13">
+    {% if USE_LOCAL_VENDOR %}
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
+    {% else %}
+    <!-- Font Awesome CSS (no SRI here to avoid mismatches across mirrors) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    {% endif %}
 
     <!-- Preload above-the-fold imagery to improve LCP (used on hero and features section) -->
     <link rel="preload" as="image" href="{% static 'images/hero/hero.webp' %}" imagesrcset="{% static 'images/hero/hero.webp' %}" fetchpriority="high">
@@ -127,13 +136,17 @@
                 document.fonts && document.fonts.ready && document.fonts.ready.then(setNavHeight);
             })();
         </script>
-    <!-- Bootstrap JavaScript (deferred to avoid render blocking) -->
+    <!-- Bootstrap JavaScript  -->
+    {% if USE_LOCAL_VENDOR %}
+    <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}" defer></script>
+    {% else %}
     <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"
         defer>
     </script>
+    {% endif %}
     {% block after_bootstrap_js %}{% endblock %}
 </body>
 

@@ -250,3 +250,10 @@ routines/management/commands/__init__.py
 **/tests.py
 **/test.py
 
+
+# User-requested: ignore vendor fetch command and optional context processor
+# Note: .gitignore only ignores UNTRACKED files. If these are already tracked,
+# run `git rm --cached <path>` once to stop tracking while keeping files locally.
+products/management/commands/fetch_vendor_assets.py
+config/context_processors.py
+

@@ -268,7 +268,8 @@ h2 {
     background-image: var(--site-hero-image);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center center;
+    /* Default focus a bit higher to avoid awkward crop */
+    background-position: center 35%;
     /* Use an overlay instead of expensive full-viewport filters */
     position: relative;
     display: flex;
@@ -293,11 +294,19 @@ h2 {
     background-image: var(--site-hero-image);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center center;
+    background-position: center 35%;
     /* Avoid full-surface filter on initial paint; use overlay below */
     position: relative;
     padding: 3rem 0;
     min-height: calc(100vh - 120px);
+}
+
+/* Mobile-first: tighten crop further to keep focus on hands/brand area */
+@media (max-width: 768px) {
+    .hero-header,
+    .site-hero-bg {
+        background-position: center 25%;
+    }
 }
 
 
