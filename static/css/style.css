@@ -425,6 +425,10 @@ h2 {
     grid-template-columns: 1fr 1fr;
     min-height: auto; /* shrink to content height to avoid large bottom gap */
     margin-top: 0.2rem; /* pull up slightly to tighten gap under hero */
+    /* Defer rendering until scrolled into view to save main-thread work */
+    content-visibility: auto;
+    /* Reserve space to avoid layout shift before it becomes visible */
+    contain-intrinsic-size: 600px 400px; /* width x height fallback */
 }
 
 .features-section .section-content {
@@ -446,7 +450,8 @@ h2 {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    filter: brightness(85%) saturate(110%) contrast(110%);
+    /* keep effects simple to reduce paint cost on low-end devices */
+    filter: brightness(90%);
 }
 
 .section-content h2 {
