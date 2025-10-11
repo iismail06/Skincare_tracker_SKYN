@@ -104,7 +104,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'config.context_processors.vendor_mode',
+                # Temporarily commenting out until we confirm it's working on Heroku
+                # 'config.context_processors.vendor_mode',
             ],
         },
     },
