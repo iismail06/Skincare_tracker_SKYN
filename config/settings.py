@@ -145,6 +145,14 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8004"
 ]
 
+# Allow extending CSRF trusted origins via environment (comma-separated)
+raw_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if raw_csrf_origins:
+    extra_origins = [o.strip() for o in raw_csrf_origins.split(',') if o.strip()]
+    # Deduplicate while preserving order
+    existing = set(CSRF_TRUSTED_ORIGINS)
+    CSRF_TRUSTED_ORIGINS += [o for o in extra_origins if o not in existing]
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -193,6 +201,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Production hardening (only enabled when DEBUG is False)
 if not DEBUG:
+    # Ensure Django recognizes HTTPS behind Heroku's reverse proxy
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # Serve compressed, hashed static files via WhiteNoise in production
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
     # Redirect HTTP to HTTPS
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True

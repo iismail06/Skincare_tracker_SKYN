@@ -1,0 +1,13 @@
+{
+  "name": "Skincare Tracker SKYN",
+  "description": "Django app for tracking skincare products and routines.",
+  "env": {
+    "SECRET_KEY": {"required": true},
+    "DEBUG": {"required": false, "value": "False"},
+    "ALLOWED_HOSTS": {"required": false},
+    "SECURE_HSTS_SECONDS": {"required": false, "value": "60"}
+  },
+  "scripts": {
+    "postdeploy": "python manage.py migrate --noinput"
+  }
+}
