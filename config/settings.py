@@ -50,25 +50,13 @@ DEBUG = str_to_bool(os.environ.get('DEBUG', 'False'))
 # Fail fast if SECRET_KEY is missing in production
 if not DEBUG and not SECRET_KEY:
     raise RuntimeError('The SECRET_KEY environment variable is required in production.')
-
 # ALLOWED_HOSTS can be provided as a comma-separated environment variable
-def _normalize_host(host: str) -> str:
-    # Remove scheme and any trailing slash if mistakenly provided
-    host = host.strip()
-    for scheme in ("https://", "http://"):
-        if host.startswith(scheme):
-            host = host[len(scheme):]
-    return host.rstrip('/')
 
 raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
 if raw_allowed_hosts:
-    ALLOWED_HOSTS = [
-        _normalize_host(h)
-        for h in raw_allowed_hosts.split(',')
-        if h and _normalize_host(h)
-    ]
+    ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(',') if h.strip()]
 else:
-    ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost']
+    ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -133,19 +121,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-# Prefer DATABASE_URL; fall back to local SQLite for development
-_db_from_env = dj_database_url.config(default=os.environ.get("DATABASE_URL"))
-if _db_from_env:
-    DATABASES = {
-        'default': _db_from_env
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+}
 
 # Use SQLite for tests (convert Path to string)
 if 'test' in sys.argv:
@@ -158,8 +142,6 @@ if 'test' in sys.argv:
 CSRF_TRUSTED_ORIGINS = [
     "https://*.codeinstitute-ide.net/",
     "https://*.herokuapp.com",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
     "http://127.0.0.1:8002",
     "http://localhost:8002",
     "http://127.0.0.1:8003",
@@ -167,16 +149,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8004",
     "http://localhost:8004"
 ]
-
-# Allow extending CSRF trusted origins via environment (comma-separated)
-raw_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS')
-if raw_csrf_origins:
-    def _norm_origin(o: str) -> str:
-        return o.strip().rstrip('/')
-    extra_origins = [_norm_origin(o) for o in raw_csrf_origins.split(',') if _norm_origin(o)]
-    # Deduplicate while preserving order
-    existing = set(CSRF_TRUSTED_ORIGINS)
-    CSRF_TRUSTED_ORIGINS += [o for o in extra_origins if o not in existing]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -226,12 +198,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Production hardening (only enabled when DEBUG is False)
 if not DEBUG:
-    # Ensure Django recognizes HTTPS behind Heroku's reverse proxy
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-    # Serve compressed, hashed static files via WhiteNoise in production
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
     # Redirect HTTP to HTTPS
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
