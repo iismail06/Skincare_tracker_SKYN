@@ -328,11 +328,11 @@ h2 {
     text-align: center;
     color: var(--background-color);
     max-width: 800px;
-    padding: 2rem;
+    padding: 0.5rem; /* Mobile-first */
 }
 
 .hero-title {
-    font-size: 3.5rem;
+    font-size: 1.5rem; /* Mobile-first */
     line-height: 1.2;
 }
 
@@ -362,7 +362,7 @@ h2 {
 }
 
 .hero-subtitle {
-    font-size: 1.3rem;
+    font-size: 1rem; /* Mobile-first */
     margin-bottom: 2rem;
     opacity: 0.9;
     font-weight: 300;
@@ -371,7 +371,7 @@ h2 {
 }
 
 .hero-description {
-    font-size: 1.1rem;
+    font-size: 0.9rem; /* Mobile-first */
     margin-bottom: 2.5rem;
     opacity: 0.8;
     line-height: 1.6;
@@ -398,7 +398,9 @@ h2 {
 
 .hero-buttons {
     display: flex;
-    gap: 1rem;
+    flex-direction: column; /* Mobile-first */
+    align-items: center;
+    gap: 0.8rem;
     justify-content: center;
     flex-wrap: wrap;
 }
@@ -1016,14 +1018,34 @@ h2 {
 }
 
 .product-actions {
-    display: flex;
+    /* Mobile-first: two-column grid for equal-sized buttons */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
     margin-top: 0.75rem;
 }
 
 .product-actions .btn {
-    flex: 1;
+    /* Equal sizing on small screens */
+    width: 100%;
+    min-width: 0;
+    padding: 0.65rem 0.75rem; /* unify heights on small */
+    font-size: 0.9rem;
+    line-height: 1.2;
     text-align: center;
+}
+
+@media (min-width: 641px) {
+    .product-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .product-actions .btn {
+        /* Restore desktop behavior */
+        width: auto;
+        padding: 1.4rem; /* match base .btn padding */
+        flex: 1;
+    }
 }
 
 /* Product card header with avatar, title/meta, and corner badges */
@@ -1482,10 +1504,17 @@ h2 {
     margin: 0 0 0.75rem 0;
 }
 
-/* Quick actions: segmented buttons with equal width */
+/* Quick actions: mobile-first stacked; inline at >=641px */
 .profile-container .profile-actions-row {
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 0.6rem;
+}
+@media (min-width: 641px) {
+    .profile-container .profile-actions-row {
+        display: flex;
+        justify-content: center;
+    }
 }
 
 
@@ -1528,11 +1557,17 @@ h2 {
 }
 
 .profile-container .form-actions-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile-first stack */
     gap: 0.6rem;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap; /* prevent stretching; let buttons size to content */
+}
+@media (min-width: 641px) {
+    .profile-container .form-actions-row {
+        display: flex;
+        flex-wrap: wrap; /* let buttons size to content */
+    }
 }
 
 /* Unified profile button style */
@@ -1587,8 +1622,18 @@ h2 {
 /* Product widgets: force three compact cards in a row on profile */
 .profile-container .product-widgets {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 1fr; /* Mobile-first */
     gap: 0.8rem;
+}
+@media (min-width: 600px) {
+    .profile-container .product-widgets {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (min-width: 1200px) {
+    .profile-container .product-widgets {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 .profile-container .product-widget {
     padding: 0.9rem !important;
@@ -1671,23 +1716,14 @@ body.dark-theme .custom-navbar .hamburger-line {
     background-color: var(--text);
 }
 
-body.dark-theme .form-control,
-body.dark-theme input[type="text"],
-body.dark-theme input[type="password"],
-body.dark-theme input[type="email"],
-body.dark-theme select {
-    background-color: var(--glass-bg-subtle) !important;
+body.dark-theme :is(.form-control, input, select, textarea) {
+    background: var(--glass-bg-subtle) !important;
     border: 1px solid var(--glass-border) !important;
     color: var(--text) !important;
 }
 
 /* Dark theme: product form controls */
-body.dark-theme .product-form :is(.form-control, input, select, textarea),
-body.dark-theme .form-container #category-browse {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
+/* product form controls inherit generic dark inputs */
 
 /* Dark theme: routine page alias */
 body.dark-theme .add-routine-page :is(.form-control, input[type="text"], select, textarea),
@@ -1698,11 +1734,7 @@ body.dark-theme .form-group :is(input, select) {
 }
 
 /* Dark theme: questionnaire/auth controls */
-body.dark-theme .auth-container form :is(.form-control, input, select, textarea) {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
+/* auth container form controls inherit generic dark inputs */
 /* stronger glass contrast on key containers */
 body.dark-theme .custom-navbar,
 body.dark-theme .form-card,
@@ -1750,7 +1782,6 @@ body.dark-theme .btn-primary {
 body.dark-theme .btn-secondary {
     background: var(--glass-bg) !important;
     border-color: var(--glass-border) !important;
-    color: #fff !important;
 }
 
 /*  make danger buttons readable on dark bg */
@@ -1767,11 +1798,7 @@ body.dark-theme .btn-success {
     border-color: var(--success-color) !important;
 }
 
-/* Dark mode: Button hover states */
-body.dark-theme .btn:hover,
-body.dark-theme button:hover {
-    color: #fff !important;
-}
+/* Dark mode: hover states inherit base color; no extra overrides needed */
 
 /* Dark mode: Edit, View, Delete buttons specifically */
 body.dark-theme .edit-btn,
@@ -1781,12 +1808,7 @@ body.dark-theme .cancel-btn {
     color: #fff !important;
 }
 
-/* Dark mode: Form action buttons */
-body.dark-theme .form-actions .btn,
-body.dark-theme .profile-actions .btn,
-body.dark-theme .routine-actions .btn {
-    color: #fff !important;
-}
+/* Form action buttons inherit .btn styles in dark mode */
 
 /* Dark mode: Inline dismiss buttons */
 body.dark-theme .inline-dismiss {
@@ -1872,13 +1894,7 @@ body.dark-theme .form-card label {
     color: var(--text) !important;
 }
 
-body.dark-theme .form-card input[type="text"],
-body.dark-theme .form-card select,
-body.dark-theme .form-card textarea {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
+/* Form inputs inside .form-card inherit generic dark inputs */
 
 /* Dropdown input wrapper */
 body.dark-theme .dropdown-input-wrap input {
@@ -1947,23 +1963,19 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
 /* ==========================================================================
    18. RESPONSIVE DESIGN - ALL MEDIA QUERIES
    ========================================================================== */
-/* product page Styles */
+/*
+    Mobile-first responsive strategy
+    Breakpoints (min-width unless stated):
+        - 480px   (small mobile adjustments)
+        - 600px   (small tablet / large mobile)
+        - 640px   (compact tablets)
+        - 768px   (tablet)
+        - 900px   (wider tablets)
+        - 992px   (desktop)
+        - 1200px  (large desktop)
+    Note: Navigation currently retains some max-width rules for safer incremental migration.
+*/
 
-/* Ensure equal-sized action buttons on small screens */
-@media (max-width: 640px) {
-    .product-actions {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    .product-actions .btn {
-        width: 100%;
-        min-width: 0;
-        padding: 0.65rem 0.75rem; /* unify heights */
-        font-size: 0.9rem;       /* keep consistent text sizing */
-        line-height: 1.2;
-    }
-}
 
 /* Mobile Navigation Styles */
 @media (max-width: 768px) {
@@ -2041,74 +2053,22 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
         padding: 0.3rem 0.6rem;
     }
 
-}
-/* Ensure focus ring is visible on light mobile overlay */
-@media (max-width: 768px) {
+    /* Ensure focus ring is visible on light mobile overlay */
     .custom-navbar .nav-links a:focus-visible {
         box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.4);
     }
 }
 
-/* Profile: responsive fallback: 2 cols then 1 col */
-@media (max-width: 900px) {
-  .profile-container .product-widgets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 600px) {
-  .profile-container .product-widgets { grid-template-columns: 1fr; }
-  .profile-container section[aria-label="At a glance"] .streak-card { position: static; margin: 0.5rem auto 0; }
-}
-/* Make room for 4 widgets in a row on large screens */
-@media (min-width: 1200px) {
-    .profile-container .product-widgets { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
+/* profile widgets grid is now mobile-first; removed older width-specific blocks */
 
-/* Profile: mobile-friendly buttons and layout */
+/* Profile: mobile-friendly header layout (buttons now mobile-first at base) */
 @media (max-width: 640px) {
-    /* Stack header content */
     .profile-container .profile-header-row {
         grid-template-columns: 1fr;
         gap: 0.75rem;
     }
-
-    /* Make quick action buttons wrap and fill width nicely */
-    .profile-container .profile-actions-row {
-        display: grid;
-        grid-template-columns: 1fr; /* one per row by default */
-        gap: 0.5rem;
-    }
-    .profile-container .profile-actions-row .btn,
-    .profile-container .profile-actions-row .btn-profile {
-        width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-    }
-
-    /* Form action buttons in journal: stack full width */
-    .profile-container .form-actions-row {
-        grid-template-columns: 1fr;
-    }
-    .profile-container .form-actions-row .btn,
-    .profile-container .form-actions-row .btn-profile {
-        width: 100%;
-        min-width: 0;
-    }
 }
 
-/* Ensure equal-sized action buttons on small screens */
-@media (max-width: 640px) {
-    .product-actions {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    .product-actions .btn {
-        width: 100%;
-        min-width: 0;
-        padding: 0.65rem 0.75rem; /* unify heights */
-        font-size: 0.9rem;       /* keep consistent text sizing */
-        line-height: 1.2;
-    }
-}
 
 @media (max-width: 480px) {
     .custom-navbar .nav-container {
@@ -2194,17 +2154,9 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
 
 /* Large Desktop (1200px and up) */
 @media only screen and (min-width: 1200px) {
-    .hero-title {
-        font-size: 3.5rem;
-    }
-    
-    .hero-content {
-        padding: 4rem;
-    }
-    
-    .features-section .section-content {
-        padding: 6rem;
-    }
+    .hero-title { font-size: 3.5rem; }
+    .hero-content { padding: 4rem; }
+    .features-section .section-content { padding: 6rem; }
 }
 
 /* Tablet (max-width: 768px) */
@@ -2243,36 +2195,12 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
         text-align: center;
     }
     
-    .product-actions {
-        flex-direction: column;
-    }
+    /* product-actions layout set at <=640px */
 }
 
 /* Mobile (max-width: 600px) */
 @media (max-width: 600px) {
-    
-    /* Hero Section */
-    .hero-title {
-        font-size: 1.5rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-    
-    .hero-description {
-        font-size: 0.9rem;
-    }
-    
-    .hero-content {
-        padding: 0.5rem;
-    }
-    
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.8rem;
-    }
+    /* Hero: base styles already set for mobile-first */
     
     .btn-primary, .btn-secondary {
         width: 100%;
@@ -2318,10 +2246,6 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
     .form-card {
         padding: 1.5rem;
         margin-bottom: 2rem;
-    }
-    
-    .form-actions {
-        flex-direction: column-reverse;
     }
     
     .form-actions .btn {
