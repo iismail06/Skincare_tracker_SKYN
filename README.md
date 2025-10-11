@@ -361,6 +361,34 @@ SKYN was tested across the following browsers to ensure consistent performance:
 | Routine progress not saving | Missing field in form submission | Added correct form field mapping |
 | Calendar not updating | JavaScript event not triggering | Added event listener for date selection |
 | Dark mode flicker | CSS variable loading late | Cached theme preference in local storage |
+| Favorite checkbox not clearly clickable | Native checkbox too subtle; label rendered on a separate line | Inlined the label and made the whole text clickable; visually hid the box and added a star + accent color when checked |
+
+#### UX Note: Favorite toggle (checkbox box removed)
+
+Context: On the Product form, users reported that clicking “Mark as Favorite” didn’t seem to do anything. Functionally it worked, but the tiny native checkbox and stacked layout made the change easy to miss.
+
+Investigation: There was no overlay or JavaScript error preventing clicks; the checkbox toggled programmatically. The problem was visual: the native box was small and the layout put the label and box on separate lines, so users thought it wasn’t working.
+
+Decision: Given limited time, rather than deep-dive into all possible CSS/layout edge cases, we implemented a pragmatic fix:
+
+- Remove the visible box and make the entire “Mark as Favorite” text clickable.
+- Keep the native input for accessibility (it’s just visually hidden).
+- Add clear visual feedback (star + accent color + bold) when checked.
+
+This change improved perceived responsiveness without sacrificing semantics or accessibility.
+
+Why this is better:
+
+- Larger hit area: Clicking the text toggles the state, so it’s easier on touch and desktop.
+- Clear feedback: The star + color change are more noticeable than the tiny native tick.
+- Accessibility preserved: The native input is still present (hidden visually), labeled, and focusable.
+
+Testing steps:
+
+1. Go to Add/Edit Product.
+2. Click or tap “Mark as Favorite” text — it toggles on/off.
+3. Tab to the control — focus outline is visible on the text.
+4. Confirm form save persists the favorite flag.
 
 ### Summary
 
