@@ -45,7 +45,7 @@ def str_to_bool(val):
     return str(val).strip().lower() in ('1', 'true', 'yes', 'on')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str_to_bool(os.environ.get('DEBUG', 'False'))
+DEBUG = False
 
 # Fail fast if SECRET_KEY is missing in production
 if not DEBUG and not SECRET_KEY:
@@ -56,7 +56,7 @@ raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
 if raw_allowed_hosts:
     ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(',') if h.strip()]
 else:
-    ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
+    ALLOWED_HOSTS = ['skincare-tracker-skny-97af0ca4b109.herokuapp.com', '.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -209,3 +209,8 @@ if not DEBUG:
     # Other recommended settings
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+
+python<br>STATIC_ROOT = BASE_DIR / 'staticfiles'<br>STATIC_URL = '/static/'<br>
+and ensure WhiteNoise is enabled:
+python<br>MIDDLEWARE = [<br> 'django.middleware.security.SecurityMiddleware',<br> 'whitenoise.middleware.WhiteNoiseMiddleware',<br> ...<br>]
