@@ -1,56 +1,98 @@
 
 
 /* ==========================================================================
-   UTILITY FUNCTIONS
-   Common utility functions used throughout the application
+   UTILITY FUNCTIONS - Optimized for performance
    ========================================================================== */
 
+// Use a single toast element for all notifications to reduce DOM manipulation
+let toastQueue = [];
+let activeToast = null;
+let toastContainer = null;
+
 /**
- * Helper to read CSS custom properties from the document root
+ * Helper to read CSS custom properties from the document root - with caching
  * @param {string} name - The name of the CSS variable (including --prefix)
  * @returns {string|null} The value of the CSS variable, or null if not found
  */
+const cssVarCache = {};
 function getCssVar(name) {
+  if (cssVarCache[name] !== undefined) return cssVarCache[name];
+  
   try {
     const val = getComputedStyle(document.documentElement).getPropertyValue(name);
-    return val ? val.trim().replace(/^"|"$/g, '') : null;
+    cssVarCache[name] = val ? val.trim().replace(/^"|"$/g, '') : null;
+    return cssVarCache[name];
   } catch (e) {
+    cssVarCache[name] = null;
     return null;
   }
 }
 
 /**
- * Shows a success message toast notification
- * @param {string} message - The message to display
+ * Initialize toast container once on page load
  */
-function showSuccessMessage(message) {
-  // Create a simple toast notification
-  const toast = document.createElement('div');
-  toast.className = 'toast success';
-  toast.textContent = message;
-  toast.style.cssText = `
+function initToastContainer() {
+  if (toastContainer) return;
+  
+  toastContainer = document.createElement('div');
+  toastContainer.className = 'toast-container';
+  toastContainer.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    background: #28a745;
+    z-index: 1001;
+  `;
+  document.body.appendChild(toastContainer);
+}
+
+/**
+ * Process toast queue - shows next toast if available
+ */
+function processToastQueue() {
+  if (activeToast || toastQueue.length === 0) return;
+  
+  const { message, type } = toastQueue.shift();
+  
+  activeToast = document.createElement('div');
+  activeToast.className = `toast ${type}`;
+  activeToast.textContent = message;
+  activeToast.style.cssText = `
+    background: ${type === 'success' ? '#28a745' : '#dc3545'};
     color: white;
     padding: 1rem;
     border-radius: 4px;
-    z-index: 1001;
     opacity: 0;
     transition: opacity 0.3s ease;
   `;
   
-  document.body.appendChild(toast);
+  toastContainer.appendChild(activeToast);
   
-  // Fade in
-  setTimeout(() => toast.style.opacity = '1', 10);
+  // Use requestAnimationFrame for smoother animations
+  requestAnimationFrame(() => {
+    // Force reflow
+    activeToast.offsetHeight;
+    activeToast.style.opacity = '1';
+  });
   
-  // Remove after 3 seconds
+  // Remove after 3 seconds with cleanup
   setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => document.body.removeChild(toast), 300);
+    activeToast.style.opacity = '0';
+    setTimeout(() => {
+      toastContainer.removeChild(activeToast);
+      activeToast = null;
+      processToastQueue();  // Process next toast if any
+    }, 300);
   }, 3000);
+}
+
+/**
+ * Shows a success message toast notification - optimized version
+ * @param {string} message - The message to display
+ */
+function showSuccessMessage(message) {
+  initToastContainer();
+  toastQueue.push({ message, type: 'success' });
+  if (!activeToast) processToastQueue();
 }
 
 /**
