@@ -44,6 +44,8 @@
     /* Hero imagery (shared across pages) */
     /* Use local static asset so it’s fingerprinted and served by Django/WhiteNoise */
     --site-hero-image: url("../images/hero/hero.webp");
+    /* Features imagery (home page features section) */
+    --features-image: url("../images/features/features.webp");
 
     /* Navbar glass controls (light mode defaults) */
     --navbar-bg-rgb: 0, 0, 0;  /* neutral dark glass in light mode */
@@ -420,159 +422,32 @@ h2 {
 }
 
 /* ==========================================================================
-   7. FEATURES SECTION
+   7. FEATURES SECTION on homepage
    ========================================================================== */
 
 .features-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 80vh;
-    margin-top: 0;
-}
-
-.profile-info {
-    margin-bottom: 0.6rem;
-    line-height: 1.45;
-}
-.profile-actions {
-    margin-top: 0.4rem;
-    margin-bottom: 0.9rem;
-}
-.profile-routines {
-    margin-top: 1.4rem;
-}
-
-.profile-container {
-    max-width: 760px; 
-    margin: 2rem auto; /* center container with top/bottom margin */
-    padding: 1.5rem;
-    background: transparent !important;
-    border: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-radius: 12px;
-    box-shadow: none !important;
-    /* Prevent overflow issues */
-    box-sizing: border-box;
-    width: calc(100% - 2rem); /* Account for page margins */
-}
-
-.profile-actions {
-    display: flex;
-    gap: 0.6rem;
-    justify-content: center; /* center action buttons */
-    margin-bottom: 1rem; /* Add space before routines section */
-}
-
-.profile-actions .btn {
-    padding: 0.5rem 0.9rem; /* slightly smaller */
-    font-size: 0.95rem;
-}
-
-.profile-routines .form-card--wide,
-.form-card {
-    max-width: 100%; /* Use full width of parent container */
-    margin: 0.9rem 0 0 0; /* Remove auto margins, use parent centering */
-}
-
-.form-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.form-actions .btn {
-    min-width: 140px;
-    padding: 0.8rem 1.8rem;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    /* Use same glass styling as .btn-primary */
-    background: transparent;
-    color: var(--accent-color-text) !important;
-    border: 1.5px solid var(--accent-color-bg);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
-}
-
-.form-actions .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-    background: rgba(var(--accent-color-strong-rgb), 0.12);
-    text-decoration: none;
-    color: var(--accent-color-text) !important;
-}
-
-.form-actions .btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--accent-color-strong-rgb), 0.25);
-}
-
-/* Keep inline-success compact */
-.inline-success {
-    padding: .6rem .75rem;
-    border-radius: 6px;
-}
-
-/* Inline success block used on profile when a routine is added */
-.inline-success {
-    background: rgba(255,255,255,0.85); /* transparent white */
-    border-left: 4px solid var(--primary);
-    color: var(--secondary-color-darker);
-    padding: 0.75rem;
-    border-radius: 6px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-}
-
-.inline-success-bottom {
-    margin-top: 3rem;
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-.inline-success .muted {
-    color: var(--gray);
-    font-size: 0.9rem;
-}
-.inline-success .inline-dismiss {
-    background: transparent;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    color: var(--secondary-color-darker);
-    padding: 0.25rem 0.5rem;
-}
-.inline-success .inline-dismiss:hover {
-    color: var(--primary);
+    min-height: auto; /* shrink to content height to avoid large bottom gap */
+    margin-top: 0.2rem; /* pull up slightly to tighten gap under hero */
 }
 
 .features-section .section-content {
     background: var(--background-color);
-    height: 80vh;
-    padding: 10vw;
-    overflow-y: auto;
+    height: auto;
+    padding: 0.8rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .features-section .section-image {
-    height: 80vh;
+    height: auto; /* match the grid row height determined by content */
+    align-self: stretch; /* ensure it stretches to row height */
+    min-height: 1px; /* prevent collapse in some browsers */
     width: 100%;
     position: relative;
-    background-image: url(https://images.pexels.com/photos/7479659/pexels-photo-7479659.jpeg);
+    background-image: url("../images/features/features.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -2384,13 +2259,12 @@ body.dark-theme .badge.success {
     /* Features */
     .features-section {
         grid-template-columns: 1fr;
-        margin-top: 1rem;
+        margin-top: 0.25rem; /* smaller gap under hero on mobile */
     }
     
-    .features-section .section-content,
-    .features-section .section-image {
-        height: 50vh;
-    }
+    /* Allow natural heights on mobile; page will scroll as needed */
+    .features-section .section-image { height: auto; }
+    .features-section .section-content { height: auto; padding: 0.8rem; }
     
     .features-section .section-content {
         padding: 5vw;
