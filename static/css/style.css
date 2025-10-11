@@ -2,15 +2,8 @@
 
 /* ==========================================================================
    1. CSS VARIABLES & ROOT
-/* ==========================================================================
-   11. ROUTINE STEPS & CHECKLIST ITEMS
    ========================================================================== */
-.step-item {
-    --secondary-color-darker-rgb: 8, 6, 4;        /* RGB helper for translucent brand tints */
-    --accent-color: #969a8b;                   /* primary accent hue (buttons, highlights, outlines) */
-    --accent-color-rgb: 150, 154, 139;           /* RGB helper for accent overlays/shadows */
-    --accent-color-lighter: #a0a68f;           /* lighter accent (hover/focus backgrounds) */
-
+:root {
     /* Accent tokens (used across buttons, links, and badges) */
     --accent-color-text: var(--secondary-color-darker);         /* text color on accent backgrounds (readable contrast) */
     --accent-color-bg: var(--accent-color);                     /* accent background for buttons/badges */
@@ -722,6 +715,12 @@ h2 {
 /* ==========================================================================
     11. ADD ROUTINE FORM STYLES (includes step items)
     ========================================================================== */
+    .step-item {
+    --secondary-color-darker-rgb: 8, 6, 4;        /* RGB helper for translucent brand tints */
+    --accent-color: #ffffff;                      /* primary accent hue changed to white */
+    --accent-color-rgb: 255, 255, 255;            /* RGB helper for accent overlays/shadows (white) */
+    --accent-color-lighter: #ffffff;              /* lighter accent also white */
+    }
 
 /* Scope base container to the Add Routine page to avoid conflicts with Product forms */
 .add-routine-page.form-container,
@@ -848,6 +847,12 @@ h2 {
     cursor: pointer;
     accent-color: var(--accent-color);
     flex-shrink: 0;
+}
+
+/* Make Step inputs and Product selects the same width/height */
+.add-routine-page .step-item :is(input[type="text"], select) {
+    width: 100%;
+    min-height: 48px;
 }
 
 

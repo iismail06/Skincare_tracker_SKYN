@@ -390,6 +390,48 @@ Testing steps:
 3. Tab to the control — focus outline is visible on the text.
 4. Confirm form save persists the favorite flag.
 
+#### Known limitation: 10‑step Routine Builder for non‑daily categories
+
+Context: The Add Routine form (templates/routines/add_routine.html) is designed with up to 10 step slots and matching optional product links (routines/forms.py defines step1–step10 and product1–product10). This works well for daily AM/PM skincare flows where a longer sequence is common.
+
+What you’ll see:
+
+- For some categories, you may only need a few steps, so many of the 10 slots will remain blank.
+- The suggestions pool can be smaller for these categories, so the product dropdowns may feel sparse.
+
+Affected routine types:
+
+- Body care
+- Hair care
+- Special treatment (one‑off or occasional routines)
+- Seasonal treatment
+- Monthly routines
+
+Impact on users:
+
+- The form can look a bit “empty,” but this is not an error. You can submit with only the steps you need; blanks are expected and supported.
+- Tracking, dashboard display, and completion logic still work as long as at least one step is provided (the form enforces “at least one step”).
+
+Why it happens:
+
+- The UI exposes a fixed 10‑step layout to keep the form simple and consistent across routine types. Some categories naturally have fewer actionable steps and fewer suggested products, so you won’t fill all slots.
+
+Recommended workarounds (today):
+
+- Enter only the steps you actually use; leave the rest blank.
+- Prefer concise routines for these types (e.g., 2–5 steps for hair/body/special/seasonal/monthly).
+- Link a product only when it helps; steps can be tracked without a product selection.
+- If you need more context, include details in the step name (e.g., “Scalp serum (monthly)”).
+
+Planned improvements (backlog):
+
+- Dynamic step counts per routine type (e.g., default to 3–5 for hair/body/special/seasonal/monthly).
+- Progressive disclosure (show 3 steps by default with “Add another step” up to a sensible cap).
+- Category‑specific templates/presets and better product suggestions for non‑daily flows.
+- Optional collapse of unused step fields to reduce visual noise.
+
+Status: Documented as a known limitation. We’re keeping the current builder because it works well for AM/PM and weekly routines; the above improvements will make non‑daily categories feel lighter while preserving consistency.
+
 ### Summary
 
 All features passed testing successfully with no critical issues remaining. The site performs well across devices, browsers, and screen sizes.
