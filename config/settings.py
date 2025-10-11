@@ -56,7 +56,7 @@ raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
 if raw_allowed_hosts:
     ALLOWED_HOSTS = [h.strip() for h in raw_allowed_hosts.split(',') if h.strip()]
 else:
-    ALLOWED_HOSTS = ['skincare-tracker-skny-97af0ca4b109.herokuapp.com', '.herokuapp.com', '127.0.0.1']
+    ALLOWED_HOSTS = ['skincare-tracker-skny-97af0ca4b109.herokuapp.com', 'www.skincare-tracker-skny-97af0ca4b109.herokuapp.com', '.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -104,6 +104,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'config.context_processors.vendor_mode',
             ],
         },
     },
@@ -191,6 +192,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+# Enable WhiteNoise compression and caching
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -198,15 +202,51 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Production hardening (only enabled when DEBUG is False)
 if not DEBUG:
+    # Temporarily disabled to troubleshoot 500 error
     # Redirect HTTP to HTTPS
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = False  # Changed to False for troubleshooting
+    SESSION_COOKIE_SECURE = False  # Changed to False for troubleshooting
+    CSRF_COOKIE_SECURE = False  # Changed to False for troubleshooting
     # HSTS (short value to start; increase after testing)
-    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 60))
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 60))
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # SECURE_HSTS_PRELOAD = True
     # Other recommended settings
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
 
