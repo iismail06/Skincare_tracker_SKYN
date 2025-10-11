@@ -210,7 +210,3 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-
-python<br>STATIC_ROOT = BASE_DIR / 'staticfiles'<br>STATIC_URL = '/static/'<br>
-and ensure WhiteNoise is enabled:
-python<br>MIDDLEWARE = [<br> 'django.middleware.security.SecurityMiddleware',<br> 'whitenoise.middleware.WhiteNoiseMiddleware',<br> ...<br>]
