@@ -2,7 +2,7 @@
 
 SKYN is a web-based skincare routine tracker built with Django. It lets users build morning/evening routines, manage products, mark completion, and visualize progress over time. It also includes a small REST API and product import from Open Beauty Facts.
 
-- Live Demo: your-deployed-url-here
+- Live Demo: [https://skincare-tracker-skny-97af0ca4b109.herokuapp.com/](https://skincare-tracker-skny-97af0ca4b109.herokuapp.com/)
 - Project Board: [https://github.com/users/iismail06/projects/5/views/1](https://github.com/users/iismail06/projects/5/views/1)
 
 ---
@@ -330,17 +330,31 @@ WhiteNoise serves static files automatically in production.
 
 ### Code Validation
 
-Suggested validators and linters to run during development:
+All code in the project was validated using appropriate validation tools:
 
-| Tool | Area |
-|------|------|
-| W3C HTML Validator | HTML templates |
-| W3C CSS Validator | CSS files |
-| flake8 | Python code style |
-| ruff or pylint (optional) | Python static checks |
-| JSHint/ESLint | JavaScript |
+#### HTML Validation
 
-Add actual results/screenshots here when you run them.
+HTML templates were validated using the [W3C Markup Validation Service](https://validator.w3.org/).
+
+| Page | Status | Issues Found | Resolution |
+|------|--------|--------------|------------|
+| Base Template | ❌ → ✅ | Missing crossorigin attribute on preconnect links, trailing slashes on void elements | Added crossorigin attribute, fixed void element syntax |
+| Home Page | ❌ → ✅ | Trailing slashes on img elements, improper attribute values | Removed trailing slashes, corrected attribute values |
+| Product Form | ❌ → ✅ | Incorrect use of placeholder attribute on date inputs, aria-describedby attributes without targets | Fixed attribute usage, connected aria attributes to proper targets |
+| Add Routine | ❌ → ✅ | Value of 'for' attributes not matching ID of form controls, improper label associations | Connected labels to form controls with proper IDs |
+| Profile Questionnaire | ❌ → ✅ | aria-describedby attributes without corresponding elements, incorrect form structure | Added proper help text elements, fixed form structure |
+| My Routines | ❌ → ✅ | Possible misuse of aria-label attributes, empty action attributes on forms | Fixed ARIA attributes, added proper action URLs to forms |
+| Cookie Consent | ❌ → ✅ | Incorrectly injected HTML via middleware | Fixed HTML structure in middleware |
+
+For detailed information and screenshots of the validation results, see the [HTML validation documentation](documentation/validation/html/README.md).
+
+#### Other Validators
+
+| Tool | Area | Status |
+|------|------|--------|
+| W3C CSS Validator | CSS files | ✅ |
+| flake8 | Python code style | ✅ |
+| JSHint | JavaScript | ✅ |
 
 ### Lighthouse Testing
 
