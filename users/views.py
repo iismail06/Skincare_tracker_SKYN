@@ -152,4 +152,19 @@ def profile_view(request):
 
     recent_products = Product.objects.filter(
         user=request.user
-    ).
+    ).order_by('-created_at')[:5]
+
+    context = {
+        'profile': profile,
+        'current_streak': current_streak,
+        'top_rated': top_rated,
+        'recent_products': recent_products,
+        'routine_counts': routine_counts,
+    }
+    return render(request, 'users/profile.html', context)
+
+
+@login_required
+def profile_edit(request):
+    """Temporary placeholder view to satisfy URL mapping; redirects to profile."""
+    return redirect('users:profile')
