@@ -43,12 +43,21 @@ class SecurityHeadersMiddleware:
     
     def process_response(self, request, response):
         """Inject cookie consent banner code directly into HTML responses."""
-        content = response.content.decode('utf-8')
-        
+        # Only process HTML responses
+        content_type = response.get('Content-Type', '')
+        if not content_type.startswith('text/html'):
+            return response
+            
+        try:
+            content = response.content.decode('utf-8')
+        except (UnicodeDecodeError, AttributeError):
+            # If content cannot be decoded as UTF-8 or has no decode method, return original response
+            return response
+            
         # Don't inject if already present
         if 'class="cookie-consent"' in content:
-            return
-        
+            return response
+            
         # CSS for cookie consent banner
         cookie_css = """
         .cookie-consent {
@@ -114,3 +123,5 @@ class SecurityHeadersMiddleware:
             # Update content-length header
             if 'Content-Length' in response:
                 response['Content-Length'] = str(len(response.content))
+                
+        return response
