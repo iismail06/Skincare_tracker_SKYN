@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Custom widget files
+users/widgets.py
+
 # C extensions
 *.so
 

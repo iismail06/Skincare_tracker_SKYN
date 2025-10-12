@@ -109,6 +109,8 @@ class UserUpdateForm(forms.ModelForm):
 
 class ProfileDetailsForm(forms.ModelForm):
     """Profile edit form that includes age fields plus questionnaire fields"""
+    
+    from .widgets import AccessibleTextarea, AccessibleCheckbox
 
     class Meta:
         model = UserProfile
@@ -130,8 +132,9 @@ class ProfileDetailsForm(forms.ModelForm):
             'main_concern': forms.Select(attrs={'class': 'form-control'}),
             'current_routine': forms.Select(attrs={'class': 'form-control'}),
             'main_goal': forms.Select(attrs={'class': 'form-control'}),
-            'skin_concerns': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            'additional_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'skin_concerns': AccessibleTextarea(attrs={'class': 'form-control', 'rows': 2}),
+            'additional_notes': AccessibleTextarea(attrs={'class': 'form-control', 'rows': 3}),
+            'prefers_natural': AccessibleCheckbox(),
         }
         labels = {
             'date_of_birth': 'Date of birth (optional)',

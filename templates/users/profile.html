@@ -39,7 +39,8 @@
             <p>You haven’t set up your profile yet.</p>
           {% endif %}
         </div>
-        <div class="card streak-card" aria-label="Current streak">
+        <div class="card streak-card">
+          <h3 class="sr-only">Current streak</h3>
           <div>
             <span class="streak-icon">🔥</span>
             <strong>{{ current_streak|default:0 }}</strong> day{{ current_streak|pluralize }} streak
@@ -141,7 +142,7 @@
     <!-- Journal section -->
     <section class="dashboard-section u-mt-lg" aria-label="Journal">
       <h2 class="section-title">Journal</h2>
-      <form method="post" action="" style="margin-top: 1rem;">
+      <form method="post" action="{% url 'users:profile' %}" style="margin-top: 1rem;">
         {% csrf_token %}
         <input type="hidden" name="action" value="save_notes">
         <div class="form-group">
