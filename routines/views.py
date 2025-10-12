@@ -1,746 +1,721 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.contrib import messages
-from django.http import JsonResponse
-from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
+from datetime import date, timedelta
+import calendar
 import json
-from .forms import RoutineCreateForm
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from users.models import UserProfile
-from .models import Routine, RoutineStep, DailyCompletion
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.http import require_http_methods
+
+from .forms import RoutineCreateForm
+from .models import DailyCompletion, Routine, RoutineStep
 from products.models import Product
-from datetime import date
+from users.models import UserProfile
 
 
 @login_required
 def dashboard(request):
-    weekly_routine = Routine.objects.filter(user=request.user, routine_type='weekly').first()
-    monthly_routine = Routine.objects.filter(user=request.user, routine_type='monthly').first()
-    hair_routine = Routine.objects.filter(user=request.user, routine_type='hair').first()
-    body_routine = Routine.objects.filter(user=request.user, routine_type='body').first()
-    special_routine = Routine.objects.filter(user=request.user, routine_type='special').first()
-    seasonal_routine = Routine.objects.filter(user=request.user, routine_type='seasonal').first()
-    """
-    Dashboard view that shows user's routines with real progress tracking.
-    
-    This function calculates:
-    - Today's completion percentage
-    - Current streak of consecutive completed days
-    - This week's daily progress
-    - Calendar data for the month
-    """
+    """Dashboard: routines, progress, calendar and products."""
+    weekly_routine = Routine.objects.filter(
+        user=request.user, routine_type="weekly"
+    ).first()
+    monthly_routine = Routine.objects.filter(
+        user=request.user, routine_type="monthly"
+    ).first()
+    hair_routine = Routine.objects.filter(
+        user=request.user, routine_type="hair"
+    ).first()
+    body_routine = Routine.objects.filter(
+        user=request.user, routine_type="body"
+    ).first()
+    special_routine = Routine.objects.filter(
+        user=request.user, routine_type="special"
+    ).first()
+    seasonal_routine = Routine.objects.filter(
+        user=request.user, routine_type="seasonal"
+    ).first()
 
-    import calendar
-    from datetime import date, timedelta
-    import json
-
-    # Get current date information
     today = date.today()
     year = today.year
     month = today.month
-    
-    # Calculate the first and last day of current month for calendar
+
     start_date = date(year, month, 1)
     last_day = calendar.monthrange(year, month)[1]
     end_date = date(year, month, last_day)
 
-    # Get user's routines (morning and evening) with error handling
     try:
-        morning_routines = Routine.objects.filter(user=request.user, routine_type='morning')
-        evening_routines = Routine.objects.filter(user=request.user, routine_type='evening')
-        morning_routine = morning_routines.first()  # Get the first (should be only one)
-        evening_routine = evening_routines.first()  # Get the first (should be only one)
-
-        # Get all completion records for this month (for calendar display)
-        completions = DailyCompletion.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
-    except Exception as e:
-        messages.error(request, "We're having trouble loading your routines. Please try refreshing the page.")
-        # Set safe defaults so the page still loads
+        morning_routine = Routine.objects.filter(
+            user=request.user, routine_type="morning"
+        ).first()
+        evening_routine = Routine.objects.filter(
+            user=request.user, routine_type="evening"
+        ).first()
+        completions = DailyCompletion.objects.filter(
+            user=request.user, date__gte=start_date, date__lte=end_date
+        )
+    except Exception:
+        messages.error(
+            request,
+            "We're having trouble loading your routines. Try refreshing.",
+        )
         morning_routine = None
         evening_routine = None
         completions = DailyCompletion.objects.none()
 
-    # === CALCULATE TODAY'S PROGRESS ===
-    today_completions = DailyCompletion.objects.filter(user=request.user, date=today)
+    # === Today's progress ===
+    today_completions = DailyCompletion.objects.filter(
+        user=request.user, date=today
+    )
     total_steps_today = 0
     completed_steps_today = 0
-    
-    # Count morning routine steps
+
     if morning_routine:
         morning_steps = morning_routine.steps.count()
         total_steps_today += morning_steps
-        completed_morning = today_completions.filter(routine_step__routine=morning_routine, completed=True).count()
+        completed_morning = today_completions.filter(
+            routine_step__routine=morning_routine, completed=True
+        ).count()
         completed_steps_today += completed_morning
-    
-    # Count evening routine steps
+
     if evening_routine:
         evening_steps = evening_routine.steps.count()
         total_steps_today += evening_steps
-        completed_evening = today_completions.filter(routine_step__routine=evening_routine, completed=True).count()
+        completed_evening = today_completions.filter(
+            routine_step__routine=evening_routine, completed=True
+        ).count()
         completed_steps_today += completed_evening
 
-    # Calculate percentage (avoid division by zero)
     today_progress = 0
     if total_steps_today > 0:
-        today_progress = int((completed_steps_today / total_steps_today) * 100)
+        today_progress = int(
+            (completed_steps_today / total_steps_today) * 100
+        )
 
-    # === CALCULATE CURRENT STREAK ===
+    # === Current streak ===
     current_streak = 0
     check_date = today
-    
-    # Keep checking previous days until we find an incomplete day
     while True:
-        day_completions = DailyCompletion.objects.filter(user=request.user, date=check_date)
+        day_completions = DailyCompletion.objects.filter(
+            user=request.user, date=check_date
+        )
         daily_total = 0
         daily_completed = 0
-        
-        # Count total and completed steps for this day
+
         if morning_routine:
             daily_total += morning_routine.steps.count()
-            daily_completed += day_completions.filter(routine_step__routine=morning_routine, completed=True).count()
+            daily_completed += day_completions.filter(
+                routine_step__routine=morning_routine, completed=True
+            ).count()
         if evening_routine:
             daily_total += evening_routine.steps.count()
-            daily_completed += day_completions.filter(routine_step__routine=evening_routine, completed=True).count()
-        
-        # If this day was fully completed, add to streak and check previous day
+            daily_completed += day_completions.filter(
+                routine_step__routine=evening_routine, completed=True
+            ).count()
+
         if daily_total > 0 and daily_completed == daily_total:
             current_streak += 1
             check_date -= timedelta(days=1)
         else:
-            # Streak broken, stop counting
             break
 
-    # === CALCULATE MILESTONE MESSAGES ===
+    # === Milestones ===
     milestone_message = None
     milestone_emoji = None
-    
-    # Define milestone thresholds and messages
     milestones = [
-        (30, " Fantastic! One month streak!", "🎯"),
-        (14, " Two weeks strong! Keep it up!", "🔥"),
-        (7, " One week streak! You're on fire!", "🚀"),
-        (3, " Great start! Building habits!", "👏"),
-        (1, " First day completed! Welcome!", "🎊")
+        (30, "Fantastic! One month streak!", "🎯"),
+        (14, "Two weeks strong! Keep it up!", "🔥"),
+        (7, "One week streak! You're on fire!", "🚀"),
+        (3, "Great start! Building habits!", "👏"),
+        (1, "First day completed! Welcome!", "🎊"),
     ]
-    
-    # Find the appropriate milestone message
     for threshold, message, emoji in milestones:
         if current_streak >= threshold:
             milestone_message = message
             milestone_emoji = emoji
             break
 
-    # === CALCULATE THIS WEEK'S PROGRESS ===
-    # Get Monday of current week
-    week_start = today - timedelta(days=today.weekday())  # Monday = 0
+    # === This week's progress ===
+    week_start = today - timedelta(days=today.weekday())
     week_progress = []
-    day_names = ['M', 'T', 'W', 'T', 'F', 'S', 'S']  # Monday to Sunday
-    
-    # Check each day of the week
+    day_names = ["M", "T", "W", "T", "F", "S", "S"]
+
     for i in range(7):
         day = week_start + timedelta(days=i)
-        day_completions = DailyCompletion.objects.filter(user=request.user, date=day)
+        day_completions = DailyCompletion.objects.filter(
+            user=request.user, date=day
+        )
         day_total = 0
         day_completed = 0
-        
-        # Count steps for this day
+
         if morning_routine:
             day_total += morning_routine.steps.count()
-            day_completed += day_completions.filter(routine_step__routine=morning_routine, completed=True).count()
+            day_completed += day_completions.filter(
+                routine_step__routine=morning_routine, completed=True
+            ).count()
         if evening_routine:
             day_total += evening_routine.steps.count()
-            day_completed += day_completions.filter(routine_step__routine=evening_routine, completed=True).count()
-        
-        # Determine status for display
-        if day > today:
-            status = 'future'  # Future days
-        elif day == today:
-            status = 'current'  # Today
-        elif day_total > 0 and day_completed == day_total:
-            status = 'completed'  # Fully completed past day
-        else:
-            status = 'incomplete'  # Incomplete past day
-        
-        week_progress.append({
-            'day': day_names[i],
-            'status': status,
-            'date': day
-        })
+            day_completed += day_completions.filter(
+                routine_step__routine=evening_routine, completed=True
+            ).count()
 
-    # === PREPARE CALENDAR DATA ===
-    # Build a dictionary to track completion status for each date
-    # Format: {date: {'morning': True/False, 'evening': True/False}}
+        if day > today:
+            status = "future"
+        elif day == today:
+            status = "current"
+        elif day_total > 0 and day_completed == day_total:
+            status = "completed"
+        else:
+            status = "incomplete"
+
+        week_progress.append(
+            {"day": day_names[i], "status": status, "date": day}
+        )
+
+    # === Calendar completion map ===
     completion_map = {}
     for comp in completions:
-        date_key = comp.date.strftime('%Y-%m-%d')  # Convert date to string format
-        
-        # Get the routine type (morning or evening)
-        step_type = comp.routine_step.routine.routine_type if hasattr(comp.routine_step.routine, 'routine_type') else None
-        
-        # Initialize the date entry if it doesn't exist
+        date_key = comp.date.strftime("%Y-%m-%d")
+        step_type = (
+            comp.routine_step.routine.routine_type
+            if hasattr(comp.routine_step.routine, "routine_type")
+            else None
+        )
         if date_key not in completion_map:
-            completion_map[date_key] = {'morning': False, 'evening': False}
-        
-        # Mark as completed if this step was completed
-        if step_type in ['morning', 'evening'] and comp.completed:
+            completion_map[date_key] = {"morning": False, "evening": False}
+        if step_type in ["morning", "evening"] and comp.completed:
             completion_map[date_key][step_type] = True
 
-    # Create events list for calendar display (used by JavaScript)
     routine_events = []
     for day in range(1, last_day + 1):
         day_date = date(year, month, day)
-        date_key = day_date.strftime('%Y-%m-%d')
-        
-        # Determine overall status for this day
-        status = 'not_done'  # Default status
+        date_key = day_date.strftime("%Y-%m-%d")
+        status = "not_done"
         if date_key in completion_map:
-            morning_done = completion_map[date_key]['morning']
-            evening_done = completion_map[date_key]['evening']
-            
+            morning_done = completion_map[date_key]["morning"]
+            evening_done = completion_map[date_key]["evening"]
             if morning_done and evening_done:
-                status = 'completed'  # Both routines completed
+                status = "completed"
             elif morning_done:
-                status = 'morning'    # Only morning completed
+                status = "morning"
             elif evening_done:
-                status = 'evening'    # Only evening completed
-            else:
-                status = 'not_done'   # Neither completed
-        
-        routine_events.append({'date': date_key, 'status': status})
-    # === COLLECT WEEKLY STEPS AND DUE DATES (moved here) ===
-    weekly_steps = RoutineStep.objects.filter(routine__user=request.user, frequency='weekly')
+                status = "evening"
+        routine_events.append({"date": date_key, "status": status})
+
+    # Weekly and monthly due dates
+    weekly_steps = RoutineStep.objects.filter(
+        routine__user=request.user, frequency="weekly"
+    )
     weekly_due_dates = []
-    # For simplicity, default weekly steps to Monday (weekday=0)
     for step in weekly_steps:
         for day in range(1, last_day + 1):
             day_date = date(year, month, day)
-            if day_date.weekday() == 0:  # Monday
-                weekly_due_dates.append({
-                    'date': day_date.strftime('%Y-%m-%d'),
-                    'step_name': step.step_name,
-                    'routine_type': step.routine.routine_type
-                })
+            if day_date.weekday() == 0:
+                weekly_due_dates.append(
+                    {
+                        "date": day_date.strftime("%Y-%m-%d"),
+                        "step_name": step.step_name,
+                        "routine_type": step.routine.routine_type,
+                    }
+                )
+
     weekly_due_dates_json = json.dumps(weekly_due_dates)
 
-    # Monthly routine due dates (default: first day of month)
-    monthly_steps = RoutineStep.objects.filter(routine__user=request.user, frequency='monthly')
+    monthly_steps = RoutineStep.objects.filter(
+        routine__user=request.user, frequency="monthly"
+    )
     monthly_due_dates = []
     for step in monthly_steps:
-        monthly_due_dates.append({
-            'date': start_date.strftime('%Y-%m-%d'),
-            'step_name': step.step_name,
-            'routine_type': step.routine.routine_type
-        })
+        monthly_due_dates.append(
+            {
+                "date": start_date.strftime("%Y-%m-%d"),
+                "step_name": step.step_name,
+                "routine_type": step.routine.routine_type,
+            }
+        )
     monthly_due_dates_json = json.dumps(monthly_due_dates)
 
-    # Convert to JSON for JavaScript calendar
     routine_events_json = json.dumps(routine_events)
 
-    # === HANDLE FORM SUBMISSIONS (EXISTING FUNCTIONALITY) ===
-    if request.method == 'POST':
-        # Original completion tracking functionality
+    # === Handle POST submissions (existing logic) ===
+    if request.method == "POST":
         try:
-            # Get routine ID from form submission
-            routine_id = int(request.POST.get('routine_id') or 0)
+            routine_id = int(request.POST.get("routine_id") or 0)
         except (TypeError, ValueError):
-            # If conversion fails, set to 0 (invalid)
             routine_id = 0
-        
+
         if routine_id:
-            # Find the routine and make sure it belongs to current user
-            routine = Routine.objects.filter(pk=routine_id, user=request.user).first()
+            routine = Routine.objects.filter(
+                pk=routine_id, user=request.user
+            ).first()
             if routine:
                 today = date.today()
-                # Process each step in the routine
                 for step in routine.steps.all():
-                    # Check if this step was marked as completed in the form
-                    checked = bool(request.POST.get(f'completed_{step.id}', False))
-                    
-                    # Update the step's completed status (for UI display)
+                    checked = bool(
+                        request.POST.get(f"completed_{step.id}", False)
+                    )
                     if step.completed != checked:
                         step.completed = checked
                         step.save()
-                    
-                    # Create or update the daily completion record
+
                     daily_completion, created = DailyCompletion.objects.get_or_create(
                         user=request.user,
                         routine_step=step,
                         date=today,
-                        defaults={'completed': checked}
+                        defaults={"completed": checked},
                     )
-                    # If record already existed, update it
                     if not created and daily_completion.completed != checked:
                         daily_completion.completed = checked
                         daily_completion.save()
-        
-        # Redirect to same page to prevent double-submission
+
         return redirect(request.path)
 
-    # === PREPARE STEP COMPLETION DATA FOR TEMPLATE ===
     today_completed_step_ids = set(
-        today_completions.filter(completed=True).values_list('routine_step_id', flat=True)
+        today_completions.filter(completed=True).values_list(
+            "routine_step_id", flat=True
+        )
     )
 
-    # === SKIN TYPE WIDGET DATA ===
-    # Get user's skin type from their profile (if available)
+    # === Skin type and products ===
     user_skin_type = None
     try:
         profile = UserProfile.objects.filter(user=request.user).first()
         user_skin_type = profile.skin_type if profile else None
     except Exception:
         user_skin_type = None
-    
-    # Get products that match user's skin type and are favorites
-    skin_type_products = Product.objects.filter(
-        user=request.user,
-        skin_type=user_skin_type
-    ).exclude(skin_type__isnull=True).exclude(skin_type='')[:5] if user_skin_type else []
-    
+
+    skin_type_products = (
+        Product.objects.filter(user=request.user, skin_type=user_skin_type)
+        .exclude(skin_type__isnull=True)
+        .exclude(skin_type="")
+        .all()[:5]
+        if user_skin_type
+        else []
+    )
+
     favorite_products = Product.objects.filter(
-        user=request.user,
-        is_favorite=True
+        user=request.user, is_favorite=True
     )[:5]
 
-    # === PRODUCT EXPIRY DATA FOR CALENDAR ===
-    # Get products expiring in the next 90 days
-    from datetime import timedelta
+    # === Product expiry events ===
     expiry_threshold = today + timedelta(days=90)
     expiring_products = Product.objects.filter(
         user=request.user,
         expiry_date__lte=expiry_threshold,
-        expiry_date__gte=today
-    ).order_by('expiry_date')
+        expiry_date__gte=today,
+    ).order_by("expiry_date")
 
-    # Create expiry events for calendar
     expiry_events = []
     for product in expiring_products:
         days_until_expiry = (product.expiry_date - today).days
-        status = 'expired' if days_until_expiry < 0 else 'warning' if days_until_expiry <= 30 else 'info'
-        
-        expiry_events.append({
-            'date': product.expiry_date.strftime('%Y-%m-%d'),
-            'title': f'{product.name} expires',
-            'type': 'expiry',
-            'status': status,
-            'product_name': product.name,
-            'brand': product.brand,
-            'days_until': days_until_expiry,
-            'expiry_date': product.expiry_date.strftime('%Y-%m-%d'),
-        })
+        if days_until_expiry < 0:
+            status = "expired"
+        elif days_until_expiry <= 30:
+            status = "warning"
+        else:
+            status = "info"
 
-    # === FAVORITE PRODUCT USAGE IN CALENDAR ===
+        expiry_events.append(
+            {
+                "date": product.expiry_date.strftime("%Y-%m-%d"),
+                "title": f"{product.name} expires",
+                "type": "expiry",
+                "status": status,
+                "product_name": product.name,
+                "brand": product.brand,
+                "days_until": days_until_expiry,
+                "expiry_date": product.expiry_date.strftime("%Y-%m-%d"),
+            }
+        )
 
+    # Mark if favorites were used on days (simplified)
     for event in routine_events:
-        event_date = event.get('date')
-        if event_date and event.get('status') in ['completed', 'morning', 'evening']:
-            # Check if favorite products were used on this date
-            # This is a simplified version - you could enhance to track actual usage
-            event['favorite_used'] = favorite_products.exists()
+        if event.get("date") and event.get("status") in [
+            "completed",
+            "morning",
+            "evening",
+        ]:
+            event["favorite_used"] = favorite_products.exists()
 
-    # === SEND DATA TO TEMPLATE ===
-    # Pass all calculated data to the HTML template
-    return render(request, 'routines/dashboard.html', {
-        'morning_routine': morning_routine,
-        'evening_routine': evening_routine,
-        'weekly_routine': weekly_routine,
-        'monthly_routine': monthly_routine,
-        'hair_routine': hair_routine,
-        'body_routine': body_routine,
-        'special_routine': special_routine,
-        'seasonal_routine': seasonal_routine,
-        'routine_events_json': routine_events_json,
-        'weekly_due_dates_json': weekly_due_dates_json,
-        'monthly_due_dates_json': monthly_due_dates_json,
-        'today_progress': today_progress,
-        'completed_steps_today': completed_steps_today,
-        'total_steps_today': total_steps_today,
-        'current_streak': current_streak,
-        'milestone_message': milestone_message,
-        'milestone_emoji': milestone_emoji,
-        'week_progress': week_progress,
-        'today_completed_step_ids': today_completed_step_ids,
-        'user_skin_type': user_skin_type,
-        'skin_type_products': skin_type_products,
-        'favorite_products': favorite_products,
-        'expiring_products': expiring_products,
-        'expiry_events_json': json.dumps(expiry_events),
-    })
+    return render(
+        request,
+        "routines/dashboard.html",
+        {
+            "morning_routine": morning_routine,
+            "evening_routine": evening_routine,
+            "weekly_routine": weekly_routine,
+            "monthly_routine": monthly_routine,
+            "hair_routine": hair_routine,
+            "body_routine": body_routine,
+            "special_routine": special_routine,
+            "seasonal_routine": seasonal_routine,
+            "routine_events_json": routine_events_json,
+            "weekly_due_dates_json": weekly_due_dates_json,
+            "monthly_due_dates_json": monthly_due_dates_json,
+            "today_progress": today_progress,
+            "completed_steps_today": completed_steps_today,
+            "total_steps_today": total_steps_today,
+            "current_streak": current_streak,
+            "milestone_message": milestone_message,
+            "milestone_emoji": milestone_emoji,
+            "week_progress": week_progress,
+            "today_completed_step_ids": today_completed_step_ids,
+            "user_skin_type": user_skin_type,
+            "skin_type_products": skin_type_products,
+            "favorite_products": favorite_products,
+            "expiring_products": expiring_products,
+            "expiry_events_json": json.dumps(expiry_events),
+        },
+    )
 
 
 @login_required
 def add_routine(request):
-    """Create a routine.
-
-    - GET: render the add form (optionally preselect routine_type via ?type=)
-    - POST: validate and create, then redirect appropriately
-    """
-    if request.method == 'POST':
+    """Create a routine. GET renders, POST creates it."""
+    if request.method == "POST":
         form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
             data = form.cleaned_data
             routine = Routine.objects.create(
                 user=request.user,
-                name=data['routine_name'],
-                routine_type=data['routine_type']
+                name=data["routine_name"],
+                routine_type=data["routine_type"],
             )
             order = 1
-            # Infer step frequency from routine type for calendar reminders
-            if data['routine_type'] in ('weekly', 'monthly'):
-                inferred_freq = data['routine_type']
-            else:
-                inferred_freq = 'daily'
+            inferred_freq = (
+                data["routine_type"]
+                if data["routine_type"] in ("weekly", "monthly")
+                else "daily"
+            )
 
             for i in range(1, 11):
-                step_text = data.get(f'step{i}')
-                product = data.get(f'product{i}')
+                step_text = data.get(f"step{i}")
+                product = data.get(f"product{i}")
                 if step_text:
                     RoutineStep.objects.create(
-                        routine=routine, 
-                        step_name=step_text, 
+                        routine=routine,
+                        step_name=step_text,
                         order=order,
                         product=product,
-                        frequency=inferred_freq
+                        frequency=inferred_freq,
                     )
                     order += 1
-            # If this is an AJAX request, return JSON so client can update UI without full reload
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'id': routine.id,
-                    'name': routine.name,
-                    # point to the dashboard where checklists are now managed
-                    'detail_url': reverse('routines:dashboard')
-                })
 
-            # For non-AJAX: redirect (PRG) and store the last created routine name
-            # We'll show a clean inline banner on the add page instead of global Django messages
-            request.session['last_added_routine_name'] = routine.name
-            return redirect(reverse('routines:add'))
+            if (
+                request.headers.get("x-requested-with") == "XMLHttpRequest"
+                or request.META.get("HTTP_X_REQUESTED_WITH")
+                == "XMLHttpRequest"
+            ):
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "id": routine.id,
+                        "name": routine.name,
+                        "detail_url": reverse("routines:dashboard"),
+                    }
+                )
+
+            request.session["last_added_routine_name"] = routine.name
+            return redirect(reverse("routines:add"))
         else:
-            # For non-AJAX invalid submissions, show inline errors on the same page
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+            if (
+                request.headers.get("x-requested-with") == "XMLHttpRequest"
+                or request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
+            ):
                 errors = {k: list(v) for k, v in form.errors.items()}
-                return JsonResponse({'success': False, 'errors': errors, 'non_field_errors': list(form.non_field_errors())}, status=400)
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "errors": errors,
+                        "non_field_errors": list(form.non_field_errors()),
+                    },
+                    status=400,
+                )
 
-            # Surface non-field errors (from clean) as messages so tests find them
             for err in form.non_field_errors():
                 messages.error(request, err)
 
             context = {
-                'form': form,
-                'is_editing': False,
-                'page_title': 'Create New Routine',
+                "form": form,
+                "is_editing": False,
+                "page_title": "Create New Routine",
             }
-            return render(request, 'routines/add_routine.html', context)
+            return render(request, "routines/add_routine.html", context)
 
-    # For GET, show the dedicated add form
-    # Preselect routine type if provided as query param
     initial = {}
-    pre_type = request.GET.get('type')
+    pre_type = request.GET.get("type")
     if pre_type:
-        initial['routine_type'] = pre_type
+        initial["routine_type"] = pre_type
+
     form = RoutineCreateForm(initial=initial, user=request.user)
-    # Pull any recently created routine name for inline success CTA
-    just_created_name = request.session.pop('last_added_routine_name', None)
+    just_created_name = request.session.pop("last_added_routine_name", None)
     context = {
-        'form': form,
-        'is_editing': False,
-        'page_title': 'Create New Routine',
-        'just_created_name': just_created_name,
+        "form": form,
+        "is_editing": False,
+        "page_title": "Create New Routine",
+        "just_created_name": just_created_name,
     }
-    return render(request, 'routines/add_routine.html', context)
+    return render(request, "routines/add_routine.html", context)
 
 
 @login_required
 def my_routines(request):
-    """Show all of a user's routines (renders dashboard summary)."""
-    morning_routines = Routine.objects.filter(user=request.user, routine_type='morning')
-    evening_routines = Routine.objects.filter(user=request.user, routine_type='evening')
-    morning_routine = morning_routines.first()
-    evening_routine = evening_routines.first()
-    return render(request, 'routines/dashboard.html', {
-        'morning_routine': morning_routine,
-        'evening_routine': evening_routine,
-    })
+    """Show a user's morning and evening routines."""
+    morning_routine = Routine.objects.filter(
+        user=request.user, routine_type="morning"
+    ).first()
+    evening_routine = Routine.objects.filter(
+        user=request.user, routine_type="evening"
+    ).first()
+    return render(
+        request,
+        "routines/dashboard.html",
+        {"morning_routine": morning_routine, "evening_routine": evening_routine},
+    )
 
 
 @login_required
 def edit_routine(request, pk):
-    """
-    Edit an existing routine.
-    
-    This view allows users to modify their existing routines.
-    It reuses the add_routine template but populates it with existing data.
-    """
-    # Get the routine to edit (make sure it belongs to current user)
+    """Edit an existing routine; reuses add template."""
     routine = get_object_or_404(Routine, pk=pk, user=request.user)
-    
-    if request.method == 'POST':
-        # Handle form submission to update the routine
+
+    if request.method == "POST":
         form = RoutineCreateForm(request.POST, user=request.user)
         if form.is_valid():
             data = form.cleaned_data
-
-            # Update the routine core fields
-            routine.name = data['routine_name']
-            routine.routine_type = data['routine_type']
+            routine.name = data["routine_name"]
+            routine.routine_type = data["routine_type"]
             routine.save()
 
-            # Build desired steps from submitted data (1..10), skipping blanks
-            desired_steps = []  # list of dicts: {name, product}
+            desired_steps = []
             for i in range(1, 11):
-                name = data.get(f'step{i}')
-                product = data.get(f'product{i}')
+                name = data.get(f"step{i}")
+                product = data.get(f"product{i}")
                 if name:
-                    desired_steps.append({'name': name, 'product': product})
+                    desired_steps.append({"name": name, "product": product})
 
-            # Determine default frequency for new steps based on routine type
-            if routine.routine_type in ('weekly', 'monthly'):
-                default_freq = routine.routine_type
-            else:
-                default_freq = 'daily'
+            default_freq = (
+                routine.routine_type
+                if routine.routine_type in ("weekly", "monthly")
+                else "daily"
+            )
 
-            # Load existing steps ordered
-            existing_steps = list(routine.steps.all().order_by('order'))
-
-            # Update/create/delete to match desired state while preserving frequencies for existing positions
+            existing_steps = list(routine.steps.all().order_by("order"))
             max_len = max(len(existing_steps), len(desired_steps))
             for idx in range(max_len):
                 desired = desired_steps[idx] if idx < len(desired_steps) else None
                 existing = existing_steps[idx] if idx < len(existing_steps) else None
-
                 position = idx + 1
 
                 if desired and existing:
-                    # Update in place: keep existing frequency
-                    existing.step_name = desired['name']
-                    existing.product = desired['product']
+                    existing.step_name = desired["name"]
+                    existing.product = desired["product"]
                     existing.order = position
-                    # preserve existing.frequency
                     existing.save()
                 elif desired and not existing:
-                    # Create new step with default frequency
                     RoutineStep.objects.create(
                         routine=routine,
-                        step_name=desired['name'],
+                        step_name=desired["name"],
                         order=position,
-                        product=desired['product'],
-                        frequency=default_freq
+                        product=desired["product"],
+                        frequency=default_freq,
                     )
                 elif existing and not desired:
-                    # Remove surplus existing step
                     existing.delete()
 
-            # Redirect back to dashboard
-            return redirect('routines:dashboard')
+            return redirect("routines:dashboard")
         else:
-            # If form has errors, render the template with errors
             context = {
-                'form': form,
-                'routine': routine,
-                'is_editing': True,
-                'page_title': f'Edit {routine.name}'
+                "form": form,
+                "routine": routine,
+                "is_editing": True,
+                "page_title": f"Edit {routine.name}",
             }
-            return render(request, 'routines/add_routine.html', context)
-    
+            return render(request, "routines/add_routine.html", context)
     else:
-        # GET request - populate form with existing data
-        # Load all existing steps in order
-        existing_steps = list(routine.steps.all().order_by('order'))
-        
-        # Prepare initial data for the form
+        existing_steps = list(routine.steps.all().order_by("order"))
         initial_data = {
-            'routine_name': routine.name,
-            'routine_type': routine.routine_type,
+            "routine_name": routine.name,
+            "routine_type": routine.routine_type,
         }
-        
-        # Add existing steps to initial data
         for i, step in enumerate(existing_steps, 1):
-            initial_data[f'step{i}'] = step.step_name
+            initial_data[f"step{i}"] = step.step_name
             if step.product:
-                initial_data[f'product{i}'] = step.product.id
-        
-        # Create form with initial data
+                initial_data[f"product{i}"] = step.product.id
+
         form = RoutineCreateForm(initial=initial_data, user=request.user)
-        
         context = {
-            'form': form,
-            'routine': routine,
-            'is_editing': True,
-            'page_title': f'Edit {routine.name}'
+            "form": form,
+            "routine": routine,
+            "is_editing": True,
+            "page_title": f"Edit {routine.name}",
         }
-        return render(request, 'routines/add_routine.html', context)
+        return render(request, "routines/add_routine.html", context)
 
 
 @login_required
 @require_http_methods(["POST"])
 def mark_routine_complete(request):
-    """
-    AJAX endpoint to mark all steps in a routine as complete for today.
-    
-    This function:
-    1. Receives routine_id from the frontend
-    2. Finds all steps in that routine
-    3. Marks each step as completed for today's date
-    4. Returns success/error message to frontend
-    """
+    """AJAX: mark all steps in a routine complete for today."""
     try:
-        # Parse the JSON data sent from frontend
         data = json.loads(request.body)
-        routine_id = data.get('routine_id')
-        routine_type = data.get('routine_type')  # 'morning' or 'evening'
-        
-        # Basic validation
+        routine_id = data.get("routine_id")
+        routine_type = data.get("routine_type")
+
         if not routine_id:
-            return JsonResponse({'success': False, 'error': 'Routine ID is required'})
-        
-        # Get the routine (make sure it belongs to current user)
+            return JsonResponse(
+                {"success": False, "error": "Routine ID is required"}
+            )
+
         routine = get_object_or_404(Routine, id=routine_id, user=request.user)
         today = date.today()
-        
-        # Mark all steps in this routine as complete for today
         completed_count = 0
+
         for step in routine.steps.all():
-            # Create or update completion record for this step
             completion, created = DailyCompletion.objects.get_or_create(
                 user=request.user,
                 routine_step=step,
                 date=today,
-                defaults={
-                    'completed': True, 
-                    'completed_at': timezone.now()
-                }
+                defaults={"completed": True, "completed_at": timezone.now()},
             )
-            
-            # If record already existed but wasn't completed, mark it complete
             if not created and not completion.completed:
                 completion.completed = True
                 completion.completed_at = timezone.now()
                 completion.save()
-            
             completed_count += 1
-        
-        # Return success response
-        return JsonResponse({
-            'success': True, 
-            'message': f'Marked {completed_count} steps complete for {routine_type} routine'
-        })
-        
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": (
+                    f"Marked {completed_count} steps complete for "
+                    f"{routine_type} routine"
+                ),
+            }
+        )
     except json.JSONDecodeError:
-        # Handle invalid JSON data
-        return JsonResponse({'success': False, 'error': 'Invalid data format'})
+        return JsonResponse(
+            {"success": False, "error": "Invalid data format"}
+        )
     except Exception as e:
-        # Handle any other errors
-        return JsonResponse({'success': False, 'error': f'Error: {str(e)}'})
+        return JsonResponse(
+            {"success": False, "error": f"Error: {str(e)}"}
+        )
 
 
 @login_required
 @require_http_methods(["POST"])
 def toggle_step_completion(request):
-    """
-    AJAX endpoint to toggle completion status of individual routine steps.
-    
-    This allows users to check/uncheck individual steps in their routine cards
-    on the dashboard for more granular progress tracking.
-    """
+    """AJAX: toggle a single step completion for today."""
     try:
-        # Parse the JSON data from request body
         data = json.loads(request.body)
-        step_id = data.get('step_id')
-        
+        step_id = data.get("step_id")
         if not step_id:
-            return JsonResponse({'success': False, 'error': 'Step ID is required'})
-        
-        # Get the routine step and verify it belongs to current user
+            return JsonResponse(
+                {"success": False, "error": "Step ID is required"}
+            )
+
         try:
-            step = RoutineStep.objects.get(id=step_id, routine__user=request.user)
+            step = RoutineStep.objects.get(
+                id=step_id, routine__user=request.user
+            )
         except RoutineStep.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Step not found or access denied'})
-        
-        # Get today's date
+            return JsonResponse(
+                {"success": False, "error": "Step not found or access denied"}
+            )
+
         today = date.today()
-        
-        # Get or create completion record for this step and date
         completion, created = DailyCompletion.objects.get_or_create(
-            user=request.user,
-            routine_step=step,
-            date=today,
-            defaults={'completed': False}
+            user=request.user, routine_step=step, date=today,
+            defaults={"completed": False}
         )
-        
-        # Toggle the completion status
+
         completion.completed = not completion.completed
-        completion.completed_at = timezone.now() if completion.completed else None
+        completion.completed_at = (
+            timezone.now() if completion.completed else None
+        )
         completion.save()
-        
-        # Return success response with new status
-        return JsonResponse({
-            'success': True, 
-            'completed': completion.completed,
-            'step_name': step.step_name,
-            'message': f'{"Completed" if completion.completed else "Unchecked"}: {step.step_name}'
-        })
-        
+
+        return JsonResponse(
+            {
+                "success": True,
+                "completed": completion.completed,
+                "step_name": step.step_name,
+                "message": (
+                    "Completed: " if completion.completed else "Unchecked: "
+                ) + step.step_name,
+            }
+        )
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+        return JsonResponse(
+            {"success": False, "error": "Invalid JSON data"}
+        )
     except Exception as e:
-        return JsonResponse({'success': False, 'error': f'Error: {str(e)}'})
+        return JsonResponse(
+            {"success": False, "error": f"Error: {str(e)}"}
+        )
 
 
 @login_required
 def get_routine_data(request, pk):
-    """Get routine data for modal editing"""
+    """Return routine data for modal editing (JSON)."""
     try:
         routine = get_object_or_404(Routine, pk=pk, user=request.user)
         steps_data = []
-        
-        for step in routine.steps.all().order_by('order'):
-            steps_data.append({
-                'step_name': step.step_name,
-                'product_id': step.product.id if step.product else None,
-                'order': step.order
-            })
-        
-        return JsonResponse({
-            'success': True,
-            'routine_name': routine.name,
-            'routine_type': routine.routine_type,
-            'steps': steps_data
-        })
+        for step in routine.steps.all().order_by("order"):
+            steps_data.append(
+                {
+                    "step_name": step.step_name,
+                    "product_id": step.product.id if step.product else None,
+                    "order": step.order,
+                }
+            )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "routine_name": routine.name,
+                "routine_type": routine.routine_type,
+                "steps": steps_data,
+            }
+        )
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
-
-
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
 def delete_routine(request, pk):
-    """
-    Delete a routine and all its associated steps.
-    """
-    if request.method == 'POST':
+    """Delete a routine and redirect to dashboard."""
+    if request.method == "POST":
         try:
             routine = get_object_or_404(Routine, pk=pk, user=request.user)
             routine_name = routine.name
             routine.delete()
-            
-            if request.headers.get('Content-Type') == 'application/json':
-                return JsonResponse({'success': True, 'message': f'Routine "{routine_name}" deleted successfully'})
-            else:
-                messages.success(request, f'Routine "{routine_name}" deleted successfully')
-                # Send the user back to the dashboard after delete
-                return redirect('routines:dashboard')
-                
-        except Exception as e:
-            if request.headers.get('Content-Type') == 'application/json':
-                return JsonResponse({'success': False, 'error': str(e)})
-            else:
-                messages.error(request, 'Error deleting routine. Please try again.')
-                # Fall back to dashboard on error as well
-                return redirect('routines:dashboard')
-    else:
-        # GET request - redirect to dashboard
-        return redirect('routines:dashboard')
 
+            if request.headers.get("Content-Type") == "application/json":
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "message": (
+                            f'Routine "{routine_name}" deleted successfully'
+                        ),
+                    }
+                )
+            else:
+                messages.success(
+                    request,
+                    f'Routine "{routine_name}" deleted successfully',
+                )
+                return redirect("routines:dashboard")
+        except Exception as e:
+            if request.headers.get("Content-Type") == "application/json":
+                return JsonResponse({"success": False, "error": str(e)})
+            else:
+                messages.error(
+                    request, "Error deleting routine. Please try again."
+                )
+                return redirect("routines:dashboard")
+    else:
+        return redirect("routines:dashboard")
