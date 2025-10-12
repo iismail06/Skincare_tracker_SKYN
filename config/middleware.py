@@ -41,7 +41,7 @@ class SecurityHeadersMiddleware:
         
         return response
     
-    def _inject_cookie_consent(self, response):
+    def process_response(self, request, response):
         """Inject cookie consent banner code directly into HTML responses."""
         content = response.content.decode('utf-8')
         
@@ -51,7 +51,6 @@ class SecurityHeadersMiddleware:
         
         # CSS for cookie consent banner
         cookie_css = """
-        <style>
         .cookie-consent {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: rgba(33, 37, 41, 0.95); color: white; padding: 1rem;
@@ -70,7 +69,6 @@ class SecurityHeadersMiddleware:
             .cookie-consent { flex-direction: column; align-items: flex-start; }
             .cookie-consent-buttons { width: 100%; }
         }
-        </style>
         """
         
         # JavaScript for cookie consent functionality
@@ -105,9 +103,12 @@ class SecurityHeadersMiddleware:
         </script>
         """
         
-        # Insert both CSS and JS before closing body tag
-        if '</body>' in content:
-            modified_content = content.replace('</body>', f"{cookie_css}{cookie_js}</body>")
+        # Insert CSS in head and JS before closing body tag
+        if '</head>' in content and '</body>' in content:
+            # Add the CSS to the head section
+            modified_content = content.replace('</head>', f"<style>{cookie_css}</style></head>")
+            # Add the JS just before the closing body tag
+            modified_content = modified_content.replace('</body>', f"{cookie_js}</body>")
             response.content = modified_content.encode('utf-8')
             
             # Update content-length header

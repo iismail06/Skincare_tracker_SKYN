@@ -26,6 +26,24 @@ The validation results are organized in two folders:
 | Profile Questionnaire | ❌ → ✅ | aria-describedby attributes without corresponding elements, incorrect form structure | Added proper help text elements, fixed form structure | [View](errors/Questionaire_page_html_errror.png) |
 | My Routines | ❌ → ✅ | Possible misuse of aria-label attributes, empty action attributes on forms | Fixed ARIA attributes, added proper action URLs to forms | [View](errors/Dashboard_html_error.png) |
 
+## Validation Passes
+
+After implementing the fixes, all pages passed validation. Here are the screenshots of the successful validations:
+
+| Page | Status | Screenshot |
+|------|--------|------------|
+| Home Page | ✅ | [View](passes/Homepage_html_validation_no_error.png) |
+| Dashboard | ✅ | [View](passes/Dashboard_page_html_validation_no_error.png) |
+| Product Page | ✅ | [View](passes/Product_page_html_validation_no_error.png) |
+| Product Form | ✅ | [View](passes/Product_Form_page_html_validation_no_error.png) |
+| Profile Page | ✅ | [View](passes/Profile_page_html_validation_no_error.png) |
+| Questionnaire | ✅ | [View](passes/Questionnaire_page_html_validation_no_error.png) |
+| Login Page | ✅ | [View](passes/lognin_page_html_validation_no_error.png) |
+| Signup Page | ✅ | [View](passes/signup_page_html_validation_no_error.png) |
+| Edit Routine | ✅ | [View](passes/Edit_Routine_page_html_validation_no_error.png) |
+| Delete Product | ✅ | [View](passes/Delete_product_page_html_validation_no_error.png) |
+| Product Delete | ✅ | [View](passes/product_delete_page_html_validation_no_error.png) |
+
 ## Common Issues and Fixes
 
 ### 1. Missing crossorigin attribute and trailing slashes

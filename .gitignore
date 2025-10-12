@@ -322,3 +322,6 @@ logs/
 products/management/commands/fetch_vendor_assets.py
 config/context_processors.py
 
+# Validation HTML files (for W3C validation only, not for repository)
+documentation/validation/html/base_validation.html
+
