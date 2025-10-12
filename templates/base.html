@@ -1,6 +1,5 @@
 {# base.html - global layout (nav, footer, css/js). All templates extend this for consistent styling. #}
 {% load static %}
-{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,7 +43,6 @@
     {% endif %}
     
     <!-- Custom CSS (load after Bootstrap to override) -->
-    {% compress css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% if USE_LOCAL_VENDOR %}
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
@@ -53,7 +51,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
     {% endif %}
-    {% endcompress %}
 
     {% block extra_css %}{% endblock %}
 
@@ -137,9 +134,7 @@
     {% block extra_js %}
     {% endblock %}
     <!-- Main JavaScript file with optimizations -->
-    {% compress js %}
     <script src="{% static 'js/main.js' %}" defer></script>
-    {% endcompress %}
     <!-- Auto adjust body offset to actual navbar height -->
     <script>
         // Optimized inline script - moved to end of body for better performance
