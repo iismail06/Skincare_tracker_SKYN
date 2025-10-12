@@ -1633,6 +1633,9 @@ body.dark-theme {
     --glass-bg-subtle: rgba(255,255,255,0.015);
     --card-bg: rgba(255,255,255,0.015);
     --gray: #bdb6a6;
+    /* Fallback to ensure visual dark mode even if custom properties don't resolve on the client */
+    background-color: #2a2418 !important;
+    color: #f0e6d2 !important;
 }
 
 
