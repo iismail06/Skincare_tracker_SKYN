@@ -19,8 +19,11 @@ After I fixed the problems:
    - Fix: Changed to `min-height: 600px;` which works in all browsers
 
 2. **Line 1018**: In `.product-info .notes`
-   - Problem: `line-clamp: 2;` isn't standard CSS
-   - Fix: Removed this line (kept the `-webkit-line-clamp` which works)
+   - Problem: `line-clamp: 2;` and `-webkit-line-clamp: 2;` weren't passing validation
+   - Fix: Completely replaced the line-clamp approach with a more compatible solution:
+     - Removed both `-webkit-line-clamp` and `line-clamp` properties
+     - Used `max-height: 2.9em;` with `overflow: hidden;` and `text-overflow: ellipsis;`
+     - This achieves similar text truncation effect but passes validation
 
 ## About The Warnings
 

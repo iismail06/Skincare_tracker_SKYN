@@ -568,6 +568,15 @@ These improvements significantly enhanced both the security posture and performa
 
 ---
 
+## Recent Improvements
+
+### CSS Validation Fixes (October 2025)
+
+- **Fixed CSS validation error with text truncation**: Replaced non-standard `-webkit-line-clamp` approach with standard CSS properties (`max-height`, `overflow: hidden`, and `text-overflow: ellipsis`). This improved W3C validation compliance while maintaining the same visual appearance of truncated text.
+- **Updated code documentation**: Clarified our approach to text truncation in code comments, now explicitly stating we use standard CSS properties instead of vendor-prefixed ones to ensure better compatibility and validation.
+
+For detailed information about validation fixes, see [CSS Validation Documentation](documentation/validation/css/style-css-validation.md).
+
 ## Author
 
 Idil – [https://github.com/iismail06](https://github.com/iismail06)

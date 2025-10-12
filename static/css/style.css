@@ -5,6 +5,22 @@
 
    ========================================================================== */
 :root {
+    /* Base theme colors - light theme defaults */
+    --background-color: #ffffff;                       /* for full page background */
+    --background-color-rgb: 255, 255, 255;
+    --background-color-darker: #f2f2f2;
+    --background-color-darker-rgb: 242, 242, 242;
+    --background-color-lighter: #fafafa;
+    --background-color-lighter-rgb: 250, 250, 250;
+    --text: #212121;                                  /* base text color */
+    --secondary-color: #555;                          /* secondary text color */
+    --secondary-color-lighter: #777;
+    --secondary-color-darker: #333;
+    --secondary-color-darker-rgb: 51, 51, 51;
+    --accent-color: #536b45;                          /* greenish accent color */
+    --accent-color-rgb: 83, 107, 69;
+    --accent-color-lighter: #687f5c;                  /* lighter accent for hover states */
+    
     /* Accent tokens (used across buttons, links, and badges) */
     --accent-color-text: #000000;         /* text color on accent backgrounds (readable contrast) */
     --accent-color-bg: var(--accent-color);                     /* accent background for buttons/badges */
@@ -36,7 +52,6 @@
     /* Navbar glass controls (light mode defaults) */
     --navbar-bg-rgb: 0, 0, 0;  /* neutral dark glass in light mode */
     --navbar-opacity: 0.10;    /* slightly more transparent in light mode */
-    
 }
 
 
@@ -1015,17 +1030,10 @@ h2 {
     font-size: 0.9rem;
     line-height: 1.45;
     margin: 0.5rem 0 0.75rem 0;
-    /* Text truncation with ellipsis after 2 lines */
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     overflow: hidden;
-    /* Standard properties for better compatibility */
-    display: -ms-flexbox;
-    display: flex;
-    flex-direction: column;
-    /* For Firefox - fallback with max-height */
-    max-height: 2.9em;
+    max-height: 2.9em; /* Approximately 2 lines of text */
+    text-overflow: ellipsis;
+    position: relative;
 }
 
 .product-actions {
@@ -2277,8 +2285,8 @@ body.dark-theme .welcome-text { color: #ffffff !important; }
       - For backdrop-filter, we use the standard property first, followed by the vendor prefix
         and provide solid background fallbacks
       - For scrollbars, we use vendor-specific selectors as there is no standard alternative yet
-      - For text truncation, we use -webkit-line-clamp without the non-standard line-clamp property
-        to pass W3C validation (note: some linters may suggest adding line-clamp)
+      - For text truncation, we use max-height and overflow:hidden instead of vendor-prefixed
+        properties to ensure better W3C validation
    
    3. COLOR CONTRAST
       - We ensure text has sufficient contrast with backgrounds
