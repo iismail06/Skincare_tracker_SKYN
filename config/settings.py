@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'users',
     'routines',
     'products',
+    'compressor',
 ]
 
 SITE_ID = 1
@@ -203,7 +204,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', '')
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    # Performance optimization settings
+    'SECURE': True,
+    'STATIC_TRANSFORMATIONS': {
+        'image': {
+            'fetch_format': 'auto',
+            'quality': 'auto:good',
+            'dpr': 'auto',
+            'responsive': True,
+        }
+    }
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -217,6 +228,9 @@ WHITENOISE_MIMETYPES = {
     'image/jpeg': 'jpg',
     'image/svg+xml': 'svg',
 }
+# Improve cache settings for better performance
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+WHITENOISE_COMPRESS = True
 
 # Add Cache-Control headers for better browser caching
 WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: True
@@ -274,4 +288,22 @@ LOGGING = {
         },
     },
 }
+
+# Django Compressor settings
+COMPRESS_ENABLED = True
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.rCSSMinFilter',
+]
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter',
+]
+COMPRESS_OUTPUT_DIR = 'compressed'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+# Enable offline compression for production
+COMPRESS_OFFLINE = not DEBUG
 

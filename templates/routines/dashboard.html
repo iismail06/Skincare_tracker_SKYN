@@ -2,7 +2,10 @@
 {% load static %}
 
 {% block extra_css %}
+{% load compress %}
+{% compress css %}
 <link rel="stylesheet" href="{% static 'css/dashboard_style.css' %}">
+{% endcompress %}
 {% endblock %}
 
 
