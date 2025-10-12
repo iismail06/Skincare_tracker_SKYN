@@ -28,10 +28,9 @@
     --success-color: #2e7d32;       /* success highlights */
 
     /* Hero imagery (shared across pages) */
-    /* Use local static asset so it’s fingerprinted and served by Django/WhiteNoise */
-    --site-hero-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/v1760264510/skyn/hero_image.jpg");
+    --site-hero-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264510/skyn/hero_image.jpg");
     /* Features imagery (home page features section) */
-    --features-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/v1760264512/skyn/feature_image.jpg");
+    --features-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264512/skyn/feature_image.jpg");
 
     /* Navbar glass controls (light mode defaults) */
     --navbar-bg-rgb: 0, 0, 0;  /* neutral dark glass in light mode */
