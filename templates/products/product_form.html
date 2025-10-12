@@ -57,6 +57,7 @@
             <div class="form-group">
                 <label for="{{ form.name.id_for_label }}">Product Name</label>
                 {{ form.name }}
+                {% if form.name.help_text %}<small id="id_name_helptext" class="form-text text-muted">{{ form.name.help_text }}</small>{% endif %}
                 {% if form.name.errors %}
                     <div class="error">{{ form.name.errors }}</div>
                 {% endif %}
@@ -65,6 +66,7 @@
             <div class="form-group">
                 <label for="{{ form.brand.id_for_label }}">Brand</label>
                 {{ form.brand }}
+                {% if form.brand.help_text %}<small id="id_brand_helptext" class="form-text text-muted">{{ form.brand.help_text }}</small>{% endif %}
                 {% if form.brand.errors %}
                     <div class="error">{{ form.brand.errors }}</div>
                 {% endif %}
@@ -73,6 +75,7 @@
             <div class="form-group">
                 <label for="{{ form.product_type.id_for_label }}">Product Type</label>
                 {{ form.product_type }}
+                {% if form.product_type.help_text %}<small id="id_product_type_helptext" class="form-text text-muted">{{ form.product_type.help_text }}</small>{% endif %}
                 {% if form.product_type.errors %}
                     <div class="error">{{ form.product_type.errors }}</div>
                 {% endif %}
@@ -81,6 +84,7 @@
             <div class="form-group">
                 <label for="{{ form.rating.id_for_label }}">Rating</label>
                 {{ form.rating }}
+                {% if form.rating.help_text %}<small id="id_rating_helptext" class="form-text text-muted">{{ form.rating.help_text }}</small>{% endif %}
                 {% if form.rating.errors %}
                     <div class="error">{{ form.rating.errors }}</div>
                 {% endif %}
@@ -89,6 +93,7 @@
             <div class="form-group">
                 <label for="{{ form.expiry_date.id_for_label }}">Expiry Date</label>
                 {{ form.expiry_date }}
+                {% if form.expiry_date.help_text %}<small id="id_expiry_date_helptext" class="form-text text-muted">{{ form.expiry_date.help_text }}</small>{% endif %}
                 {% if form.expiry_date.errors %}
                     <div class="error">{{ form.expiry_date.errors }}</div>
                 {% endif %}
@@ -99,6 +104,7 @@
                     {{ form.is_favorite }}
                     <span>Mark as Favorite</span>
                 </label>
+                {% if form.is_favorite.help_text %}<small id="id_is_favorite_helptext" class="form-text text-muted">{{ form.is_favorite.help_text }}</small>{% endif %}
                 {% if form.is_favorite.errors %}
                     <div class="error">{{ form.is_favorite.errors }}</div>
                 {% endif %}
@@ -107,6 +113,7 @@
             <div class="form-group">
                 <label for="{{ form.skin_type.id_for_label }}">Best for Skin Type</label>
                 {{ form.skin_type }}
+                {% if form.skin_type.help_text %}<small id="id_skin_type_helptext" class="form-text text-muted">{{ form.skin_type.help_text }}</small>{% endif %}
                 {% if form.skin_type.errors %}
                     <div class="error">{{ form.skin_type.errors }}</div>
                 {% endif %}
@@ -115,6 +122,7 @@
             <div class="form-group">
                 <label for="{{ form.ingredients.id_for_label }}">Key Ingredients (Optional)</label>
                 {{ form.ingredients }}
+                {% if form.ingredients.help_text %}<small id="id_ingredients_helptext" class="form-text text-muted">{{ form.ingredients.help_text }}</small>{% endif %}
                 {% if form.ingredients.errors %}
                     <div class="error">{{ form.ingredients.errors }}</div>
                 {% endif %}
@@ -123,6 +131,7 @@
             <div class="form-group">
                 <label for="{{ form.notes.id_for_label }}">Notes (Optional)</label>
                 {{ form.notes }}
+                {% if form.notes.help_text %}<small id="id_notes_helptext" class="form-text text-muted">{{ form.notes.help_text }}</small>{% endif %}
                 {% if form.notes.errors %}
                     <div class="error">{{ form.notes.errors }}</div>
                 {% endif %}

@@ -25,8 +25,7 @@ class ProductForm(forms.ModelForm):
             }),
             'expiry_date': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'date',
-                'placeholder': 'Select expiry date'
+                'type': 'date'
             }),
             'is_favorite': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
