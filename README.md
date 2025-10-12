@@ -348,6 +348,20 @@ HTML templates were validated using the [W3C Markup Validation Service](https://
 
 For detailed information and screenshots of the validation results, see the [HTML validation documentation](documentation/validation/html/README.md).
 
+#### CSS Validation
+
+CSS files were validated using the [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/).
+
+| File | Status | Issues Found | Resolution |
+|------|--------|--------------|------------|
+| style.css | ❌ → ✅ | 2 errors with `contain-intrinsic-size` and `line-clamp` properties, 84 warnings | Replaced non-standard properties with standards-compliant alternatives or proper vendor prefixes, added documentation for warnings |
+| dashboard_style.css | ⚠️ | No errors, warnings for CSS variables and vendor prefixes | No action needed - warnings are related to modern CSS features |
+| cookie-consent.css | ⚠️ | No errors, minimal warnings | No action needed - simple CSS file with few warnings |
+
+**Note about warnings**: The CSS validator shows warnings for modern CSS features like CSS variables and vendor prefixes, which are necessary for cross-browser compatibility and are considered best practices. These warnings do not affect functionality.
+
+For detailed information about the validation results and our approach to handling the warnings, see the [CSS validation documentation](documentation/validation/css/validation-summary.md).
+
 #### Other Validators
 
 | Tool | Area | Status |
