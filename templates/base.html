@@ -10,9 +10,6 @@
     <meta name="description" content="SKYN - Your personal skincare tracking application">
     <title>{% block title %}SKYN - Skincare Tracker{% endblock %}</title>
     
-    <!-- Load Trusted Types implementation before any other scripts -->
-    <script src="{% static 'js/trusted-types.js' %}"></script>
-
     <!-- Critical performance optimizations -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -47,7 +44,6 @@
     
     <!-- Custom CSS (load after Bootstrap to override) -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cookie-consent.css' %}">
     {% if USE_LOCAL_VENDOR %}
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
     {% else %}
@@ -139,8 +135,6 @@
     {% endblock %}
     <!-- Main JavaScript file with optimizations -->
     <script src="{% static 'js/main.js' %}" defer></script>
-    <!-- Cookie consent manager -->
-    <script src="{% static 'js/cookie-consent.js' %}" defer></script>
     <!-- Auto adjust body offset to actual navbar height -->
     <script>
         // Optimized inline script - moved to end of body for better performance
