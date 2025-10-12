@@ -8,6 +8,9 @@
 let toastQueue = [];
 let activeToast = null;
 let toastContainer = null;
+// Idempotent init flags to avoid duplicate bindings
+let productsInitialized = false;
+let routinesHandlersBound = false;
 
 /**
  * Helper to read CSS custom properties from the document root - with caching
@@ -162,6 +165,17 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(context, args), wait);
   };
+}
+
+/**
+ * Escape HTML for safe interpolation into innerHTML
+ * @param {any} text
+ * @returns {string}
+ */
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = String(text);
+  return div.innerHTML;
 }
 
 /* ==========================================================================
@@ -625,34 +639,43 @@ function initRoutines() {
   // Setup routine step form listeners
   const routineForms = document.querySelectorAll('.routine-form');
   routineForms.forEach(form => {
+    if (form.dataset.boundSubmit === 'true') return;
     form.addEventListener('submit', handleRoutineFormSubmit);
+    form.dataset.boundSubmit = 'true';
   });
   
   // Listen for checkbox changes (delegated)
-  document.addEventListener('change', function(event) {
-    const target = event.target;
-    if (target && target.classList && target.classList.contains('step-checkbox')) {
-      // Use unified toggle flow to match previous behavior
-      const stepId = target.getAttribute('data-step-id');
-      if (stepId) {
-        toggleStepCompletion(stepId, target);
-      } else {
-        handleRoutineStepUpdate(target);
-      }
-    }
-  });
+  if (!routinesHandlersBound) {
+    document.addEventListener('change', onRoutineChange);
+    // Delegated handler for routine completion buttons
+    document.addEventListener('click', onRoutineClick);
+    routinesHandlersBound = true;
+  }
+}
 
-  // Delegated handler for routine completion buttons
-  document.addEventListener('click', function(event) {
-    const btn = event.target.closest && event.target.closest('.complete-btn');
-    if (!btn) return;
-    event.preventDefault();
-    const routineId = btn.getAttribute('data-routine-id');
-    const routineType = btn.getAttribute('data-routine-type');
-    if (routineId && routineType) {
-      markRoutineComplete(routineId, routineType);
+// Document-level delegated handlers for routines (defined once)
+function onRoutineChange(event) {
+  const target = event.target;
+  if (target && target.classList && target.classList.contains('step-checkbox')) {
+    // Use unified toggle flow to match previous behavior
+    const stepId = target.getAttribute('data-step-id');
+    if (stepId) {
+      toggleStepCompletion(stepId, target);
+    } else {
+      handleRoutineStepUpdate(target);
     }
-  });
+  }
+}
+
+function onRoutineClick(event) {
+  const btn = event.target.closest && event.target.closest('.complete-btn');
+  if (!btn) return;
+  event.preventDefault();
+  const routineId = btn.getAttribute('data-routine-id');
+  const routineType = btn.getAttribute('data-routine-type');
+  if (routineId && routineType) {
+    markRoutineComplete(routineId, routineType);
+  }
 }
 
 /**
@@ -906,6 +929,8 @@ function handleRoutineFormSubmit(event) {
  * Initialize products functionality
  */
 function initProducts() {
+  if (productsInitialized) return;
+  productsInitialized = true;
   initProductForms();
   initProductSearch();
   initProductSuggestions();
@@ -1136,12 +1161,6 @@ function initProductSuggestions() {
       const event = new Event('change', { bubbles: true });
       field.dispatchEvent(event);
     }
-  }
-
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
   }
 }
 
