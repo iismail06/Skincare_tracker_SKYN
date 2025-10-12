@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from .widgets import AccessibleTextarea, AccessibleCheckbox
 
+
 class CustomUserCreationForm(UserCreationForm):
     AGE_RANGE_CHOICES = [
         ('', 'Select your age range (optional)'),
@@ -16,15 +17,12 @@ class CustomUserCreationForm(UserCreationForm):
     ]
 
     email = forms.EmailField(required=False)
-    age_range = forms.ChoiceField(
-        choices=AGE_RANGE_CHOICES,
-        required=False,
-    )
-    
+    age_range = forms.ChoiceField(choices=AGE_RANGE_CHOICES, required=False)
+
     class Meta:
         model = User
         fields = ('username', 'email', 'age_range', 'password1', 'password2')
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Customize field labels and help text
@@ -32,7 +30,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['age_range'].label = 'Age Range (optional)'
         self.fields['password1'].help_text = 'Your password should be secure'
         self.fields['password2'].help_text = 'Confirm your password'
-        
+
         # Add CSS classes for styling
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
@@ -42,44 +40,48 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class ProfileQuestionnaireForm(forms.ModelForm):
-    """Simple skincare profile questionnaire - beginner friendly"""
-    
+    """Simple skincare profile questionnaire - beginner friendly."""
+
     class Meta:
         model = UserProfile
         fields = [
-            'skin_type', 
-            'main_concern', 
-            'current_routine', 
-            'main_goal', 
+            'skin_type',
+            'main_concern',
+            'current_routine',
+            'main_goal',
             'additional_notes',
-            'prefers_natural'
+            'prefers_natural',
         ]
-        
+
         widgets = {
             'skin_type': forms.Select(attrs={'class': 'form-control'}),
             'main_concern': forms.Select(attrs={'class': 'form-control'}),
             'current_routine': forms.Select(attrs={'class': 'form-control'}),
             'main_goal': forms.Select(attrs={'class': 'form-control'}),
-            'additional_notes': AccessibleTextarea(attrs={
-                'class': 'form-control', 
-                'rows': 3,
-                'placeholder': 'Tell us about any other skincare concerns or goals...'
-            }),
+            'additional_notes': AccessibleTextarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 3,
+                    'placeholder': (
+                        'Tell us about any other skincare concerns or goals...'
+                    ),
+                }
+            ),
             'prefers_natural': AccessibleCheckbox(),
         }
-        
+
         labels = {
-            'skin_type': 'What\'s your skin type?',
-            'main_concern': 'What\'s your main skin concern?',
+            'skin_type': "What's your skin type?",
+            'main_concern': "What's your main skin concern?",
             'current_routine': 'Do you currently have a skincare routine?',
-            'main_goal': 'What\'s your primary skincare goal?',
+            'main_goal': "What's your primary skincare goal?",
             'additional_notes': 'Additional notes (optional)',
             'prefers_natural': 'I prefer natural/organic products',
         }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Add empty option for dropdowns - beginner technique
+        # Add empty option for dropdowns - beginner friendly
         self.fields['skin_type'].empty_label = "Select your skin type"
         self.fields['main_concern'].empty_label = "Select your main concern"
         self.fields['current_routine'].empty_label = "Select one"
@@ -87,7 +89,7 @@ class ProfileQuestionnaireForm(forms.ModelForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-    """Allow editing of basic account fields like name and email"""
+    """Allow editing of basic account fields like name and email."""
 
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
@@ -95,11 +97,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = [
-            'first_name',
-            'last_name',
-            'email',
-        ]
+        fields = ['first_name', 'last_name', 'email']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -110,7 +108,7 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileDetailsForm(forms.ModelForm):
-    """Profile edit form that includes age fields plus questionnaire fields"""
+    """Profile edit form that includes age fields plus questionnaire fields."""
 
     class Meta:
         model = UserProfile
@@ -125,17 +123,25 @@ class ProfileDetailsForm(forms.ModelForm):
             'additional_notes',
             'prefers_natural',
         ]
+
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}
+            ),
             'age_range': forms.Select(attrs={'class': 'form-control'}),
             'skin_type': forms.Select(attrs={'class': 'form-control'}),
             'main_concern': forms.Select(attrs={'class': 'form-control'}),
             'current_routine': forms.Select(attrs={'class': 'form-control'}),
             'main_goal': forms.Select(attrs={'class': 'form-control'}),
-            'skin_concerns': AccessibleTextarea(attrs={'class': 'form-control', 'rows': 2}),
-            'additional_notes': AccessibleTextarea(attrs={'class': 'form-control', 'rows': 3}),
+            'skin_concerns': AccessibleTextarea(
+                attrs={'class': 'form-control', 'rows': 2}
+            ),
+            'additional_notes': AccessibleTextarea(
+                attrs={'class': 'form-control', 'rows': 3}
+            ),
             'prefers_natural': AccessibleCheckbox(),
         }
+
         labels = {
             'date_of_birth': 'Date of birth (optional)',
             'age_range': 'Age range',
@@ -153,6 +159,11 @@ class ProfileDetailsForm(forms.ModelForm):
         # Provide an empty option for selects
         if 'age_range' in self.fields:
             self.fields['age_range'].required = False
-        for name in ['skin_type', 'main_concern', 'current_routine', 'main_goal']:
+        for name in [
+            'skin_type',
+            'main_concern',
+            'current_routine',
+            'main_goal',
+        ]:
             if name in self.fields:
                 self.fields[name].empty_label = 'Select one'
