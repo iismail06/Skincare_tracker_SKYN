@@ -43,6 +43,8 @@ class CustomUserCreationForm(UserCreationForm):
 class ProfileQuestionnaireForm(forms.ModelForm):
     """Simple skincare profile questionnaire - beginner friendly"""
     
+    from .widgets import AccessibleTextarea, AccessibleCheckbox
+    
     class Meta:
         model = UserProfile
         fields = [
@@ -59,11 +61,12 @@ class ProfileQuestionnaireForm(forms.ModelForm):
             'main_concern': forms.Select(attrs={'class': 'form-control'}),
             'current_routine': forms.Select(attrs={'class': 'form-control'}),
             'main_goal': forms.Select(attrs={'class': 'form-control'}),
-            'additional_notes': forms.Textarea(attrs={
+            'additional_notes': AccessibleTextarea(attrs={
                 'class': 'form-control', 
                 'rows': 3,
                 'placeholder': 'Tell us about any other skincare concerns or goals...'
             }),
+            'prefers_natural': AccessibleCheckbox(),
         }
         
         labels = {
