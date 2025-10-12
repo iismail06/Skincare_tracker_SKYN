@@ -30,7 +30,8 @@ cloudinary.config(
 # Define the path to your hero images
 image_paths = {
     'hero_image': 'static/images/hero/hero.webp',
-    'feature_image': 'static/images/features/features.webp'
+    # Using Cloudinary directly for feature image to avoid iCloud optimization issues
+    'feature_image': 'https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264512/skyn/feature_image.jpg'
 }
 
 def upload_image_to_cloudinary(image_path, public_id):

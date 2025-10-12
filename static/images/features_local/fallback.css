@@ -1,0 +1,7 @@
+/* Create a new CSS rule to use a fallback image */
+
+.section-image {
+    background-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264512/skyn/feature_image.jpg");
+    background-size: cover;
+    background-position: center;
+}

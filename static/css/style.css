@@ -5,10 +5,10 @@
    ========================================================================== */
 :root {
     /* Accent tokens (used across buttons, links, and badges) */
-    --accent-color-text: var(--secondary-color-darker);         /* text color on accent backgrounds (readable contrast) */
+    --accent-color-text: #000000;         /* text color on accent backgrounds (readable contrast) */
     --accent-color-bg: var(--accent-color);                     /* accent background for buttons/badges */
     --accent-color-bg-lighter: var(--accent-color-lighter);     /* softer accent background (subtle states) */
-    --accent-color-strong-rgb: 103, 107, 93;                    /* darker greenish for hover tints */
+    --accent-color-strong-rgb: 83, 87, 73;                    /* darker greenish for hover tints */
 
     /* Glass tokens (used by nav, cards, and panels) */
     --glass-bg: rgba(255, 255, 255, 0.35);                      /* more transparent glass for panels */
@@ -29,7 +29,7 @@
 
     /* Hero imagery (shared across pages) */
     --site-hero-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264510/skyn/hero_image.jpg");
-    /* Features imagery (home page features section) */
+    /* Features imagery (home page features section) - Use Cloudinary URL directly to avoid iCloud optimization issues */
     --features-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264512/skyn/feature_image.jpg");
 
     /* Navbar glass controls (light mode defaults) */
@@ -70,7 +70,7 @@ main {
 
 /* Prevent Bootstrap from adding unwanted margins/padding (in use by templates
    listed above; keep to avoid unexpected gutters and max-width caps) */
-.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+.container {
     padding-left: 0 !important;
     padding-right: 0 !important;
     margin-left: 0 !important;
@@ -140,7 +140,7 @@ h2 {
     left: 0;
     right: 0;
     z-index: 1100;
-    background: rgba(var(--navbar-bg-rgb, 0, 0, 0), var(--navbar-opacity, 0.12));
+    background: rgba(var(--navbar-bg-rgb, 0, 0, 0), var(--navbar-opacity, 0.25));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
@@ -191,10 +191,11 @@ h2 {
     transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
     font-size: 1.1rem;
     display: inline-block;
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5); /* Add shadow for better contrast */
 }
 
 .custom-navbar .nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.25);
     color: #ffffff;
     transform: translateY(-2px);
 }
@@ -457,7 +458,7 @@ h2 {
     min-height: 1px; /* prevent collapse in some browsers */
     width: 100%;
     position: relative;
-    background-image: url("../images/features/features.webp");
+    background-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/f_auto,q_auto,w_auto/v1760264512/skyn/feature_image.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -470,10 +471,6 @@ h2 {
     color: var(--secondary-color-darker);
     margin-bottom: 2rem;
     text-align: center;
-}
-
-.section-content h2 .accent {
-    color: var(--accent-color-text);
 }
 
 .features-list {
@@ -600,11 +597,6 @@ h2 {
 }
 
 /* Subtle badge hover independent from buttons */
-.badge:hover {
-    background: rgba(var(--accent-color-rgb, 150, 154, 139), 0.10);
-    border-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.25);
-    color: var(--accent-color-text);
-}
 
 /* Small button variant for inline controls */
 .form-card--wide { max-width:600px; margin:2rem auto; }
@@ -613,10 +605,6 @@ h2 {
 /*  ================== UTILITIES & HELPERS   ================== */
 
 /* Small helpers used by JS when dynamically inserting elements */
-.u-margin-top-sm { margin-top: 0.5rem; }
-.u-margin-left-sm { margin-left: 0.5rem; }
-.u-margin-left-md { margin-left: 1rem; }
-.input-block { display:block; margin-top:0.25rem; width:100%; }
 
 /* ==========================================================================
    9. AUTHENTICATION PAGES
@@ -1278,46 +1266,6 @@ h2 {
   margin-top: 1rem;
 }
 
-.suggestion-card {
-    background: var(--card-bg, rgba(255, 255, 255, 0.82));
-    border: 1px solid var(--border, rgba(0,0,0,0.08));
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-
-.suggestion-card:hover {
-  background-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.08);
-  border-color: rgba(var(--accent-color-rgb, 150, 154, 139), 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.suggestion-card h5 {
-  margin: 0 0 0.5rem 0;
-  color: var(--secondary-color-darker);
-  font-size: 1.1rem;
-}
-
-.suggestion-card p {
-  margin: 0;
-  color: var(--gray);
-  font-size: 0.9rem;
-}
-
-.suggestion-card .product-type {
-  background-color: var(--accent-color-bg-lighter);
-  color: white;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-  display: inline-block;
-}
-
 /* Loading and heading helpers used by template */
 .suggestions-loading { display: none; text-align: center; padding: 1rem; }
 .product-suggestions[aria-hidden="true"] { display: none; }
@@ -1348,8 +1296,7 @@ h2 {
 .product-form label { display:block; margin-bottom: 0.5rem; font-weight: 600; }
 
 .product-form :is(input, textarea)::placeholder { color: var(--gray); opacity: 0.85; }
-.product-form :is(.form-control, input, select, textarea)[disabled],
-.product-form :is(.form-control, input, select, textarea)[readonly] {
+.product-form :is(.form-control, input, select, textarea)[disabled] {
     opacity: 0.8;
     background-color: rgba(var(--background-color-rgb, 233,233,233), 0.4);
     cursor: not-allowed;
@@ -1373,8 +1320,7 @@ h2 {
 }
 
 /* Make product form checkboxes clearly visible when toggled */
-.product-form input[type="checkbox"],
-.product-form .form-check-input {
+.product-form input[type="checkbox"] {
     accent-color: var(--accent-color);
     width: 18px;
     height: 18px;
@@ -1456,19 +1402,6 @@ h2 {
 .welcome-text {
     color: #ffffff !important; /* explicit white as requested */
     text-shadow: 0 1px 2px rgba(0,0,0,0.35);
-}
-
-.dropdown-input-wrap input[type="text"] {
-    width: 100%;
-    padding-right: 2.2em;
-}
-.dropdown-arrow {
-    position: absolute;
-    right: 0.8em;
-    pointer-events: none;
-    font-size: 1.2em;
-    color: #000;
-    opacity: 0.7;
 }
 
 
@@ -1590,7 +1523,6 @@ h2 {
 .profile-container .btn-profile,
 .profile-container .form-actions-row .add-routine-btn,
 .profile-container .form-actions-row .edit-btn,
-.profile-container .profile-actions-row .btn-wide,
 .profile-container .profile-actions-row .edit-btn,
 .profile-container .profile-actions-row .add-routine-btn {
     min-width: 160px;
@@ -1612,8 +1544,6 @@ h2 {
 .profile-container .form-actions-row .add-routine-btn:focus-visible,
 .profile-container .form-actions-row .edit-btn:hover,
 .profile-container .form-actions-row .edit-btn:focus-visible,
-.profile-container .profile-actions-row .btn-wide:hover,
-.profile-container .profile-actions-row .btn-wide:focus-visible,
 .profile-container .profile-actions-row .edit-btn:hover,
 .profile-container .profile-actions-row .edit-btn:focus-visible,
 .profile-container .profile-actions-row .add-routine-btn:hover,
@@ -1666,316 +1596,83 @@ h2 {
    17.  Dark Mode Styles
    ========================================================================== */
 
-body.dark-theme {
-    --background-color: #2a2418;
-    --background-color-rgb: 42, 36, 24;
-    --background-color-darker: #1f1b13;
-    --background-color-darker-rgb: 31, 27, 19;
-    --text: #f0e6d2;
-    --secondary-color: #d4c4a8;
-    --secondary-color-lighter: #f0d3bc;
-    --secondary-color-darker: #f0e6d2;
-    --secondary-color-darker-rgb: 240, 230, 210;
-    --accent-color: #35552a; /* darker green */
-    --accent-color-rgb: 53, 85, 42;
-    --accent-color-lighter: #4a6b3d;
-    --accent-color-bg-lighter: #4a6b3d; /* darker but slightly lighter bg variant */
-    /* Dark theme accessible tokens */
-    --accent-color-text: #e6e8de; /* readable accent text against dark bg */
-    --accent-color-bg: #35552a; /* darker accent background in dark mode */
-    --error-color: #d32f2f;
-    --success-color: #2e7d32;
-    /* Dark theme glass overrides - more transparent */
-    --glass-bg: rgba(20,20,20,0.28);
-    --glass-border: rgba(255,255,255,0.06);
-    --glass-blur: 8px;
-    /* dark theme token overrides */
-    --border: rgba(255,255,255,0.05);
-    --glass-gradient-top: rgba(255,255,255,0.10);
-    --glass-gradient-bottom: rgba(255,255,255,0.05);
-    --glass-bg-subtle: rgba(255,255,255,0.015);
-    --card-bg: rgba(255,255,255,0.015);
-    --gray: #bdb6a6;
-}
-
 
 
 /* Dark theme hero section text colors */
-body.dark-theme .hero-title,
-body.dark-theme .hero-subtitle,
-body.dark-theme .hero-description,
-body.dark-theme .brand-highlight {
-    color: var(--secondary-color-darker);
-}
 
 /* Dramatic difference for navbar between modes */
-body.dark-theme {
-    --navbar-bg-rgb: 255, 255, 255; /* light glass on dark bg */
-    --navbar-opacity: 0.18;         /* slightly more transparent in dark mode */
-}
 
 /* === adjustments for Navbar === */
 
 /* Dark theme nav links & form inputs: subtle glass accents */
-body.dark-theme .custom-navbar .nav-links a {
-    background: transparent;
-    color: var(--text);
-    border-radius: 8px;
-}
 
 /* Keep brand readable in dark mode as well */
-body.dark-theme .custom-navbar .nav-brand {
-    color: #ffffff;
-}
 /* Dark theme: use theme text color for contrast on lighter glass */
-body.dark-theme .custom-navbar .hamburger-line {
-    background-color: var(--text);
-}
-
-body.dark-theme :is(.form-control, input, select, textarea) {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
 
 /* Dark theme: product form controls */
 /* product form controls inherit generic dark inputs */
 
 /* Dark theme: routine page alias */
-body.dark-theme .add-routine-page :is(.form-control, input[type="text"], select, textarea),
-body.dark-theme .form-group :is(input, select) {
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    color: #fff !important;
-}
 
 /* Dark theme: questionnaire/auth controls */
 /* auth container form controls inherit generic dark inputs */
 /* stronger glass contrast on key containers */
-body.dark-theme .custom-navbar,
-body.dark-theme .form-card,
-body.dark-theme .form-container,
-body.dark-theme .auth-container,
-body.dark-theme .card,
-body.dark-theme .product-card,
-body.dark-theme .dashboard-section {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
-}
 
 
 /* ===  for signup form fields === */
-body.dark-theme #signup-form input,
-body.dark-theme #signup-form textarea,
-body.dark-theme #signup-form select {
-    background: #fff !important;
-    color: #222 !important;
-    border: 1.5px solid var(--accent-color, #6c63ff);
-}
 
 /* ===  adjustments for Buttons === */
 
 /* Dark mode: All button text should be white for readability */
-
-body.dark-theme .btn,
-body.dark-theme .btn-primary,
-body.dark-theme .btn-secondary,
-body.dark-theme .btn-success,
-body.dark-theme .btn-info,
-body.dark-theme .btn-warning,
-body.dark-theme .btn-light,
-body.dark-theme .btn-dark,
-body.dark-theme button {
-    color: #fff !important;
-}
 /* Dark mode: Specific button type adjustments */
-body.dark-theme .btn-primary {
-    background: var(--accent-color-bg) !important;
-    border-color: var(--accent-color-bg) !important;
-}
-
-body.dark-theme .btn-secondary {
-    background: var(--glass-bg) !important;
-    border-color: var(--glass-border) !important;
-}
 
 /*  make danger buttons readable on dark bg */
-body.dark-theme .btn-danger {
-    color: #fff !important;
-    background: #dc3545 !important;
-    border-color: rgba(220,53,69,0.85) !important;
-}
 
 /* Dark mode: Success buttons */
-body.dark-theme .btn-success {
-    color: #fff !important;
-    background: var(--success-color) !important;
-    border-color: var(--success-color) !important;
-}
 
 /* Dark mode: hover states inherit base color; no extra overrides needed */
 
 /* Dark mode: Edit, View, Delete buttons specifically */
-body.dark-theme .edit-btn,
-body.dark-theme .delete-btn,
-body.dark-theme .save-btn,
-body.dark-theme .cancel-btn {
-    color: #fff !important;
-}
 
 /* Form action buttons inherit .btn styles in dark mode */
 
 /* Dark mode: Inline dismiss buttons */
-body.dark-theme .inline-dismiss {
-    color: #fff !important;
-    background: rgba(255,255,255,0.1) !important;
-    border-color: rgba(255,255,255,0.2) !important;
-}
 /* ===  message ===  */
 
 /* Dark theme warning message */
-body.dark-theme .warning-message {
-    background: #3a3124;
-    color: var(--accent-color-lighter);
-    border-color: var(--border);
-}
 
 /* ===  PROFILE PAGE SPECIFIC STYLES === */
 
 /* Profile container and basic layout */
-body.dark-theme .profile-container {
-    background: transparent !important;
-    border: none !important;
-    border-radius: 12px;
-    box-shadow: none !important;
-}
 
 /* Profile page title */
-body.dark-theme .profile-container .page-title {
-    color: var(--secondary-color-darker) !important;
-}
 
 /*  Profile information section */
-body.dark-theme .profile-info {
-    color: var(--text) !important;
-}
-
-body.dark-theme .profile-info p {
-    color: var(--text) !important;
-}
-
-body.dark-theme .profile-info strong {
-    color: var(--secondary-color-darker) !important;
-}
 
 /* ===  MEASSAGE SPECIFIC STYLES === */
 
 /* Inline success messages */
-body.dark-theme .inline-success {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
-
-body.dark-theme .inline-success .muted-success {
-    color: var(--accent-color-lighter) !important;
-}
-
-body.dark-theme .inline-success strong {
-    color: var(--secondary-color-darker) !important;
-}
 
 /* Step count and labels in forms */
-body.dark-theme .step-count {
-    color: var(--accent-color-lighter) !important;
-}
 
 
 /* Step items and selects */
-body.dark-theme .step-item select,
-body.dark-theme .step-select {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
-
-body.dark-theme .step-item select option,
-body.dark-theme .step-select option {
-    background: var(--background-color-darker) !important;
-    color: var(--text) !important;
-}
 /* Form labels and inputs in profile forms */
-body.dark-theme .form-card label {
-    color: var(--text) !important;
-}
 
 /* Form inputs inside .form-card inherit generic dark inputs */
 
 /* Dropdown input wrapper */
-body.dark-theme .dropdown-input-wrap input {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
-
-body.dark-theme .dropdown-arrow {
-    color: var(--text) !important;
-}
 
 /* Badges and success elements */
-body.dark-theme .badge {
-    background: var(--accent-color-bg) !important;
-    color: var(--background-color) !important;
-}
-
-body.dark-theme .badge.success {
-    background: var(--success-color) !important;
-    color: #fff !important;
-}
 
 /* ===  ADD ROUTINE PAGE SPECIFIC STYLES === */
 
 /* Dark mode overrides scoped to Add Routine page for contrast on dark hero */
-body.dark-theme .add-routine-page {
-    background: rgba(0, 0, 0, 0.65) !important;
-    color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-}
-body.dark-theme .add-routine-page .form-card {
-    background: rgba(0, 0, 0, 0.55) !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.45);
-}
-body.dark-theme .add-routine-page .page-title,
-body.dark-theme .add-routine-page h3,
-body.dark-theme .add-routine-page label,
-body.dark-theme .add-routine-page .back-link { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
-body.dark-theme .add-routine-page input[type="text"],
-body.dark-theme .add-routine-page select,
-body.dark-theme .add-routine-page textarea,
-body.dark-theme .form-group input,
-body.dark-theme .form-group select {
-    background: rgba(255,255,255,0.08) !important;
-    color: #fff !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-}
-body.dark-theme .form-group input::placeholder,
-body.dark-theme .add-routine-page textarea::placeholder { color: #e0e0e0; opacity: 0.8; }
-body.dark-theme .steps-section { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.12); }
-body.dark-theme .add-routine-page .add-routine-btn,
-body.dark-theme .add-routine-page .edit-btn { color: #fff; border-color: rgba(255,255,255,0.4); }
 
 /* ===  QUESTIONNAIRE PAGE SPECIFIC STYLES === */
 
 /* If we ever need to change per theme, the dark/light overrides remain easy */
-body.dark-theme .welcome-text { color: #ffffff !important; }
 /* Dropdown arrow for datalist input */
-.dropdown-input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
 /* ==========================================================================
    18. RESPONSIVE DESIGN - ALL MEDIA QUERIES
    ========================================================================== */
