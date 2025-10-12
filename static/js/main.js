@@ -226,7 +226,13 @@ function initTheme() {
   }
 
   // Check for saved theme preference or default to 'light'
-  const currentTheme = localStorage.getItem('theme') || 'light';
+  let currentTheme = 'light';
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved) currentTheme = saved;
+  } catch (e) {
+    // localStorage may be blocked; stay with default and continue
+  }
 
   if (currentTheme === 'dark') {
     body.classList.add('dark-theme');
@@ -241,10 +247,10 @@ function initTheme() {
     body.classList.toggle('dark-theme');
     if (body.classList.contains('dark-theme')) {
       themeToggle.textContent = '\u2600\uFE0F';
-      localStorage.setItem('theme', 'dark');
+      try { localStorage.setItem('theme', 'dark'); } catch (e) {}
     } else {
       themeToggle.textContent = '\uD83C\uDF19';
-      localStorage.setItem('theme', 'light');
+      try { localStorage.setItem('theme', 'light'); } catch (e) {}
     }
   };
   themeToggle.addEventListener('click', themeToggle._handler);
