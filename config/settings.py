@@ -245,8 +245,8 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # HSTS (short value to start; increase after testing)
-    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 60))
+    # Set strong HSTS header (1 year duration)
+    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 31536000))  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     # Other recommended settings

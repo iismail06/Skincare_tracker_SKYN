@@ -77,6 +77,14 @@ collected_static/
 static_root/
 media_root/
 
+# Security enhancement files
+static/js/trusted-types.js
+static/js/cookie-consent.js
+static/css/cookie-consent.css
+staticfiles/js/trusted-types.js
+staticfiles/js/cookie-consent.js
+staticfiles/css/cookie-consent.css
+
 # Flask stuff:
 instance/
 .webassets-cache
