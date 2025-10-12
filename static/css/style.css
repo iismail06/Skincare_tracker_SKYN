@@ -29,9 +29,9 @@
 
     /* Hero imagery (shared across pages) */
     /* Use local static asset so it’s fingerprinted and served by Django/WhiteNoise */
-    --site-hero-image: url("../images/hero/hero.webp");
+    --site-hero-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/v1760264510/skyn/hero_image.jpg");
     /* Features imagery (home page features section) */
-    --features-image: url("../images/features/features.webp");
+    --features-image: url("https://res.cloudinary.com/di5xhvyrz/image/upload/v1760264512/skyn/feature_image.jpg");
 
     /* Navbar glass controls (light mode defaults) */
     --navbar-bg-rgb: 0, 0, 0;  /* neutral dark glass in light mode */

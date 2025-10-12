@@ -1,6 +1,8 @@
 asgiref==3.9.1
+cloudinary==1.39.0
 dj-database-url==0.5.0
 Django==5.2.6
+django-cloudinary-storage==0.3.0
 djangorestframework==3.14.0
 gunicorn==21.2.0
 psycopg2==2.9.10
