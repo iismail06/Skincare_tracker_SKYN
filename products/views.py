@@ -5,21 +5,26 @@ from django.http import JsonResponse
 from django.urls import reverse
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+
 from .models import Product
 from .forms import ProductForm
 from .serializers import ProductSerializer, ProductCreateSerializer
 
-# Create your views here.
 
 @login_required
 def product_list(request):
-    """Show all products for the current user"""
+    """Show all products for the current user."""
     products = Product.objects.filter(user=request.user)
-    return render(request, 'products/product_list.html', {'products': products})
+    return render(
+        request,
+        'products/product_list.html',
+        {'products': products},
+    )
+
 
 @login_required
 def product_create(request):
-    """Add a new product"""
+    """Add a new product."""
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
@@ -27,439 +32,357 @@ def product_create(request):
                 product = form.save(commit=False)
                 product.user = request.user
                 product.save()
-                messages.success(request, f'Product "{product.name}" added successfully!')
-                # If AJAX/XHR, return JSON for the front-end handler
+                success_msg = (
+                    'Product "{}" added successfully!'
+                ).format(product.name)
+                messages.success(request, success_msg)
+
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'status': 'success',
-                        'message': f'Product "{product.name}" added successfully!',
-                        'redirect_url': reverse('products:list')
-                    })
+                    return JsonResponse(
+                        {
+                            'status': 'success',
+                            'message': success_msg,
+                            'redirect_url': reverse('products:list'),
+                        }
+                    )
                 return redirect('products:list')
-            except Exception as e:
-                messages.error(request, "Sorry, we couldn't save your product. Please try again.")
+            except Exception:
+                err_msg = (
+                    "Sorry, we couldn't save your product. "
+                    "Please try again."
+                )
+                messages.error(request, err_msg)
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': "Sorry, we couldn't save your product. Please try again."
-                    }, status=500)
-                # Form will be re-displayed with the user's data still filled in
+                    return JsonResponse(
+                        {'status': 'error', 'message': err_msg},
+                        status=500,
+                    )
         else:
-            # Return validation errors for AJAX submissions
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Please correct the errors below.',
-                    'errors': form.errors
-                }, status=400)
+                return JsonResponse(
+                    {
+                        'status': 'error',
+                        'message': 'Please correct the errors below.',
+                        'errors': form.errors,
+                    },
+                    status=400,
+                )
     else:
         form = ProductForm()
-    
-    return render(request, 'products/product_form.html', {
-        'form': form,
-        'title': 'Add New Product'
-    })
+
+    return render(
+        request,
+        'products/product_form.html',
+        {'form': form, 'title': 'Add New Product'},
+    )
+
 
 @login_required
 def product_edit(request, pk):
-    """Edit an existing product"""
+    """Edit an existing product."""
     product = get_object_or_404(Product, pk=pk, user=request.user)
-    
+
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
+        form = ProductForm(
+            request.POST, request.FILES, instance=product
+        )
         if form.is_valid():
             form.save()
-            messages.success(request, f'Product "{product.name}" updated successfully!')
+            success_msg = (
+                'Product "{}" updated successfully!'
+            ).format(product.name)
+            messages.success(request, success_msg)
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'status': 'success',
-                    'message': f'Product "{product.name}" updated successfully!',
-                    'redirect_url': reverse('products:list')
-                })
+                return JsonResponse(
+                    {
+                        'status': 'success',
+                        'message': success_msg,
+                        'redirect_url': reverse('products:list'),
+                    }
+                )
             return redirect('products:list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Please correct the errors below.',
-                    'errors': form.errors
-                }, status=400)
+                return JsonResponse(
+                    {
+                        'status': 'error',
+                        'message': 'Please correct the errors below.',
+                        'errors': form.errors,
+                    },
+                    status=400,
+                )
     else:
         form = ProductForm(instance=product)
-    
-    return render(request, 'products/product_form.html', {
-        'form': form,
-        'title': f'Edit {product.name}',
-        'product': product
-    })
+
+    return render(
+        request,
+        'products/product_form.html',
+        {
+            'form': form,
+            'title': 'Edit {}'.format(product.name),
+            'product': product,
+        },
+    )
+
 
 @login_required
 def product_delete(request, pk):
-    """Delete a product"""
+    """Delete a product."""
     product = get_object_or_404(Product, pk=pk, user=request.user)
-    
+
     if request.method == 'POST':
         product_name = product.name
         product.delete()
-        messages.success(request, f'Product "{product_name}" deleted successfully!')
+        messages.success(
+            request,
+            'Product "{}" deleted successfully!'.format(product_name),
+        )
         return redirect('products:list')
-    
-    return render(request, 'products/product_delete.html', {'product': product})
 
+    return render(
+        request,
+        'products/product_delete.html',
+        {'product': product},
+    )
 
-# API Views for REST endpoints
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    """API endpoint for listing and creating products"""
+    """API endpoint for listing and creating products."""
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_queryset(self):
-        # Only return products for the authenticated user. Listing is handled
-        # in `list()` so that we can return serialized default suggestion
-        # objects when the user has no products without breaking DRF internals.
         return Product.objects.filter(user=self.request.user)
-    
+
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return ProductCreateSerializer
         return ProductSerializer
-    
+
     def perform_create(self, serializer):
-        # Automatically set the user when creating a product
         serializer.save(user=self.request.user)
 
     def list(self, request, *args, **kwargs):
-        """Return the user's products. If an error occurs retrieving them, fall back to suggestions."""
+        """Return user's products; fallback to suggestions on error."""
         try:
             return super().list(request, *args, **kwargs)
         except Exception:
-            # As a resilience fallback only (e.g., DB temporarily unavailable), provide suggestions
             category = request.GET.get('category', 'moisturizer')
-            suggestions = ProductBrowseByCategoryAPIView().create_default_suggestions(category)
-            serializer = ProductSerializer(suggestions, many=True, context={'request': request})
+            suggestions = (
+                ProductBrowseByCategoryAPIView()
+                .create_default_suggestions(category)
+            )
+            serializer = ProductSerializer(
+                suggestions, many=True, context={'request': request}
+            )
             return Response(serializer.data)
 
 
-class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    """API endpoint for retrieving, updating, and deleting a specific product"""
+class ProductRetrieveUpdateDestroyAPIView(
+    generics.RetrieveUpdateDestroyAPIView
+):
+    """API endpoint for single product retrieve/update/delete."""
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_queryset(self):
-        # Only return products for the authenticated user
         return Product.objects.filter(user=self.request.user)
 
 
 class ProductBrowseByCategoryAPIView(generics.ListAPIView):
-    """API endpoint for browsing products by category (for suggestions)"""
+    """API endpoint for browsing products by category."""
     serializer_class = ProductSerializer
-    permission_classes = []  # No authentication required for browsing
-    
+    permission_classes = []  # Public browsing allowed
+
     def get_queryset(self):
         category = self.kwargs.get('category', 'moisturizer')
-        
-        # Get products from database first 
         db_products = Product.objects.filter(
             product_type=category
         ).order_by('brand', 'name')[:10]
-        
-        # If we have enough products, return them
         if len(db_products) >= 4:
             return db_products
-        
-        # Otherwise, create default suggestions
         return self.create_default_suggestions(category)
-    
+
     def create_default_suggestions(self, category):
-        """Create default product suggestions when database is empty"""
-        
-        # Popular products by category
+        """Create default product suggestions when DB is empty."""
         default_products = {
             'cleanser': [
-                {'name': 'Hydrating Foaming Oil Cleanser', 'brand': 'CeraVe', 'ingredients': 'Hyaluronic Acid, Ceramides, Niacinamide'},
-                {'name': 'Gentle Skin Cleanser', 'brand': 'Cetaphil', 'ingredients': 'Sodium Cocoyl Glycinate, Glycerin'},
-                {'name': 'Ultra Gentle Daily Cleanser', 'brand': 'Neutrogena', 'ingredients': 'Glycerin, Polyglyceryl-4 Caprate'},
-                {'name': 'Squalane Cleanser', 'brand': 'The Ordinary', 'ingredients': 'Squalane, Aqua, Coco-Caprylate'},
-                {'name': 'Oil Cleanser', 'brand': 'DHC', 'ingredients': 'Olea Europaea, Phenoxyethanol'},
+                {
+                    'name': 'Hydrating Foaming Oil Cleanser',
+                    'brand': 'CeraVe',
+                    'ingredients': (
+                        'Hyaluronic Acid, Ceramides, Niacinamide'
+                    ),
+                },
+                {
+                    'name': 'Gentle Skin Cleanser',
+                    'brand': 'Cetaphil',
+                    'ingredients': 'Sodium Cocoyl Glycinate, Glycerin',
+                },
+                {
+                    'name': 'Ultra Gentle Daily Cleanser',
+                    'brand': 'Neutrogena',
+                    'ingredients': 'Glycerin, Polyglyceryl-4 Caprate',
+                },
+                {
+                    'name': 'Squalane Cleanser',
+                    'brand': 'The Ordinary',
+                    'ingredients': 'Squalane, Aqua, Coco-Caprylate',
+                },
             ],
             'moisturizer': [
-                {'name': 'Daily Facial Moisturizing Lotion', 'brand': 'CeraVe', 'ingredients': 'Hyaluronic Acid, Ceramides, MVE Technology'},
-                {'name': 'Hydro Boost Water Gel', 'brand': 'Neutrogena', 'ingredients': 'Hyaluronic Acid, Dimethicone, Glycerin'},
-                {'name': 'Daily Facial Moisturizer', 'brand': 'Cetaphil', 'ingredients': 'Macadamia Oil, Dimethicone, Glycerin'},
-                {'name': 'Natural Moisturizing Factors + HA', 'brand': 'The Ordinary', 'ingredients': 'Sodium Hyaluronate, Arginine, PCA'},
-                {'name': 'Dramatically Different Moisturizing Lotion', 'brand': 'Clinique', 'ingredients': 'Water, Mineral Oil, Glycerin'},
+                {
+                    'name': 'Daily Facial Moisturizing Lotion',
+                    'brand': 'CeraVe',
+                    'ingredients': 'Hyaluronic Acid, Ceramides',
+                },
+                {
+                    'name': 'Hydro Boost Water Gel',
+                    'brand': 'Neutrogena',
+                    'ingredients': 'Hyaluronic Acid, Glycerin',
+                },
+                {
+                    'name': 'Daily Facial Moisturizer',
+                    'brand': 'Cetaphil',
+                    'ingredients': 'Macadamia Oil, Dimethicone',
+                },
+                {
+                    'name': 'Natural Moisturizing Factors + HA',
+                    'brand': 'The Ordinary',
+                    'ingredients': 'Sodium Hyaluronate, PCA',
+                },
             ],
             'sunscreen': [
-                {'name': 'AM Facial Moisturizing Lotion SPF 30', 'brand': 'CeraVe', 'ingredients': 'Zinc Oxide, Niacinamide, Hyaluronic Acid'},
-                {'name': 'Ultra Sheer Dry-Touch SPF 45', 'brand': 'Neutrogena', 'ingredients': 'Avobenzone, Homosalate, Octisalate'},
-                {'name': 'UV Clear Broad-Spectrum SPF 46', 'brand': 'EltaMD', 'ingredients': 'Zinc Oxide, Octinoxate, Niacinamide'},
-                {'name': 'Invisible Zinc Oxide SPF 50', 'brand': 'Blue Lizard', 'ingredients': 'Zinc Oxide, Titanium Dioxide'},
-                {'name': 'Anthelios Melt-in Milk SPF 60', 'brand': 'La Roche-Posay', 'ingredients': 'Avobenzone, Homosalate, Octisalate'},
+                {
+                    'name': 'AM Facial Moisturizing Lotion SPF 30',
+                    'brand': 'CeraVe',
+                    'ingredients': 'Zinc Oxide, Niacinamide',
+                },
+                {
+                    'name': 'Ultra Sheer Dry-Touch SPF 45',
+                    'brand': 'Neutrogena',
+                    'ingredients': 'Avobenzone, Homosalate, Octisalate',
+                },
+                {
+                    'name': 'UV Clear Broad-Spectrum SPF 46',
+                    'brand': 'EltaMD',
+                    'ingredients': 'Zinc Oxide, Niacinamide',
+                },
+                {
+                    'name': 'Invisible Zinc Oxide SPF 50',
+                    'brand': 'Blue Lizard',
+                    'ingredients': 'Zinc Oxide, Titanium Dioxide',
+                },
             ],
             'serum': [
-                {'name': 'Vitamin C + E Ferulic Acid Serum', 'brand': 'Skinceuticals', 'ingredients': 'L-Ascorbic Acid, Vitamin E, Ferulic Acid'},
-                {'name': 'Niacinamide 10% + Zinc 1%', 'brand': 'The Ordinary', 'ingredients': 'Niacinamide, Zinc PCA, Dimethyl Isosorbide'},
-                {'name': 'Hyaluronic Acid 2% + B5', 'brand': 'The Ordinary', 'ingredients': 'Sodium Hyaluronate, Panthenol'},
-                {'name': 'Vitamin C Brightening Serum', 'brand': 'Mad Hippie', 'ingredients': 'Sodium Ascorbyl Phosphate, Hyaluronic Acid'},
-                {'name': 'B3 Multi-Renewal Serum', 'brand': 'No7', 'ingredients': 'Niacinamide, Panthenol, Hyaluronic Acid'},
+                {
+                    'name': 'Vitamin C + E Ferulic Acid Serum',
+                    'brand': 'Skinceuticals',
+                    'ingredients': 'L-Ascorbic Acid, Vitamin E, Ferulic Acid',
+                },
+                {
+                    'name': 'Niacinamide 10% + Zinc 1%',
+                    'brand': 'The Ordinary',
+                    'ingredients': 'Niacinamide, Zinc PCA',
+                },
+                {
+                    'name': 'Hyaluronic Acid 2% + B5',
+                    'brand': 'The Ordinary',
+                    'ingredients': 'Sodium Hyaluronate, Panthenol',
+                },
+                {
+                    'name': 'Vitamin C Brightening Serum',
+                    'brand': 'Mad Hippie',
+                    'ingredients': 'Sodium Ascorbyl Phosphate, HA',
+                },
             ],
             'toner': [
-                {'name': 'Alcohol-Free Toner', 'brand': 'Thayers', 'ingredients': 'Witch Hazel, Aloe Vera, Grapefruit'},
-                {'name': 'Ultra Gentle Toner', 'brand': 'Neutrogena', 'ingredients': 'Glycerin, Cucumber Extract'},
-                {'name': 'Clarifying Toner', 'brand': 'CeraVe', 'ingredients': 'Niacinamide, Hyaluronic Acid, Vitamin B5'},
-                {'name': 'Glycolic Acid 7% Toning Solution', 'brand': 'The Ordinary', 'ingredients': 'Glycolic Acid, Amino Acids, Ginseng'},
-                {'name': 'Calming Rose Toner', 'brand': 'Heritage Store', 'ingredients': 'Rosewater, Glycerin'},
-            ],
-            'retinol': [
-                {'name': 'Retinol 0.5% in Squalane', 'brand': 'The Ordinary', 'ingredients': 'Retinol, Squalane, Caprylic Triglyceride'},
-                {'name': 'A313 Retinoid Cream', 'brand': 'Avibon', 'ingredients': 'Retinyl Palmitate, Petrolatum'},
-                {'name': 'Retinol Correxion Deep Wrinkle Serum', 'brand': 'RoC', 'ingredients': 'Retinol, Magnesium Ascorbyl Phosphate'},
-                {'name': 'Time Revolution Night Repair Ampoule', 'brand': 'Missha', 'ingredients': 'Retinol, Niacinamide, Adenosine'},
-                {'name': 'Retinol Anti-Aging Cream', 'brand': 'LilyAna Naturals', 'ingredients': 'Retinol, Hyaluronic Acid, Vitamin E'},
-            ],
-            'essence': [
-                {'name': 'Time Revolution First Treatment Essence', 'brand': 'Missha', 'ingredients': 'Fermented Yeast Extract, Niacinamide'},
-                {'name': 'Fresh Herb Origin Serum', 'brand': 'Natural Republic', 'ingredients': 'Centella Asiatica, Green Tea Extract'},
-                {'name': 'Snail Secretion Filtrate Essence', 'brand': 'COSRX', 'ingredients': 'Snail Secretion Filtrate, Betaine'},
-                {'name': 'Galactomyces 95 Tone Balancing Essence', 'brand': 'COSRX', 'ingredients': 'Galactomyces Ferment Filtrate, Niacinamide'},
-                {'name': 'Rice Water Bright Cleansing Foam', 'brand': 'The Face Shop', 'ingredients': 'Rice Water, Glycerin, Sorbitol'},
-            ],
-            'vitamin_c': [
-                {'name': 'Vitamin C + E Ferulic Acid Serum', 'brand': 'Skinceuticals', 'ingredients': 'L-Ascorbic Acid, Vitamin E, Ferulic Acid'},
-                {'name': 'Vitamin C Suspension 23% + HA Spheres 2%', 'brand': 'The Ordinary', 'ingredients': 'L-Ascorbic Acid, Hyaluronic Acid'},
-                {'name': 'Magnesium Ascorbyl Phosphate 10%', 'brand': 'The Ordinary', 'ingredients': 'Magnesium Ascorbyl Phosphate, Panthenol'},
-                {'name': 'Vitamin C Brightening Serum', 'brand': 'Mad Hippie', 'ingredients': 'Sodium Ascorbyl Phosphate, Hyaluronic Acid'},
-                {'name': 'C E Ferulic', 'brand': 'SkinCeuticals', 'ingredients': 'L-Ascorbic Acid, Alpha Tocopherol, Ferulic Acid'},
-            ],
-            'exfoliant': [
-                {'name': 'BHA Liquid Exfoliant', 'brand': 'Paula\'s Choice', 'ingredients': 'Salicylic Acid, Green Tea Extract'},
-                {'name': 'AHA 30% + BHA 2% Peeling Solution', 'brand': 'The Ordinary', 'ingredients': 'Glycolic Acid, Lactic Acid, Salicylic Acid'},
-                {'name': 'Lactic Acid 10% + HA', 'brand': 'The Ordinary', 'ingredients': 'Lactic Acid, Sodium Hyaluronate'},
-                {'name': 'Glycolic Acid 7% Toning Solution', 'brand': 'The Ordinary', 'ingredients': 'Glycolic Acid, Amino Acids, Ginseng'},
-                {'name': 'Gentle Daily Peel', 'brand': 'Drunk Elephant', 'ingredients': 'AHA/BHA Complex, Peptides'},
-            ],
-            'mask': [
-                {'name': 'Aztec Secret Indian Healing Clay', 'brand': 'Aztec Secret', 'ingredients': 'Bentonite Clay, Montmorillonite'},
-                {'name': 'Honey Oatmeal Mask', 'brand': 'Freeman', 'ingredients': 'Manuka Honey, Oatmeal, Colloidal Oatmeal'},
-                {'name': 'Hydrating B5 Gel Mask', 'brand': 'SkinCeuticals', 'ingredients': 'Hyaluronic Acid, Vitamin B5'},
-                {'name': 'Dead Sea Mud Mask', 'brand': 'AHAVA', 'ingredients': 'Dead Sea Mud, Aloe Vera, Dunaliella Algae'},
-                {'name': 'Charcoal Face Mask', 'brand': 'Origins', 'ingredients': 'Activated Charcoal, White China Clay'},
-            ],
-            'eye_cream': [
-                {'name': 'Eye Repair Cream', 'brand': 'CeraVe', 'ingredients': 'Ceramides, Hyaluronic Acid, Niacinamide'},
-                {'name': 'Caffeine Solution 5% + EGCG', 'brand': 'The Ordinary', 'ingredients': 'Caffeine, EGCG, Hyaluronic Acid'},
-                {'name': 'All About Eyes', 'brand': 'Clinique', 'ingredients': 'Cucumber Extract, Barley Extract'},
-                {'name': 'Retinol Eye Cream', 'brand': 'RoC', 'ingredients': 'Retinol, Mineral Complex'},
-                {'name': 'Advanced Night Repair Eye', 'brand': 'Estée Lauder', 'ingredients': 'ChronoluxCB™, Caffeine'},
-            ],
-            'oil': [
-                {'name': 'Squalane Oil', 'brand': 'The Ordinary', 'ingredients': '100% Plant-Derived Squalane'},
-                {'name': 'Rosehip Seed Oil', 'brand': 'The Ordinary', 'ingredients': '100% Organic Cold-Pressed Rose Hip Fruit Extract'},
-                {'name': 'Marula Oil', 'brand': 'Drunk Elephant', 'ingredients': '100% Virgin Marula Oil'},
-                {'name': 'Jojoba Oil', 'brand': 'The Ordinary', 'ingredients': '100% Organic Cold-Pressed Jojoba Oil'},
-                {'name': 'Argan Oil', 'brand': 'Josie Maran', 'ingredients': '100% Pure Argan Oil'},
-            ],
-            'spot_treatment': [
-                {'name': 'Rapid Clear Stubborn Acne Spot Gel', 'brand': 'Neutrogena', 'ingredients': 'Benzoyl Peroxide, Salicylic Acid'},
-                {'name': 'Drying Lotion', 'brand': 'Mario Badescu', 'ingredients': 'Salicylic Acid, Zinc Oxide, Calamine'},
-                {'name': 'Blemish + Age Defense', 'brand': 'SkinCeuticals', 'ingredients': 'Salicylic Acid, LHA, Glycolic Acid'},
-                {'name': 'Tea Tree Oil Blemish Stick', 'brand': 'The Body Shop', 'ingredients': 'Tea Tree Oil, Salicylic Acid'},
-                {'name': 'Acne Treatment', 'brand': 'La Roche-Posay', 'ingredients': 'Benzoyl Peroxide, LHA'},
-            ],
-            # Body care
-            'body_scrub': [
-                {'name': 'Coconut Exfoliating Scrub', 'brand': 'Tree Hut', 'ingredients': 'Sugar, Shea Butter, Coconut Extract'},
-                {'name': 'Energizing Body Scrub', 'brand': 'Dove', 'ingredients': 'Rice Milk, Macadamia, Exfoliating Particles'},
-                {'name': 'Coffee Body Scrub', 'brand': 'Frank Body', 'ingredients': 'Coffee, Sweet Almond Oil'},
-                {'name': 'Sea Salt Body Scrub', 'brand': 'LUSH', 'ingredients': 'Sea Salt, Grapefruit, Lime'},
-            ],
-            'body_wash': [
-                {'name': 'Hydrating Body Wash', 'brand': 'CeraVe', 'ingredients': 'Ceramides, Hyaluronic Acid'},
-                {'name': 'Deep Moisture Body Wash', 'brand': 'Dove', 'ingredients': 'Glycerin, Stearic Acid'},
-                {'name': 'Sensitive Skin Body Wash', 'brand': 'Aveeno', 'ingredients': 'Colloidal Oatmeal, Glycerin'},
-            ],
-            'body_lotion': [
-                {'name': 'Daily Moisturizing Lotion', 'brand': 'Aveeno', 'ingredients': 'Colloidal Oatmeal, Dimethicone'},
-                {'name': 'Daily Moisturizing Lotion', 'brand': 'CeraVe', 'ingredients': 'Ceramides, Hyaluronic Acid'},
-                {'name': 'Ultra Repair Cream', 'brand': 'First Aid Beauty', 'ingredients': 'Colloidal Oatmeal, Shea Butter'},
-            ],
-            'body_oil': [
-                {'name': 'Light Sesame Body Oil', 'brand': 'Neutrogena', 'ingredients': 'Sesamum Indicum (Sesame) Seed Oil'},
-                {'name': 'Bio-Oil Skincare Oil', 'brand': 'Bio-Oil', 'ingredients': 'Mineral Oil, Vitamin A, Vitamin E'},
-                {'name': 'Coconut Body Oil', 'brand': 'Palmer\'s', 'ingredients': 'Cocos Nucifera Oil, Monoi Oil'},
-            ],
-            'deodorant': [
-                {'name': 'Invisible Solid', 'brand': 'Secret', 'ingredients': 'Aluminum Zirconium, Cyclopentasiloxane'},
-                {'name': 'Clinical Strength', 'brand': 'Degree', 'ingredients': 'Aluminum Zirconium Tetrachlorohydrex Gly'},
-                {'name': 'Natural Deodorant', 'brand': 'Native', 'ingredients': 'Baking Soda, Coconut Oil'},
-            ],
-            'hand_cream': [
-                {'name': 'Hand Repair Cream', 'brand': 'Neutrogena', 'ingredients': 'Glycerin, Dimethicone'},
-                {'name': 'Ultimate Strength Hand Salve', 'brand': 'Kiehl\'s', 'ingredients': 'Avocado Oil, Eucalyptus'},
-                {'name': 'Intensive Hand Cream', 'brand': 'Nivea', 'ingredients': 'Glycerin, Panthenol'},
-            ],
-            'foot_treatment': [
-                {'name': 'Intensive Foot Cream', 'brand': 'O\'Keeffe\'s', 'ingredients': 'Glycerin, Allantoin'},
-                {'name': 'Exfoliating Foot Peel', 'brand': 'Baby Foot', 'ingredients': 'AHA/BHA Blend'},
-                {'name': 'Foot Repair Balm', 'brand': 'Eucerin', 'ingredients': 'Urea, Lactic Acid'},
-            ],
-            'lip_treatment': [
-                {'name': 'Aquaphor Lip Repair', 'brand': 'Aquaphor', 'ingredients': 'Mineral Oil, Panthenol'},
-                {'name': 'Laneige Lip Sleeping Mask', 'brand': 'Laneige', 'ingredients': 'Berry Extract, Shea Butter'},
-                {'name': 'Burt\'s Bees Lip Balm', 'brand': 'Burt\'s Bees', 'ingredients': 'Beeswax, Peppermint Oil'},
-            ],
-            # Hair care
-            'clarifying_shampoo': [
-                {'name': 'ACV Clarifying Shampoo', 'brand': 'dpHUE', 'ingredients': 'Apple Cider Vinegar, Argan Oil'},
-                {'name': 'Clarifying Shampoo', 'brand': 'Neutrogena', 'ingredients': 'Sodium Laureth Sulfate, PEG-80 Sorbitan Laurate'},
-            ],
-            'shampoo': [
-                {'name': 'Daily Moisture Shampoo', 'brand': 'Dove', 'ingredients': 'Sodium Laureth Sulfate, Glycerin'},
-                {'name': 'Hydration Shampoo', 'brand': 'Pantene', 'ingredients': 'Pro-Vitamin B5, Glycerin'},
-            ],
-            'conditioner': [
-                {'name': 'Daily Moisture Conditioner', 'brand': 'Dove', 'ingredients': 'Stearamidopropyl Dimethylamine, Glycerin'},
-                {'name': 'Repair Conditioner', 'brand': 'Aussie', 'ingredients': 'Aloe, Jojoba Oil'},
-            ],
-            'hair_mask': [
-                {'name': 'Strength & Restore Mask', 'brand': 'SheaMoisture', 'ingredients': 'Shea Butter, Castor Oil'},
-                {'name': '3 Minute Miracle Moist', 'brand': 'Aussie', 'ingredients': 'Aloe, Jojoba Oil'},
-            ],
-            'deep_hair_mask': [
-                {'name': 'Intense Rescue Shots', 'brand': 'Pantene', 'ingredients': 'Pro-V Blend'},
-                {'name': 'K-Pak Reconstructor', 'brand': 'Joico', 'ingredients': 'Keratin, Amino Acids'},
-            ],
-            'leave_in_treatment': [
-                {'name': 'It\'s a 10 Miracle Leave-In', 'brand': 'It\'s a 10', 'ingredients': 'Panthenol, Silk Amino Acids'},
-                {'name': 'Anti-Frizz Leave-In', 'brand': 'Garnier', 'ingredients': 'Argan Oil, Plant Keratin'},
-            ],
-            'hair_oil': [
-                {'name': 'Moroccanoil Treatment', 'brand': 'Moroccanoil', 'ingredients': 'Argan Oil, Linseed Extract'},
-                {'name': 'Coconut Hair Oil', 'brand': 'Parachute', 'ingredients': 'Cocos Nucifera Oil'},
-            ],
-            'scalp_treatment': [
-                {'name': 'Scalp Detox', 'brand': 'The Inkey List', 'ingredients': 'Salicylic Acid'},
-                {'name': 'Scalp Relief Treatment', 'brand': 'Head & Shoulders', 'ingredients': 'Pyrithione Zinc'},
-            ],
-            'heat_protectant': [
-                {'name': 'Heat Protect Spray', 'brand': 'Tresemmé', 'ingredients': 'Dimethicone, Glycerin'},
-                {'name': 'Hot Toddy Heat Protectant', 'brand': 'Drybar', 'ingredients': 'Silicones Blend'},
-            ],
-            # Special/seasonal treatments
-            'primer': [
-                {'name': 'Blur + Smooth Primer', 'brand': 'Maybelline', 'ingredients': 'Dimethicone, Cyclopentasiloxane'},
-                {'name': 'Hydrating Primer', 'brand': 'e.l.f.', 'ingredients': 'Glycerin, Dimethicone'},
-            ],
-            'glow_treatment': [
-                {'name': 'Glow Recipe Dew Drops', 'brand': 'Glow Recipe', 'ingredients': 'Niacinamide, Watermelon'},
-                {'name': 'Illuminating Serum', 'brand': 'L\'Oréal', 'ingredients': 'Glycerin, Mica'},
-            ],
-            'hydration_boost': [
-                {'name': 'Hydrating Serum', 'brand': 'Vichy', 'ingredients': 'Hyaluronic Acid, Thermal Water'},
-                {'name': 'Hydration Booster', 'brand': 'The Inkey List', 'ingredients': 'Hyaluronic Acid'},
-            ],
-            'setting_treatment': [
-                {'name': 'Makeup Setting Spray', 'brand': 'Urban Decay', 'ingredients': 'Aloe, PVP'},
-                {'name': 'Hydrating Setting Spray', 'brand': 'NYX', 'ingredients': 'Glycerin, Aloe'},
-            ],
-            'treatment': [
-                {'name': 'Peptide Treatment', 'brand': 'The Ordinary', 'ingredients': 'Matrixyl, Argireline'},
-                {'name': 'Resveratrol Night Treatment', 'brand': 'The Ordinary', 'ingredients': 'Resveratrol, Ferulic Acid'},
-            ],
-            'professional_treatment': [
-                {'name': 'At-Home Peel Kit', 'brand': 'Dr Dennis Gross', 'ingredients': 'AHA/BHA Blend'},
-                {'name': 'Microdermabrasion Kit', 'brand': 'PMD', 'ingredients': 'Aluminum Oxide Crystals'},
-            ],
-            'barrier_repair': [
-                {'name': 'Cicaplast Baume B5', 'brand': 'La Roche-Posay', 'ingredients': 'Panthenol, Madecassoside'},
-                {'name': 'SOS Repair Cream', 'brand': 'Avene', 'ingredients': 'Thermal Spring Water, Mineral Oil'},
-            ],
-            'reset_treatment': [
-                {'name': 'Overnight Reset Oil-in-Serum', 'brand': 'L\'Occitane', 'ingredients': 'Immortelle Essential Oil'},
-                {'name': 'Skin Reset Serum', 'brand': 'Trilogy', 'ingredients': 'Rosapene, Tamanu'},
-            ],
-            'season_prep': [
-                {'name': 'Winter Defense Cream', 'brand': 'Weleda', 'ingredients': 'Beeswax, Lanolin'},
-                {'name': 'Summer Prep Gel', 'brand': 'Aloe Gator', 'ingredients': 'Aloe Vera'},
-            ],
-            'climate_adjustment': [
-                {'name': 'Humidity Shield', 'brand': 'Living Proof', 'ingredients': 'Amino Silicones'},
-                {'name': 'Dry Climate Cream', 'brand': 'Kiehl\'s', 'ingredients': 'Glycerin, Squalane'},
-            ],
-            'humidity_control': [
-                {'name': 'Anti-Humidity Spray', 'brand': 'Frizz Ease', 'ingredients': 'Silicones'},
-                {'name': 'Moisture Barrier Gel', 'brand': 'Clinique', 'ingredients': 'Dimethicone, Glycerin'},
-            ],
-            'weather_protection': [
-                {'name': 'Wind & Cold Cream', 'brand': 'Weleda', 'ingredients': 'Lanolin, Beeswax'},
-                {'name': 'UV Protective Milk', 'brand': 'Shiseido', 'ingredients': 'UV Filters, Silicones'},
-            ],
-            'transition_treatment': [
-                {'name': 'Seasonal Transition Serum', 'brand': 'Origins', 'ingredients': 'Plant Extracts'},
-                {'name': 'Adaptive Moisturizer', 'brand': 'Clinique', 'ingredients': 'Glycerin, Dimethicone'},
+                {
+                    'name': 'Alcohol-Free Toner',
+                    'brand': 'Thayers',
+                    'ingredients': 'Witch Hazel, Aloe Vera',
+                },
+                {
+                    'name': 'Ultra Gentle Toner',
+                    'brand': 'Neutrogena',
+                    'ingredients': 'Glycerin, Cucumber Extract',
+                },
+                {
+                    'name': 'Clarifying Toner',
+                    'brand': 'CeraVe',
+                    'ingredients': 'Niacinamide, Hyaluronic Acid',
+                },
             ],
         }
-        
-        # Get default products for this category, fallback to moisturizer if category not found
-        products_data = default_products.get(category, default_products['moisturizer'])
-        
-        # Create temporary Product instances (not saved to database)
+
+        products_data = default_products.get(
+            category, default_products['moisturizer']
+        )
+
         suggestions = []
-        for i, product_data in enumerate(products_data):
+        for i, pdata in enumerate(products_data):
             product = Product(
-                id=9000 + i,  # Use high integer IDs to avoid conflicts
-                name=product_data['name'],
-                brand=product_data['brand'],
+                id=9000 + i,
+                name=pdata['name'],
+                brand=pdata['brand'],
                 product_type=category,
-                ingredients=product_data['ingredients'],
-                description=f"Popular {category} product",
-                external_id=f"default_{category}_{i}"
+                ingredients=pdata.get('ingredients', ''),
+                description='Popular {} product'.format(category),
+                external_id='default_{}_{}'.format(category, i),
             )
             suggestions.append(product)
-        
+
         return suggestions
+
 
 @login_required
 def quick_add_product(request):
-    """AJAX endpoint for quickly adding products during routine creation"""
-    if request.method == 'POST':
-        try:
-            # Get the minimal required fields
-            name = request.POST.get('name', '').strip()
-            brand = request.POST.get('brand', '').strip()
-            product_type = request.POST.get('product_type', '').strip()
-            
-            # Basic validation
-            if not name or not brand or not product_type:
-                return JsonResponse({
+    """AJAX endpoint for quick product add during routine creation."""
+    if request.method != 'POST':
+        return JsonResponse(
+            {'success': False, 'error': 'Invalid request method.'},
+            status=405,
+        )
+
+    try:
+        name = request.POST.get('name', '').strip()
+        brand = request.POST.get('brand', '').strip()
+        product_type = request.POST.get('product_type', '').strip()
+
+        if not name or not brand or not product_type:
+            return JsonResponse(
+                {
                     'success': False,
-                    'error': 'Name, brand, and product type are required.'
-                }, status=400)
-            
-            # Create the product
-            product = Product.objects.create(
-                user=request.user,
-                name=name,
-                brand=brand,
-                product_type=product_type
+                    'error': 'Name, brand, and product type are required.',
+                },
+                status=400,
             )
-            
-            # Return success response with product data
-            return JsonResponse({
+
+        product = Product.objects.create(
+            user=request.user,
+            name=name,
+            brand=brand,
+            product_type=product_type,
+        )
+
+        return JsonResponse(
+            {
                 'success': True,
                 'product': {
                     'id': product.id,
                     'name': product.name,
                     'brand': product.brand,
                     'product_type': product.product_type,
-                    'display_name': f"{product.brand} - {product.name}"
-                }
-            })
-            
-        except Exception as e:
-            return JsonResponse({
+                    'display_name': '{} - {}'.format(
+                        product.brand, product.name
+                    ),
+                },
+            }
+        )
+    except Exception:
+        return JsonResponse(
+            {
                 'success': False,
-                'error': 'An error occurred while adding the product.'
-            }, status=500)
-    
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+                'error': 'An error occurred while adding the product.',
+            },
+            status=500,
+        )

@@ -5,20 +5,37 @@ we don't include `products.urls` twice (which causes Django's
 namespace warning). Add API-specific view routes here (or wire a DRF
 router) instead of reusing the app's HTML view urlpatterns.
 """
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 # API endpoints for products
 urlpatterns = [
     # List and create products
-    path('', views.ProductListCreateAPIView.as_view(), name='product-list-create'),
-    
+    path(
+        '',
+        views.ProductListCreateAPIView.as_view(),
+        name='product-list-create'
+    ),
+
     # Retrieve, update, delete specific product
-    path('<int:pk>/', views.ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
-    
+    path(
+        '<int:pk>/',
+        views.ProductRetrieveUpdateDestroyAPIView.as_view(),
+        name='product-detail'
+    ),
+
     # Browse products by category (for suggestions)
-    path('browse/<str:category>/', views.ProductBrowseByCategoryAPIView.as_view(), name='product-browse-category'),
-    
+    path(
+        'browse/<str:category>/',
+        views.ProductBrowseByCategoryAPIView.as_view(),
+        name='product-browse-category'
+    ),
+
     # Quick add product (AJAX endpoint for routine creation)
-    path('quick-add/', views.quick_add_product, name='quick-add-product'),
+    path(
+        'quick-add/',
+        views.quick_add_product,
+        name='quick-add-product'
+    ),
 ]
+
