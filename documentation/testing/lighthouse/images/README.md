@@ -2,7 +2,7 @@
 
 Place your Lighthouse test screenshot images in this directory.
 
-The following files are expected:
+The following files are available:
 
-- lighthouse_before_desktop.png - Before optimization (desktop)
-- lighthouse_after_desktop.png - After optimization (desktop)
+- frist_lighthouse_test.png - Before optimization (desktop)
+- lighthouse_Testing.png - After optimization (desktop)

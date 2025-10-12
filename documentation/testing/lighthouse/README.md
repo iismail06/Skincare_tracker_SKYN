@@ -6,7 +6,7 @@ This directory contains Lighthouse test results for the SKYN application, showin
 
 ### Before Optimization (October 11, 2025)
 
-![Lighthouse Before Optimization](images/lighthouse_before_desktop.png)
+![Lighthouse Before Optimization](images/frist_lighthouse_test.png)
 
 Scores before implementing security and performance enhancements:
 
@@ -17,7 +17,7 @@ Scores before implementing security and performance enhancements:
 
 ### After Optimization (October 12, 2025)
 
-![Lighthouse After Optimization](images/lighthouse_after_desktop.png)
+![Lighthouse After Optimization](images/lighthouse_Testing.png)
 
 Scores after implementing all optimizations:
 

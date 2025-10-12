@@ -4,7 +4,7 @@ This file serves as a placeholder for your Entity-Relationship diagram image.
 
 To use this:
 
-1. Save your ER diagram image as `er_diagram.png` in this folder
+1. Save your ER diagram image as `er_diagram.png` in the `images` folder
 2. The image will automatically be referenced in the README.md file
 
 ## Current ER Diagram

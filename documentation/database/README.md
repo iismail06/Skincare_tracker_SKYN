@@ -4,7 +4,7 @@ This directory contains documentation related to the database structure of the S
 
 ## Entity-Relationship Diagram
 
-![SKYN Database ER Diagram](er_diagram.png)
+![SKYN Database ER Diagram](ER%20diagram.png)
 
 ## Database Schema
 

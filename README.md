@@ -42,7 +42,7 @@ The goal of SKYN is to help users build consistent skincare habits by tracking t
 
 The application uses a relational database with the following main entities:
 
-![Database ER Diagram](documentation/database/er_diagram.png)
+![Database ER Diagram](documentation/database/ER%20diagram.png)
 
 Key relationships:
 
