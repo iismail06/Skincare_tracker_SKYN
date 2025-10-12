@@ -38,6 +38,21 @@ The goal of SKYN is to help users build consistent skincare habits by tracking t
 
 ---
 
+## Database Structure
+
+The application uses a relational database with the following main entities:
+
+![Database ER Diagram](documentation/database/er_diagram.png)
+
+Key relationships:
+
+- Users can create multiple skincare routines
+- Routines contain multiple ordered steps
+- Products can be linked to routine steps
+- Completion tracking records user progress
+
+[View detailed database documentation](documentation/database/README.md)
+
 ## Setup Instructions
 
 ```bash
@@ -86,16 +101,21 @@ Notes:
 
 ```text
 Skincare_tracker_SKYN/
-├── config/
-├── users/
-├── routines/
-├── products/
-├── static/
-├── templates/
-├── manage.py
-├── requirements.txt
-├── Procfile
-└── runtime.txt
+├── config/           # Project settings, URLs, and configuration
+├── users/            # User account management app
+├── routines/         # Skincare routine management app
+├── products/         # Product database and management app
+├── static/           # Static assets (CSS, JS, images)
+├── templates/        # HTML templates
+├── documentation/    # Project documentation (testing, wireframes, etc.)
+│   ├── database/     # Database schema and ER diagrams
+│   ├── testing/      # Test results and reports
+│   ├── validation/   # Code validation results
+│   └── wireframes/   # UI design wireframes
+├── manage.py         # Django management script
+├── requirements.txt  # Project dependencies
+├── Procfile          # Heroku deployment configuration
+└── runtime.txt       # Python runtime specification
 ```
 
 ---
@@ -435,6 +455,61 @@ Status: Documented as a known limitation. We’re keeping the current builder be
 ### Summary
 
 All features passed testing successfully with no critical issues remaining. The site performs well across devices, browsers, and screen sizes.
+
+---
+
+## Performance & Security Improvements
+
+### Lighthouse Audit & Enhancements
+
+A Lighthouse audit was conducted in October 2025 to evaluate the application's performance, accessibility, best practices, and SEO. The initial audit identified several opportunities for improvement.
+
+**Before & After Optimization:**
+
+| Category | Before | After | Improvement |
+|----------|--------|-------|-------------|
+| Performance | 65 | 99 | +34 points (+52%) |
+| Accessibility | 83 | 95 | +12 points (+14%) |
+| Best Practices | 100 | 100 | No change (already perfect) |
+| SEO | 90 | 100 | +10 points (+11%) |
+
+*See the [detailed Lighthouse testing documentation](documentation/testing/lighthouse/README.md) for complete results and screenshots.*
+
+#### Key Improvements Implemented
+
+1. **Content Security Policy (CSP)**
+   - Implemented a comprehensive CSP header to protect against XSS attacks
+   - Defined trusted sources for scripts, styles, and other resources
+   - Restricted connections to only necessary third-party domains
+
+2. **HTTP Strict Transport Security (HSTS)**
+   - Enhanced HSTS policy with a 1-year duration (31536000 seconds)
+   - Included subdomains and preload directives for comprehensive protection
+
+3. **Cookie Consent Management**
+   - Added a GDPR-compliant cookie consent banner via middleware injection
+   - Implemented user choice storage using localStorage
+   - Improved transparency regarding third-party cookie usage
+
+4. **Enhanced Static File Handling**
+   - Optimized WhiteNoise configuration for better compression and caching
+   - Set cache lifetimes to 1 year (31536000 seconds) for immutable assets
+   - Added proper MIME type handling for modern image formats including WebP
+
+5. **Frontend Performance Optimizations**
+   - Added preconnect and dns-prefetch directives for external resources
+   - Implemented media="print" onload technique for non-critical CSS
+   - Added appropriate image sizing for favicon and other assets
+   - Optimized script loading with defer attributes
+
+6. **Image Optimization**
+   - Configured Cloudinary transformations for automatic:
+     - Format selection (WebP where supported)
+     - Quality optimization
+     - Responsive sizing
+     - DPR (Device Pixel Ratio) adaptation
+
+These improvements significantly enhanced both the security posture and performance of the application while maintaining full functionality. The security changes were implemented through Django's middleware system for consistent application across all responses, while performance optimizations were applied at both the server configuration and template levels.
 
 ---
 
