@@ -1,37 +1,29 @@
-"""Custom middleware for performance optimization and security."""
+"""Custom middleware for development without security restrictions."""
 from django.utils.safestring import mark_safe
 from django.conf import settings
 import re
 
 class SecurityHeadersMiddleware:
-    """Add security headers to all responses."""
+    """Development version - minimal headers, no HTTPS requirements."""
     
     def __init__(self, get_response):
         self.get_response = get_response
         
     def __call__(self, request):
+        # Force scheme to HTTP for development
+        if hasattr(request, 'META'):
+            request.META['HTTP_X_FORWARDED_PROTO'] = 'http'
+            request.META['wsgi.url_scheme'] = 'http'
+            
         response = self.get_response(request)
         
-        # Add security and performance headers
-        response['X-Content-Type-Options'] = 'nosniff'
-        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        # Remove any headers that might force HTTPS
+        for header in ['Strict-Transport-Security', 'Content-Security-Policy']:
+            if header in response:
+                del response[header]
+                
+        # Set very permissive Content-Security-Policy for development
+        response['Content-Security-Policy'] = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
         
-        # Implement Content Security Policy (CSP)
-        csp_directives = [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com",
-            "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-            "img-src 'self' data: https://res.cloudinary.com",
-            "connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-            "frame-src 'self'"
-            # We will add the trusted-types directive later after proper implementation
-        ]
-        response['Content-Security-Policy'] = '; '.join(csp_directives)
-        
-        # Only add these headers for non-static files (WhiteNoise handles static files)
-        if not request.path.startswith('/static/'):
-            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            
         return response
     

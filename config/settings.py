@@ -45,7 +45,7 @@ def str_to_bool(val):
     return str(val).strip().lower() in ('1', 'true', 'yes', 'on')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Fail fast if SECRET_KEY is missing in production
 if not DEBUG and not SECRET_KEY:
@@ -85,8 +85,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'config.middleware.SecurityHeadersMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -131,9 +129,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
-}
+# Use DATABASE_URL if provided; otherwise default to local SQLite for development
+if os.environ.get("DATABASE_URL"):
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': str(BASE_DIR / 'db.sqlite3'),
+        }
+    }
 
 # Use SQLite for tests (convert Path to string)
 if 'test' in sys.argv:
@@ -143,15 +150,14 @@ if 'test' in sys.argv:
     }
 
 # Password validation
+# Minimal CSRF trusted origins for local development
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.codeinstitute-ide.net/",
-    "https://*.herokuapp.com",
-    "http://127.0.0.1:8002",
-    "http://localhost:8002",
-    "http://127.0.0.1:8003",
-    "http://localhost:8003",
-    "http://127.0.0.1:8004",
-    "http://localhost:8004"
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8081",
+    "http://127.0.0.1:8081",
+    "http://localhost:8888",
+    "http://127.0.0.1:8888",
 ]
 
 # Password validation
@@ -218,77 +224,33 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Enable WhiteNoise compression and caching with optimal settings
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_MAX_AGE = 31536000  # 1 year in seconds for better cache lifetimes
-WHITENOISE_MIMETYPES = {
-    'image/webp': 'webp',
-    'image/png': 'png',
-    'image/jpeg': 'jpg',
-    'image/svg+xml': 'svg',
-}
-# Improve cache settings for better performance
-WHITENOISE_ALLOW_ALL_ORIGINS = True
-WHITENOISE_COMPRESS = True
-
-# Add Cache-Control headers for better browser caching
-WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: True
+# Note: WhiteNoise and advanced static optimizations are disabled for simplicity in dev
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Production hardening (only enabled when DEBUG is False)
-if not DEBUG:
-    # Redirect HTTP to HTTPS
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    # Set strong HSTS header (1 year duration)
-    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 31536000))  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    # Other recommended settings
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
+# Security overrides removed for simplicity; defaults are fine for DEBUG=True
 
-# Logging configuration
+# Simplified logging configuration for development
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
         },
     },
 }
 
-# Static file finders
+# Static file finders - keep these as they're needed for serving static files
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
