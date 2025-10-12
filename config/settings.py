@@ -149,16 +149,24 @@ if 'test' in sys.argv:
         'NAME': str(BASE_DIR / 'test_db.sqlite3'),
     }
 
-# Password validation
-# Minimal CSRF trusted origins for local development
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:8081",
-    "http://127.0.0.1:8081",
-    "http://localhost:8888",
-    "http://127.0.0.1:8888",
-]
+# CSRF trusted origins
+# Prefer environment override; fall back to sane defaults for local + Heroku
+raw_csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if raw_csrf_trusted:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in raw_csrf_trusted.split(',') if o.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        # Local development
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:8081",
+        "http://127.0.0.1:8081",
+        "http://localhost:8888",
+        "http://127.0.0.1:8888",
+        # Production (Heroku)
+        "https://skincare-tracker-skny-97af0ca4b109.herokuapp.com",
+        "https://*.herokuapp.com",
+    ]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -232,6 +240,10 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security overrides removed for simplicity; defaults are fine for DEBUG=True
+
+# Correct HTTPS/Origin detection behind reverse proxy (e.g., Heroku)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
 # Simplified logging configuration for development
 LOGGING = {
