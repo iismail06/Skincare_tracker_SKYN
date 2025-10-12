@@ -74,7 +74,6 @@ INSTALLED_APPS = [
     'users',
     'routines',
     'products',
-    'compressor',
 ]
 
 SITE_ID = 1
@@ -289,21 +288,9 @@ LOGGING = {
     },
 }
 
-# Django Compressor settings
-COMPRESS_ENABLED = True
-COMPRESS_CSS_FILTERS = [
-    'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.rCSSMinFilter',
-]
-COMPRESS_JS_FILTERS = [
-    'compressor.filters.jsmin.JSMinFilter',
-]
-COMPRESS_OUTPUT_DIR = 'compressed'
+# Static file finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
 ]
-# Enable offline compression for production
-COMPRESS_OFFLINE = not DEBUG
 
