@@ -353,6 +353,20 @@ h2 {
     text-shadow: 0 1px 4px rgba(0,0,0,0.45);
 }
 
+/* Dark mode: hero content should use theme tokens, not hard-coded white */
+body.dark-theme .site-hero-bg .container {
+    background: var(--glass-bg) !important;
+    color: var(--text) !important;
+}
+body.dark-theme .site-hero-bg .page-title,
+body.dark-theme .site-hero-bg .hero-title,
+body.dark-theme .site-hero-bg .hero-subtitle,
+body.dark-theme .site-hero-bg .hero-description,
+body.dark-theme .site-hero-bg .brand-highlight {
+    color: var(--secondary-color-darker) !important;
+    text-shadow: none !important;
+}
+
 
 .hero-content {
     position: relative;
@@ -1895,7 +1909,8 @@ body.dark-theme .sc-day {
 }
 
 /* Current day highlight */
-body.dark-theme .sc-day.today {
+/* Current day highlight (calendar) - class is .sc-today in JS */
+body.dark-theme .sc-today {
     background: rgba(255,255,255,0.15) !important;
     color: #ffffff !important;
 }
@@ -1910,6 +1925,17 @@ body.dark-theme .sc-day.has-events {
 body.dark-theme .product-type {
     background: rgba(255,255,255,0.15) !important;
     color: #fff !important;
+}
+
+/* Reinforce dark theme link colors in navbar across pages (avoid white override) */
+body.dark-theme .custom-navbar .nav-links a {
+    color: var(--text) !important;
+}
+
+/* Make brand color adapt in dark mode */
+body.dark-theme .custom-navbar .nav-brand {
+    color: var(--secondary-color-darker) !important;
+    text-shadow: none !important;
 }
 
 body.dark-theme .product-title,
