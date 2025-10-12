@@ -40,15 +40,10 @@
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
     {% else %}
     <!-- Font Awesome CSS with performance optimizations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
     {% endif %}
 
-    <!-- Remove preload directives that were causing errors -->
-    
-    <!-- No need for prefetch on the home URL since we're already on it -->
-    
-    
     {% block extra_css %}{% endblock %}
 
 </head>

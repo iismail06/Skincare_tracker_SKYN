@@ -35,7 +35,9 @@ class CustomUserCreationForm(UserCreationForm):
         # Add CSS classes for styling
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = field.label
+            # Only add placeholder for input fields, not select elements
+            if not isinstance(field.widget, forms.Select):
+                field.widget.attrs['placeholder'] = field.label
 
 
 class ProfileQuestionnaireForm(forms.ModelForm):
@@ -101,6 +103,7 @@ class UserUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+            # These are all text fields, so placeholder is valid
             field.widget.attrs['placeholder'] = field.label
 
 
