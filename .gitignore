@@ -279,6 +279,8 @@ nbproject/
 .Trashes
 ehthumbs.db
 Thumbs.db
+# iCloud files
+*.icloud
 
 # Large media files
 *.mp4
