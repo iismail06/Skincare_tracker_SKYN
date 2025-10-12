@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import UserProfile
+from .widgets import AccessibleTextarea, AccessibleCheckbox
 
 class CustomUserCreationForm(UserCreationForm):
     AGE_RANGE_CHOICES = [
@@ -42,8 +43,6 @@ class CustomUserCreationForm(UserCreationForm):
 
 class ProfileQuestionnaireForm(forms.ModelForm):
     """Simple skincare profile questionnaire - beginner friendly"""
-    
-    from .widgets import AccessibleTextarea, AccessibleCheckbox
     
     class Meta:
         model = UserProfile
@@ -112,8 +111,6 @@ class UserUpdateForm(forms.ModelForm):
 
 class ProfileDetailsForm(forms.ModelForm):
     """Profile edit form that includes age fields plus questionnaire fields"""
-    
-    from .widgets import AccessibleTextarea, AccessibleCheckbox
 
     class Meta:
         model = UserProfile
