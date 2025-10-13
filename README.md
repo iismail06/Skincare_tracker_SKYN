@@ -82,6 +82,10 @@ python manage.py runserver
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
+### Python Version
+
+This project targets Python 3.11 (compatible with Django 5.2).
+
 ### Environment Variables
 
 Create an `env.py` or environment variables file. Minimum:
@@ -96,6 +100,25 @@ DATABASE_URL=sqlite:///db.sqlite3
 Notes:
 
 - Production settings automatically enable HTTPS and secure cookies when `DEBUG=False`.
+
+### Production Environment Variables
+
+Set these in production (e.g., on Heroku):
+
+- SECRET_KEY (required)
+- DEBUG=False
+- ALLOWED_HOSTS=your-app.herokuapp.com
+- DATABASE_URL (provided by Postgres add-on)
+- CSRF_TRUSTED_ORIGINS=<https://your-app.herokuapp.com>
+- Optional: CLOUDINARY_URL if using Cloudinary for images
+
+### How to Run Tests
+
+Run all tests across apps:
+
+```bash
+python manage.py test
+```
 
 ### Project Structure
 
@@ -115,7 +138,7 @@ Skincare_tracker_SKYN/
 ├── manage.py         # Django management script
 ├── requirements.txt  # Project dependencies
 ├── Procfile          # Heroku deployment configuration
-└── runtime.txt       # Python runtime specification
+└── .python-version       # Python runtime specification
 ```
 
 ---
@@ -324,7 +347,7 @@ Screenshots:
 
 - View theme screenshots:
   - [Light](documentation/images/screenshots/light/)
-    - [Dark](documentation/images/screenshots/dark/)
+  - [Dark](documentation/images/screenshots/dark/)
 
 ---
 
@@ -463,11 +486,10 @@ CSS files were validated using the [W3C CSS Validation Service](https://jigsaw.w
 |------|--------|--------------|------------|
 | style.css | ❌ → ✅ | 2 errors with `contain-intrinsic-size` and `line-clamp` properties, 84 warnings | Replaced non-standard properties with standards-compliant alternatives or proper vendor prefixes, added documentation for warnings |
 | dashboard_style.css | ⚠️ | No errors, warnings for CSS variables and vendor prefixes | No action needed - warnings are related to modern CSS features |
-| cookie-consent.css | ⚠️ | No errors, minimal warnings | No action needed - simple CSS file with few warnings |
 
 **Note about warnings**: The CSS validator shows warnings for modern CSS features like CSS variables and vendor prefixes, which are necessary for cross-browser compatibility and are considered best practices. These warnings do not affect functionality.
 
-For detailed information about the validation results and our approach to handling the warnings, see the [CSS validation documentation](documentation/validation/css/validation-summary.md).
+For detailed information about the validation results and our approach to handling the warnings, see the [CSS validation documentation](documentation/validation/css/style-css-validation.md).
 
 ### CSS Validation Fixes (October 2025)
 
@@ -498,8 +520,7 @@ Future plans:
 
 Screenshots:
 
-- JavaScript validation snapshot: documentation/validation/js/js-validation.png
-- ![JS validation](documentation/validation/js/js-validation.png)
+- JavaScript validation snapshot: [View](documentation/validation/js/js-validation.png)
 
 ---
 
@@ -536,41 +557,51 @@ SKYN was tested across the following browsers to ensure consistent performance:
 
 ### Bugs and Fixes
 
-| Issue | Cause | Fix |
-|-------|--------|-----|
-| Routine progress not saving | Missing field in form submission | Added correct form field mapping |
-| Calendar not updating | JavaScript event not triggering | Added event listener for date selection |
-| Dark mode flicker | CSS variable loading late | Cached theme preference in local storage |
-| Favorite checkbox not clearly clickable | Native checkbox too subtle; label rendered on a separate line | Inlined the label and made the whole text clickable; visually hid the box and added a star + accent color when checked |
+| Issue | Cause | Fix | Date | Status  |
+|-------|--------|-----|------|--------|
+| Routine progress not saving | Missing field in form submission | Added correct form field mapping | Fixed | — |
+| Calendar not updating | JavaScript event not triggering | Added event listener for date selection | Fixed | — |
+| Dark mode flicker | CSS variable loading late | Cached theme preference in local storage | Fixed | — |
+| Favorite toggle unclear | Small native checkbox and layout separated label | Made full label clickable; hid native box visually; added star + accent color when checked| Fixed | See details below |
+| Product browsing endpoint mismatch | Frontend and backend URLs out of sync | Updated main.js and api_urls.py to correct browse endpoints  | Fixed | — |
+| Edit buttons not responding | Non-delegated events and missing data attrs | Switched to data attributes and delegated event listeners | Fixed | — |
+| JS errors due to script order | Scripts executed before dependencies | Reordered script tags for proper execution | Fixed | — |
+| TemplateSyntaxError in home.html | {% extends %} not first line | Moved extends to be the first tag in template | Fixed | — |
+| 500 errors in production | Strict SSL redirect, static config, hosts | Disabled premature SSL redirect, added WhiteNoise, expanded hosts, added logging | Fixed | — |
+| Models/views broken after restore | Incorrect module references and incomplete queries | Replaced routines.models and completed querysets; sanity check passed | Fixed | — |
 
-#### UX Note: Favorite toggle (checkbox box removed)
+#### Bug: Favorite toggle control
 
-Context: On the Product form, users reported that clicking “Mark as Favorite” didn’t seem to do anything. Functionally it worked, but the tiny native checkbox and stacked layout made the change easy to miss.
+- Status: Fixed (UX)
+- Severity: Low
+- Affected area: Product form (favorite checkbox)
 
-Investigation: There was no overlay or JavaScript error preventing clicks; the checkbox toggled programmatically. The problem was visual: the native box was small and the layout put the label and box on separate lines, so users thought it wasn’t working.
+Summary: Users reported clicking “Mark as Favorite” didn’t seem to do anything. Functionally it worked, but the tiny native checkbox and separated label made the change easy to miss.
 
-Decision: Given limited time, rather than deep-dive into all possible CSS/layout edge cases, we implemented a pragmatic fix:
+Steps to reproduce:
 
-- Remove the visible box and make the entire “Mark as Favorite” text clickable.
-- Keep the native input for accessibility (it’s just visually hidden).
-- Add clear visual feedback (star + accent color + bold) when checked.
+1) Open Add/Edit Product
+2) Click the “Mark as Favorite” label
+3) Observe minimal visual feedback with the native checkbox
 
-This change improved perceived responsiveness without sacrificing semantics or accessibility.
+Root cause: Small native checkbox and label on separate line reduced perceived interactivity.
 
-Why this is better:
+Fix implemented:
 
-- Larger hit area: Clicking the text toggles the state, so it’s easier on touch and desktop.
-- Clear feedback: The star + color change are more noticeable than the tiny native tick.
-- Accessibility preserved: The native input is still present (hidden visually), labeled, and focusable.
+- Made the entire label clickable and visually hid the native checkbox
+- Added star icon + accent color + bold when checked for clear feedback
+- Preserved accessibility: native input remains labeled and focusable
 
-Testing steps:
+Verification:
 
-1. Go to Add/Edit Product.
-2. Click or tap “Mark as Favorite” text — it toggles on/off.
-3. Tab to the control — focus outline is visible on the text.
-4. Confirm form save persists the favorite flag.
+- Toggling works via click and keyboard focus
+- State persists on form save
 
-#### Known limitation: 10‑step Routine Builder for non‑daily categories
+Links: —
+
+## Known limitations
+
+### 10‑step Routine Builder for non‑daily categories
 
 Context: The Add Routine form (templates/routines/add_routine.html) is designed with up to 10 step slots and matching optional product links (routines/forms.py defines step1–step10 and product1–product10). This works well for daily AM/PM skincare flows where a longer sequence is common.
 
