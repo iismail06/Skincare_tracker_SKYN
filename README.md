@@ -42,7 +42,7 @@ The goal of SKYN is to help users build consistent skincare habits by tracking t
 
 The application uses a relational database with the following main entities:
 
-![Database ER Diagram](documentation/database/ER%20diagram.png)
+[View the ER Diagram](documentation/database/ER%20diagram.png)
 
 Key relationships:
 
@@ -120,9 +120,23 @@ Skincare_tracker_SKYN/
 
 ---
 
+## Documentation & Screenshots
+
+- [All screenshots (index)](documentation/images/screenshots/README.md)
+- [User story screenshots](documentation/images/screenshots/user-stories/)
+- Theme screenshots: [Light](documentation/images/screenshots/light/) · [Dark](documentation/images/screenshots/dark/)
+- [Responsive screenshots](documentation/images/screenshots/responsive/)
+- [Lighthouse results](documentation/testing/lighthouse/images/)
+- [Database ER diagram](documentation/database/ER%20diagram.png)
+- [Wireframe](documentation/wireframe/Final%20project.png)
+    - Includes: Dashboard, Profile, Form, Product (desktop · iPad · mobile) and extra Mobile Home
+- [Project board snapshot](documentation/images/project-board/Project-Board.png)
+
+---
+
 ## 👤 User Stories
 
-All user stories were developed using Agile methodology. The full workflow is available on the Project Board.
+All user stories were developed using Agile methodology. The full workflow is available on the [Project Board](https://github.com/users/iismail06/projects/5/views/1). For a static snapshot, see [project board snapshot](documentation/images/project-board/Project-Board.png).
 
 ### User Story 1 – User Registration
 
@@ -141,9 +155,7 @@ Testing Performed:
 
 Screenshots:
 
-![Registration form filled](documentation/images/screenshots/user-stories/us1-registration-form-filled.png)
-![Validation error shown](documentation/images/screenshots/user-stories/us1-registration-Validation%20error.png)
-![Successful registration redirect](documentation/images/screenshots/user-stories/us1-registration-success-redirect.png)
+- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
 
 ---
 
@@ -165,10 +177,7 @@ Testing Performed:
 
 Screenshots:
 
-![Login form](documentation/images/screenshots/user-stories/us2-login-form.png)
-![Invalid credentials error](documentation/images/screenshots/user-stories/us2-Invalid-credentials-error.png)
-![Login success dashboard](documentation/images/screenshots/user-stories/us2-login-success-dashboard.png)
-![Logout redirect home](documentation/images/screenshots/user-stories/us2-logout-redirect-home.png)
+- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
 
 ---
 
@@ -190,11 +199,7 @@ Testing Performed:
 
 Screenshots:
 
-![Add routine form](documentation/images/screenshots/user-stories/us3-add-routine-form.png)
-![Dashboard showing new routine](documentation/images/screenshots/user-stories/us3-dashboard-new-routine.png)
-![Edit routine form](documentation/images/screenshots/user-stories/us4-edit-routine-form.png)
-![Dashboard after routine update](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png)
-![Dashboard after routine delete](documentation/images/screenshots/user-stories/us4-dashboard-after-delete.png)
+- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
 
 ---
 
@@ -216,11 +221,7 @@ Testing Performed:
 
 Screenshots:
 
-![Add product form](documentation/images/screenshots/user-stories/us5-add-product-form.png)
-![Dashboard with linked product](documentation/images/screenshots/user-stories/us5-dashboard-with-linked-product.png)
-![Edit product form](documentation/images/screenshots/user-stories/us6-edit-product-form.png)
-![Product list after update](documentation/images/screenshots/user-stories/us6-product-list-after-update.png)
-![Product list after delete](documentation/images/screenshots/user-stories/us6-product-list-after-delete.png)
+- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
 
 ---
 
@@ -241,9 +242,7 @@ Testing Performed:
 
 Screenshots:
 
-![Progress before](documentation/images/screenshots/user-stories/us7-progress-before.png)
-![Progress after marking complete](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png)
-![Progress persists after reload](documentation/images/screenshots/user-stories/us7-progress-persists-after-reload.png)
+- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
 
 ---
 
@@ -265,8 +264,7 @@ Testing Performed:
 
 Screenshots:
 
-![Calendar completed days](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png)
-![Calendar day details popup](documentation/images/screenshots/user-stories/us8-calendar-day-details-popup.png)
+- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
 
 ---
 
@@ -286,19 +284,9 @@ Testing Performed:
 
 Screenshots:
 
-Light theme:
-
-![Home – light](documentation/images/screenshots/light/theme-home-light-1440x900.png)
-![Dashboard – light](documentation/images/screenshots/light/theme-dashboard-light-1440x900.png)
-![Calendar – light](documentation/images/screenshots/light/theme-calendar-light-1440x900.png)
-![Products – light](documentation/images/screenshots/light/theme-products-list-light-1440x900.png)
-
-Dark theme:
-
-![Home – dark](documentation/images/screenshots/dark/theme-home-light-1440x900.png)
-![Dashboard – dark](documentation/images/screenshots/dark/theme-dashboard-dark-1440x900.png)
-![Calendar – dark](documentation/images/screenshots/dark/theme-calendar-dark-1440x900.png)
-![Products – dark](documentation/images/screenshots/dark/theme-products-list-dark-1440x900.png)
+- View theme screenshots:
+    - [Light](documentation/images/screenshots/light/)
+    - [Dark](documentation/images/screenshots/dark/)
 
 ---
 
@@ -319,10 +307,7 @@ Testing Performed:
 
 Screenshots:
 
-![Desktop – 1440x900](documentation/images/screenshots/responsive/dashboard-desktop-1440x900.png)
-![Tablet – 768x1024](documentation/images/screenshots/responsive/calendar-tablet-768x1024.png)
-![Mobile – 390x844](documentation/images/screenshots/responsive/home-mobile-390x844.png)
-![Products – mobile 390x844](documentation/images/screenshots/responsive/products-list-mobile-390x844.png)
+- [View responsive screenshots](documentation/images/screenshots/responsive/)
 
 ---
 
@@ -379,17 +364,17 @@ WhiteNoise serves static files automatically in production.
 
 ## Manual Testing
 
-| Feature | Expected Result | Outcome | Screenshot |
-|----------|----------------|----------|-------------|
-| User Registration | New user can sign up successfully | ✅ Pass | ![Registration success](documentation/images/screenshots/user-stories/us1-registration-success-redirect.png) |
-| User Login / Logout | User can log in and out securely | ✅ Pass | ![Login success](documentation/images/screenshots/user-stories/us2-login-success-dashboard.png) |
-| Add Routine | Routine saved and displayed on dashboard | ✅ Pass | ![New routine on dashboard](documentation/images/screenshots/user-stories/us3-dashboard-new-routine.png) |
-| Edit / Delete Routine | Routine updates or removes correctly | ✅ Pass | ![Routine updated](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png) |
-| Add Product | Product added and linked to routine | ✅ Pass | ![Add product form](documentation/images/screenshots/user-stories/us5-add-product-form.png) |
-| Progress Tracking | Progress bar updates dynamically | ✅ Pass | ![Progress after complete](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png) |
-| Calendar Integration | Routines appear correctly by date | ✅ Pass | ![Calendar completed days](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png) |
-| Theme Toggle (Dark/Light) | Theme changes site-wide | ✅ Pass | ![Light theme dashboard](documentation/images/screenshots/light/theme-dashboard-light-1440x900.png) |
-| Responsive Design | Displays correctly on all devices | ✅ Pass | ![Mobile home](documentation/images/screenshots/responsive/home-mobile-390x844.png) |
+| Feature | Expected Result | Outcome | Screenshot Links |
+|----------|----------------|----------|-----------------|
+| User Registration | New user can sign up successfully | ✅ Pass | [View](documentation/images/screenshots/user-stories/us1-registration-success-redirect.png) |
+| User Login / Logout | User can log in and out securely | ✅ Pass | [View](documentation/images/screenshots/user-stories/us2-login-success-dashboard.png) |
+| Add Routine | Routine saved and displayed on dashboard | ✅ Pass | [View](documentation/images/screenshots/user-stories/us3-dashboard-new-routine.png) |
+| Edit / Delete Routine | Routine updates or removes correctly | ✅ Pass | [View](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png) |
+| Add Product | Product added and linked to routine | ✅ Pass | [View](documentation/images/screenshots/user-stories/us5-add-product-form.png) |
+| Progress Tracking | Progress bar updates dynamically | ✅ Pass | [View](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png) |
+| Calendar Integration | Routines appear correctly by date | ✅ Pass | [View](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png) |
+| Theme Toggle (Dark/Light) | Theme changes site-wide | ✅ Pass | [View](documentation/images/screenshots/light/theme-dashboard-light-1440x900.png) |
+| Responsive Design | Displays correctly on all devices | ✅ Pass | [View](documentation/images/screenshots/responsive/home-mobile-390x844.png) |
 
 ### Code Validation
 
@@ -442,25 +427,15 @@ Simple, predictable loading order with screenshots before/after:
 
 Before (Oct 11, 2025):
 
-![Lighthouse Before](documentation/testing/lighthouse/images/frist_lighthouse_test.png)
+- [Lighthouse Before](documentation/testing/lighthouse/images/frist_lighthouse_test.png)
 
 After (Oct 12, 2025):
 
-![Lighthouse After](documentation/testing/lighthouse/images/lighthouse_Testing.png)
+- [Lighthouse After](documentation/testing/lighthouse/images/lighthouse_Testing.png)
 
 ### User Story Testing
 
 Each user story was tested manually to confirm it meets all acceptance criteria.
-
-| User Story | Test Performed | Result |
-|-------------|----------------|---------|
-| Registration | User registers with valid credentials | ✅ |
-| Login | User logs in successfully | ✅ |
-| Add Routine | Routine created, visible on dashboard | ✅ |
-| Add Product | Product linked to correct routine | ✅ |
-| Calendar | Displays correct dates | ✅ |
-| Theme Toggle | Dark/Light modes function properly | ✅ |
-| Responsive Layout | Tested on multiple devices | ✅ |
 
 ### Browser Compatibility
 
