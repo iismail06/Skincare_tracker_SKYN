@@ -1,6 +1,5 @@
 # SKYN – Skincare Routine Tracker
 
-<!-- Top hero image: place your screenshot as documentation/images/screenshots/home/home-hero.png or .jpg -->
 ![SKYN – Homepage](documentation/images/screenshots/home/home-hero.png)
 
 SKYN is a web-based skincare routine tracker built with Django. It lets users build morning/evening routines, manage products, mark completion, and visualize progress over time. It also includes a small REST API and product import from Open Beauty Facts.
@@ -36,7 +35,9 @@ The goal of SKYN is to help users build consistent skincare habits by tracking t
 - Frontend: HTML5, CSS3, Bootstrap, JavaScript
 - Database: SQLite (development), PostgreSQL (production)
 - Deployment: Heroku, Gunicorn, WhiteNoise
+- Media/Storage: Cloudinary, django-cloudinary-storage
 - Utilities: dj-database-url, requests
+- Design: Balsamiq (wireframes)
 - Tooling: Git & GitHub, VS Code
 
 ---
@@ -221,7 +222,9 @@ Testing Performed:
 
 Screenshots:
 
-- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
+- [Registration form (filled)](documentation/images/screenshots/user-stories/us1-registration-form-filled.png)
+- [Validation error](documentation/images/screenshots/user-stories/us1-registration-Validation%20error.png)
+- [Success redirect](documentation/images/screenshots/user-stories/us1-registration-success-redirect.png)
 
 ---
 
@@ -243,7 +246,10 @@ Testing Performed:
 
 Screenshots:
 
-- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
+- [Login form](documentation/images/screenshots/user-stories/us2-login-form.png)
+- [Invalid credentials error](documentation/images/screenshots/user-stories/us2-Invalid-credentials-error.png)
+- [Login success – dashboard](documentation/images/screenshots/user-stories/us2-login-success-dashboard.png)
+- [Logout – redirect to home](documentation/images/screenshots/user-stories/us2-logout-redirect-home.png)
 
 ---
 
@@ -265,7 +271,11 @@ Testing Performed:
 
 Screenshots:
 
-- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
+- [Add routine – form](documentation/images/screenshots/user-stories/us3-add-routine-form.png)
+- [Dashboard – new routine visible](documentation/images/screenshots/user-stories/us3-dashboard-new-routine.png)
+- [Edit routine – form](documentation/images/screenshots/user-stories/us4-edit-routine-form.png)
+- [Dashboard – after update](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png)
+- [Dashboard – after delete](documentation/images/screenshots/user-stories/us4-dashboard-after-delete.png)
 
 ---
 
@@ -287,7 +297,11 @@ Testing Performed:
 
 Screenshots:
 
-- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
+- [Add product – form](documentation/images/screenshots/user-stories/us5-add-product-form.png)
+- [Dashboard – product linked to routine](documentation/images/screenshots/user-stories/us5-dashboard-with-linked-product.png)
+- [Edit product – form](documentation/images/screenshots/user-stories/us6-edit-product-form.png)
+- [Product list – after update](documentation/images/screenshots/user-stories/us6-product-list-after-update.png)
+- [Product list – after delete](documentation/images/screenshots/user-stories/us6-product-list-after-delete.png)
 
 ---
 
@@ -308,7 +322,9 @@ Testing Performed:
 
 Screenshots:
 
-- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
+- [Progress – before completion](documentation/images/screenshots/user-stories/us7-progress-before.png)
+- [Progress – after marking complete](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png)
+- [Progress persists after reload](documentation/images/screenshots/user-stories/us7-progress-persists-after-reload.png)
 
 ---
 
@@ -330,7 +346,8 @@ Testing Performed:
 
 Screenshots:
 
-- View screenshots: [documentation/images/screenshots/user-stories/](documentation/images/screenshots/user-stories/)
+- [Calendar – completed days](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png)
+- [Calendar – day details popup](documentation/images/screenshots/user-stories/us8-calendar-day-details-popup.png)
 
 ---
 
@@ -731,6 +748,10 @@ Specifically, AI assistance was used to:
 - [Dribbble – Dashboard UI Concepts](https://dribbble.com/tags/dashboard_ui) – Inspiration for dashboard layout and progress visuals  
 - [Coolors](https://coolors.co/) – Used to refine the earthy green and beige color palette  
 - [Balsamiq](https://balsamiq.com/) – For creating the wireframes  
+
+### Services & Media
+
+- [Cloudinary](https://cloudinary.com/) – Image hosting, on-the-fly optimization (f_auto, q_auto), and CDN delivery used across the site
 
 ## Future Enhancements
 
