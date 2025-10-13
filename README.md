@@ -410,13 +410,45 @@ CSS files were validated using the [W3C CSS Validation Service](https://jigsaw.w
 
 For detailed information about the validation results and our approach to handling the warnings, see the [CSS validation documentation](documentation/validation/css/validation-summary.md).
 
-#### Other Validators
+### CSS Validation Fixes (October 2025)
+
+- **Fixed CSS validation error with text truncation**: Replaced non-standard `-webkit-line-clamp` approach with standard CSS properties (`max-height`, `overflow: hidden`, and `text-overflow: ellipsis`). This improved W3C validation compliance while maintaining the same visual appearance of truncated text.
+- **Updated code documentation**: Clarified our approach to text truncation in code comments, now explicitly stating we use standard CSS properties instead of vendor-prefixed ones to ensure better compatibility and validation.
+For detailed information about validation fixes, see [CSS Validation Documentation](documentation/validation/css/style-css-validation.md).
+
+## Code Style Decision
+
+This project keeps its current JavaScript style for now instead of converting everything to ES6+ or changing the linter rules.
+
+Why:
+
+- The code works as-is, and a full rewrite could cause regressions.
+- We want to modernize gradually, not all at once.
+- Some environments may still expect this syntax.
+
+What this means:
+
+- You’ll see linter warnings about const, let, arrow functions, and other ES6 features — these are expected and not blockers.
+- Do fix real runtime or syntax errors (undefined variables, missing semicolons, etc.).
+- Avoid large style-only PRs. When you do update a file, keep changes small and test them.
+
+Future plans:
+
+- We’ll modernize code and update the linter gradually, focusing first on correctness and tests.
+- If you want to propose a full upgrade, open an issue or RFC with a clear migration plan.
+
+Screenshots:
+
+- JavaScript validation snapshot: documentation/validation/js/js-validation.png
+- ![JS validation](documentation/validation/js/js-validation.png)
+
+---
+
+### Other Validators
 
 | Tool | Area | Status |
 |------|------|--------|
-| W3C CSS Validator | CSS files | ✅ |
 | flake8 | Python code style | ✅ |
-| JSHint | JavaScript | ✅ |
 
 ## Performance (Lighthouse)
 
@@ -567,15 +599,6 @@ All features passed testing successfully with no critical issues remaining. The 
 - Enhanced API auth
 
 ---
-
-## Recent Improvements
-
-### CSS Validation Fixes (October 2025)
-
-- **Fixed CSS validation error with text truncation**: Replaced non-standard `-webkit-line-clamp` approach with standard CSS properties (`max-height`, `overflow: hidden`, and `text-overflow: ellipsis`). This improved W3C validation compliance while maintaining the same visual appearance of truncated text.
-- **Updated code documentation**: Clarified our approach to text truncation in code comments, now explicitly stating we use standard CSS properties instead of vendor-prefixed ones to ensure better compatibility and validation.
-
-For detailed information about validation fixes, see [CSS Validation Documentation](documentation/validation/css/style-css-validation.md).
 
 ## Author
 
