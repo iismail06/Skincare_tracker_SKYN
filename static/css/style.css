@@ -1710,6 +1710,73 @@ body.dark-theme button {
 body.dark-theme .btn-primary {
     color: #fff !important;
 }
+
+ /* === Add/Edit Routine form ==== */
+body.dark-theme .add-routine-page {
+    /* Slightly opaque dark panel to lift from background */
+    background: rgba(26, 22, 16, 0.92) !important;
+    color: var(--text) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+body.dark-theme .add-routine-page .form-card {
+    background: rgba(24, 20, 14, 0.96) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+}
+
+body.dark-theme .add-routine-page .page-title,
+body.dark-theme .add-routine-page h3,
+body.dark-theme .add-routine-page label,
+body.dark-theme .add-routine-page .steps-help,
+body.dark-theme .add-routine-page .back-link {
+    color: var(--text) !important;
+    text-shadow: none !important;
+}
+
+/* Inputs/selects within Add Routine: use solid readable backgrounds */
+body.dark-theme .add-routine-page input[type="text"],
+body.dark-theme .add-routine-page select,
+body.dark-theme .add-routine-page textarea,
+body.dark-theme .add-routine-page .form-control,
+body.dark-theme .add-routine-page .form-group input,
+body.dark-theme .add-routine-page .form-group select {
+    background: rgba(255,255,255,0.12) !important;
+    color: var(--text) !important;
+    border: 1.5px solid rgba(255,255,255,0.22) !important;
+}
+
+body.dark-theme .add-routine-page .form-group input::placeholder,
+body.dark-theme .add-routine-page textarea::placeholder {
+    color: rgba(240, 230, 210, 0.75) !important; /* token-aligned soft placeholder */
+}
+
+/* Steps container panel with clear separation */
+body.dark-theme .add-routine-page .steps-section {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+/* Individual step rows */
+body.dark-theme .add-routine-page .step-item {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+body.dark-theme .add-routine-page .step-item:hover {
+    background: rgba(255,255,255,0.08) !important;
+}
+
+/* Buttons on the form: keep contrast */
+body.dark-theme .add-routine-page .add-routine-btn,
+body.dark-theme .add-routine-page .edit-btn {
+    color: var(--text) !important;
+    border-color: rgba(255,255,255,0.35) !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+body.dark-theme .add-routine-page .add-routine-btn:hover,
+body.dark-theme .add-routine-page .edit-btn:hover {
+    background: rgba(255,255,255,0.14) !important;
+}
 /* Dark mode: Specific button type adjustments */
 body.dark-theme .btn-primary {
     background: var(--accent-color-bg) !important;
