@@ -334,3 +334,7 @@ documentation/validation/html/base_validation.html
 # Note: .webp version is tracked intentionally; only ignore the old .jpg copy.
 static/images/features/features.jpg
 
+
+# Ignore .gitkeep placeholders globally (directories will be preserved via other tracked files)
+.gitkeep
+

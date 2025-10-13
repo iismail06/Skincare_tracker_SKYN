@@ -139,6 +139,12 @@ Testing Performed:
 - ✅ User can register: Account created and user redirected to login.
 - ✅ Validation errors: Invalid input shows errors.
 
+Screenshots:
+
+![Registration form filled](documentation/images/screenshots/user-stories/us1-registration-form-filled.png)
+![Validation error shown](documentation/images/screenshots/user-stories/us1-registration-Validation%20error.png)
+![Successful registration redirect](documentation/images/screenshots/user-stories/us1-registration-success-redirect.png)
+
 ---
 
 ### User Story 2 – User Login
@@ -156,6 +162,13 @@ Testing Performed:
 - ✅ Valid login: Redirects to dashboard.
 - ✅ Invalid login: Error message displayed.
 - ✅ Logout: Redirects to home page.
+
+Screenshots:
+
+![Login form](documentation/images/screenshots/user-stories/us2-login-form.png)
+![Invalid credentials error](documentation/images/screenshots/user-stories/us2-Invalid-credentials-error.png)
+![Login success dashboard](documentation/images/screenshots/user-stories/us2-login-success-dashboard.png)
+![Logout redirect home](documentation/images/screenshots/user-stories/us2-logout-redirect-home.png)
 
 ---
 
@@ -175,6 +188,14 @@ Testing Performed:
 - ✅ Edit routine: Changes reflected.
 - ✅ Delete routine: Routine removed.
 
+Screenshots:
+
+![Add routine form](documentation/images/screenshots/user-stories/us3-add-routine-form.png)
+![Dashboard showing new routine](documentation/images/screenshots/user-stories/us3-dashboard-new-routine.png)
+![Edit routine form](documentation/images/screenshots/user-stories/us4-edit-routine-form.png)
+![Dashboard after routine update](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png)
+![Dashboard after routine delete](documentation/images/screenshots/user-stories/us4-dashboard-after-delete.png)
+
 ---
 
 ### User Story 4 – Product Management
@@ -193,6 +214,14 @@ Testing Performed:
 - ✅ Edit product: Changes reflected.
 - ✅ Delete product: Product removed.
 
+Screenshots:
+
+![Add product form](documentation/images/screenshots/user-stories/us5-add-product-form.png)
+![Dashboard with linked product](documentation/images/screenshots/user-stories/us5-dashboard-with-linked-product.png)
+![Edit product form](documentation/images/screenshots/user-stories/us6-edit-product-form.png)
+![Product list after update](documentation/images/screenshots/user-stories/us6-product-list-after-update.png)
+![Product list after delete](documentation/images/screenshots/user-stories/us6-product-list-after-delete.png)
+
 ---
 
 ### User Story 5 – Progress Tracking
@@ -209,6 +238,12 @@ Testing Performed:
 
 - ✅ Mark complete: Progress bar updates.
 - ✅ Refresh page: Data persists.
+
+Screenshots:
+
+![Progress before](documentation/images/screenshots/user-stories/us7-progress-before.png)
+![Progress after marking complete](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png)
+![Progress persists after reload](documentation/images/screenshots/user-stories/us7-progress-persists-after-reload.png)
 
 ---
 
@@ -228,6 +263,11 @@ Testing Performed:
 - ✅ Click day: Shows details.
 - ✅ Mobile view: Responsive.
 
+Screenshots:
+
+![Calendar completed days](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png)
+![Calendar day details popup](documentation/images/screenshots/user-stories/us8-calendar-day-details-popup.png)
+
 ---
 
 ### User Story 7 – Dark/Light Theme
@@ -243,6 +283,22 @@ Testing Performed:
 
 - ✅ Toggle theme: Changes colors.
 - ✅ Reload: Preference persists.
+
+Screenshots:
+
+Light theme:
+
+![Home – light](documentation/images/screenshots/light/theme-home-light-1440x900.png)
+![Dashboard – light](documentation/images/screenshots/light/theme-dashboard-light-1440x900.png)
+![Calendar – light](documentation/images/screenshots/light/theme-calendar-light-1440x900.png)
+![Products – light](documentation/images/screenshots/light/theme-products-list-light-1440x900.png)
+
+Dark theme:
+
+![Home – dark](documentation/images/screenshots/dark/theme-home-light-1440x900.png)
+![Dashboard – dark](documentation/images/screenshots/dark/theme-dashboard-dark-1440x900.png)
+![Calendar – dark](documentation/images/screenshots/dark/theme-calendar-dark-1440x900.png)
+![Products – dark](documentation/images/screenshots/dark/theme-products-list-dark-1440x900.png)
 
 ---
 
@@ -260,6 +316,13 @@ Testing Performed:
 - ✅ Desktop: Layout intact.
 - ✅ Tablet: Layout intact.
 - ✅ Mobile: Layout intact.
+
+Screenshots:
+
+![Desktop – 1440x900](documentation/images/screenshots/responsive/dashboard-desktop-1440x900.png)
+![Tablet – 768x1024](documentation/images/screenshots/responsive/calendar-tablet-768x1024.png)
+![Mobile – 390x844](documentation/images/screenshots/responsive/home-mobile-390x844.png)
+![Products – mobile 390x844](documentation/images/screenshots/responsive/products-list-mobile-390x844.png)
 
 ---
 
@@ -318,15 +381,15 @@ WhiteNoise serves static files automatically in production.
 
 | Feature | Expected Result | Outcome | Screenshot |
 |----------|----------------|----------|-------------|
-| User Registration | New user can sign up successfully | ✅ Pass | ![Signup Screenshot](path/to/image.png) |
-| User Login / Logout | User can log in and out securely | ✅ Pass | ![Login Screenshot](path/to/image.png) |
-| Add Routine | Routine saved and displayed on dashboard | ✅ Pass | ![Add Routine Screenshot](path/to/image.png) |
-| Edit / Delete Routine | Routine updates or removes correctly | ✅ Pass | ![Edit Routine Screenshot](path/to/image.png) |
-| Add Product | Product added and linked to routine | ✅ Pass | ![Add Product Screenshot](path/to/image.png) |
-| Progress Tracking | Progress bar updates dynamically | ✅ Pass | ![Progress Screenshot](path/to/image.png) |
-| Calendar Integration | Routines appear correctly by date | ✅ Pass | ![Calendar Screenshot](path/to/image.png) |
-| Theme Toggle (Dark/Light) | Theme changes site-wide | ✅ Pass | ![Dark Mode Screenshot](path/to/image.png) |
-| Responsive Design | Displays correctly on all devices | ✅ Pass | ![Responsive Screenshot](path/to/image.png) |
+| User Registration | New user can sign up successfully | ✅ Pass | ![Registration success](documentation/images/screenshots/user-stories/us1-registration-success-redirect.png) |
+| User Login / Logout | User can log in and out securely | ✅ Pass | ![Login success](documentation/images/screenshots/user-stories/us2-login-success-dashboard.png) |
+| Add Routine | Routine saved and displayed on dashboard | ✅ Pass | ![New routine on dashboard](documentation/images/screenshots/user-stories/us3-dashboard-new-routine.png) |
+| Edit / Delete Routine | Routine updates or removes correctly | ✅ Pass | ![Routine updated](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png) |
+| Add Product | Product added and linked to routine | ✅ Pass | ![Add product form](documentation/images/screenshots/user-stories/us5-add-product-form.png) |
+| Progress Tracking | Progress bar updates dynamically | ✅ Pass | ![Progress after complete](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png) |
+| Calendar Integration | Routines appear correctly by date | ✅ Pass | ![Calendar completed days](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png) |
+| Theme Toggle (Dark/Light) | Theme changes site-wide | ✅ Pass | ![Light theme dashboard](documentation/images/screenshots/light/theme-dashboard-light-1440x900.png) |
+| Responsive Design | Displays correctly on all devices | ✅ Pass | ![Mobile home](documentation/images/screenshots/responsive/home-mobile-390x844.png) |
 
 ### Code Validation
 
