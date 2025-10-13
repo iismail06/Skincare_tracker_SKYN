@@ -225,33 +225,34 @@ function initTheme() {
     return;
   }
 
-  // Check for saved theme preference or default to 'light'
+  // Check for saved theme preference or default to system preference
   let currentTheme = 'light';
   try {
     const saved = localStorage.getItem('theme');
-    if (saved) currentTheme = saved;
+    if (saved) {
+      currentTheme = saved;
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      currentTheme = 'dark';
+    }
   } catch (e) {
     // localStorage may be blocked; stay with default and continue
   }
 
-  if (currentTheme === 'dark') {
-    body.classList.add('dark-theme');
-    themeToggle.textContent = '\u2600\uFE0F';
-  } else {
-    themeToggle.textContent = '\uD83C\uDF19';
-  }
+  const isDark = (currentTheme === 'dark');
+  body.classList.toggle('dark-theme', isDark);
+  themeToggle.textContent = isDark ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';
+  themeToggle.setAttribute('aria-pressed', String(isDark));
+  themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
 
   // Avoid duplicate handlers if initTheme is called more than once
   themeToggle.removeEventListener('click', themeToggle._handler || (()=>{}));
   themeToggle._handler = function() {
-    body.classList.toggle('dark-theme');
-    if (body.classList.contains('dark-theme')) {
-      themeToggle.textContent = '\u2600\uFE0F';
-      try { localStorage.setItem('theme', 'dark'); } catch (e) {}
-    } else {
-      themeToggle.textContent = '\uD83C\uDF19';
-      try { localStorage.setItem('theme', 'light'); } catch (e) {}
-    }
+    const nowDark = !body.classList.contains('dark-theme');
+    body.classList.toggle('dark-theme', nowDark);
+    themeToggle.textContent = nowDark ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';
+    themeToggle.setAttribute('aria-pressed', String(nowDark));
+    themeToggle.setAttribute('aria-label', nowDark ? 'Switch to light theme' : 'Switch to dark theme');
+    try { localStorage.setItem('theme', nowDark ? 'dark' : 'light'); } catch (e) {}
   };
   themeToggle.addEventListener('click', themeToggle._handler);
 }

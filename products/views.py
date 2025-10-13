@@ -15,10 +15,13 @@ from .serializers import ProductSerializer, ProductCreateSerializer
 def product_list(request):
     """Show all products for the current user."""
     products = Product.objects.filter(user=request.user)
+    # Fetch routines for add-to-routine UI
+    from routines.models import Routine
+    routines = Routine.objects.filter(user=request.user).order_by('routine_type', 'name')
     return render(
         request,
         'products/product_list.html',
-        {'products': products},
+        {'products': products, 'routines': routines},
     )
 
 
