@@ -329,3 +329,8 @@ config/context_processors.py
 # Validation HTML files (for W3C validation only, not for repository)
 documentation/validation/html/base_validation.html
 
+
+# Project-specific: ignore local duplicate features image (replaced by CDN)
+# Note: .webp version is tracked intentionally; only ignore the old .jpg copy.
+static/images/features/features.jpg
+

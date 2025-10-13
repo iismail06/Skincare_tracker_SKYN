@@ -1602,12 +1602,10 @@ body.dark-theme .site-hero-bg .brand-highlight {
    ========================================================================== */
 
 body.dark-theme {
-    --background-color: #2a2418;                       /* for full page background */
-    --background-color-rgb: 42, 36, 24;                    
-    --background-color-darker: #1f1b13;             
-    --background-color-darker-rgb: 31, 27, 19;          
-    --background-color-lighter: #3b3223;            
-    --background-color-lighter-rgb: 59, 50, 35;            
+    --background-color: #2a2418;
+    --background-color-rgb: 42, 36, 24;
+    --background-color-darker: #1f1b13;
+    --background-color-darker-rgb: 31, 27, 19;
     --text: #f0e6d2;
     --secondary-color: #d4c4a8;
     --secondary-color-lighter: #f0d3bc;
@@ -1622,23 +1620,18 @@ body.dark-theme {
     --accent-color-bg: #35552a; /* darker accent background in dark mode */
     --error-color: #d32f2f;
     --success-color: #2e7d32;
-    /* Dark theme glass overrides - more transparent */
-    --glass-bg: rgba(20,20,20,0.28);
+    /* Dark theme glass overrides */
+    --glass-bg: rgba(20,20,20,0.45);
     --glass-border: rgba(255,255,255,0.06);
     --glass-blur: 8px;
     /* dark theme token overrides */
-    --border: rgba(255,255,255,0.05);
-    --glass-gradient-top: rgba(255,255,255,0.10);
-    --glass-gradient-bottom: rgba(255,255,255,0.05);
-    --glass-bg-subtle: rgba(255,255,255,0.015);
-    --card-bg: rgba(255,255,255,0.015);
+    --border: rgba(255,255,255,0.04);
+    --glass-gradient-top: rgba(255,255,255,0.15);
+    --glass-gradient-bottom: rgba(255,255,255,0.08);
+    --glass-bg-subtle: rgba(255,255,255,0.02);
+    --card-bg: rgba(255,255,255,0.02);
     --gray: #bdb6a6;
-    /* Fallback to ensure visual dark mode even if custom properties don't resolve on the client */
-    background-color: #2a2418;
-    color: #f0e6d2;
 }
-
-
 /* Dark theme hero section text colors */
 body.dark-theme .hero-title,
 body.dark-theme .hero-subtitle,
@@ -1650,47 +1643,32 @@ body.dark-theme .brand-highlight {
 /* Dramatic difference for navbar between modes */
 body.dark-theme {
     --navbar-bg-rgb: 255, 255, 255; /* light glass on dark bg */
-    --navbar-opacity: 0.18;         /* slightly more transparent in dark mode */
+    --navbar-opacity: 0.22;         /* more opaque for dark mode for strong separation */
 }
 
 /* === adjustments for Navbar === */
 
 /* Dark theme nav links & form inputs: subtle glass accents */
 body.dark-theme .custom-navbar .nav-links a {
-    background: transparent;
-    color: var(--text);
-    border-radius: 8px;
+    background: transparent !important;
+    color: var(--text) !important;
+    border-radius: 8px !important;
 }
 
 /* Keep brand readable in dark mode as well */
 body.dark-theme .custom-navbar .nav-brand {
-    color: #ffffff;
+    color: #ffffff !important;
 }
 
-/* Dark theme: use theme text color for contrast on lighter glass */
-body.dark-theme .custom-navbar .hamburger-line {
-    background-color: var(--text);
-}
-
-body.dark-theme :is(.form-control, input, select, textarea) {
-    background: var(--glass-bg-subtle);
-    border: 1px solid var(--glass-border);
+body.dark-theme .form-control,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="password"],
+body.dark-theme input[type="email"],
+body.dark-theme select {
+    background-color: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
     color: var(--text) !important;
 }
-
-/* Dark theme: product form controls */
-/* product form controls inherit generic dark inputs */
-
-/* Dark theme: routine page alias */
-body.dark-theme .add-routine-page :is(.form-control, input[type="text"], select, textarea),
-body.dark-theme .form-group :is(input, select) {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: #fff;
-}
-
-/* Dark theme: questionnaire/auth controls */
-/* auth container form controls inherit generic dark inputs */
 /* stronger glass contrast on key containers */
 body.dark-theme .custom-navbar,
 body.dark-theme .form-card,
@@ -1699,10 +1677,9 @@ body.dark-theme .auth-container,
 body.dark-theme .card,
 body.dark-theme .product-card,
 body.dark-theme .dashboard-section {
-    /* Using different values for background and border to ensure contrast */
-    background: var(--glass-bg, rgba(255, 255, 255, 0.15));
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25));
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
 }
 
 
@@ -1729,16 +1706,21 @@ body.dark-theme .btn-dark,
 body.dark-theme button {
     color: #fff !important;
 }
-
+/* Dark theme: ensure primary buttons show with light foreground */
+body.dark-theme .btn-primary {
+    color: #fff !important;
+}
 /* Dark mode: Specific button type adjustments */
 body.dark-theme .btn-primary {
-    background: var(--accent-color-bg);
-    border-color: rgba(0, 0, 0, 0.2); /* Darker border for contrast */
+    background: var(--accent-color-bg) !important;
+    border-color: var(--accent-color-bg) !important;
+    color: #fff !important;
 }
 
 body.dark-theme .btn-secondary {
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    background: var(--glass-bg) !important;
+    border-color: var(--glass-border) !important;
+    color: #fff !important;
 }
 
 /*  make danger buttons readable on dark bg */
@@ -1752,10 +1734,16 @@ body.dark-theme .btn-danger {
 body.dark-theme .btn-success {
     color: #fff !important;
     background: var(--success-color) !important;
-    border-color: rgba(0, 0, 0, 0.2) !important; /* Darker border for contrast */
+    border-color: var(--success-color) !important;
 }
 
-/* Dark mode: hover states inherit base color; no extra overrides needed */
+/* Dark mode: Button hover states */
+body.dark-theme .btn:hover,
+body.dark-theme .btn-primary:hover,
+body.dark-theme .btn-secondary:hover,
+body.dark-theme button:hover {
+    color: #fff !important;
+}
 
 /* Dark mode: Edit, View, Delete buttons specifically */
 body.dark-theme .edit-btn,
@@ -1765,7 +1753,12 @@ body.dark-theme .cancel-btn {
     color: #fff !important;
 }
 
-/* Form action buttons inherit .btn styles in dark mode */
+/* Dark mode: Form action buttons */
+body.dark-theme .form-actions .btn,
+body.dark-theme .profile-actions .btn,
+body.dark-theme .routine-actions .btn {
+    color: #fff !important;
+}
 
 /* Dark mode: Inline dismiss buttons */
 body.dark-theme .inline-dismiss {
@@ -1773,7 +1766,6 @@ body.dark-theme .inline-dismiss {
     background: rgba(255,255,255,0.1) !important;
     border-color: rgba(255,255,255,0.2) !important;
 }
-
 /* ===  message ===  */
 
 /* Dark theme warning message */
@@ -1793,6 +1785,9 @@ body.dark-theme .profile-container {
     box-shadow: none !important;
 }
 
+/* Dark mode: Ensure routines list matches the glass effect */
+/* removed: body.dark-theme .routines-list (unused) */
+
 /* Profile page title */
 body.dark-theme .profile-container .page-title {
     color: var(--secondary-color-darker) !important;
@@ -1811,7 +1806,7 @@ body.dark-theme .profile-info strong {
     color: var(--secondary-color-darker) !important;
 }
 
-/* ===  MEASSAGE SPECIFIC STYLES === */
+
 
 /* Inline success messages */
 body.dark-theme .inline-success {
@@ -1833,6 +1828,7 @@ body.dark-theme .step-count {
     color: var(--accent-color-lighter) !important;
 }
 
+/* removed: body.dark-theme .steps-header label (unused) */
 
 /* Step items and selects */
 body.dark-theme .step-item select,
@@ -1848,12 +1844,21 @@ body.dark-theme .step-select option {
     color: var(--text) !important;
 }
 
+/* Edit form content */
+/* removed: body.dark-theme .edit-form-content and label (unused) */
+
 /* Form labels and inputs in profile forms */
 body.dark-theme .form-card label {
     color: var(--text) !important;
 }
 
-/* Form inputs inside .form-card inherit generic dark inputs */
+body.dark-theme .form-card input[type="text"],
+body.dark-theme .form-card select,
+body.dark-theme .form-card textarea {
+    background: var(--glass-bg-subtle) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text) !important;
+}
 
 /* Dropdown input wrapper */
 body.dark-theme .dropdown-input-wrap input {
@@ -1862,100 +1867,20 @@ body.dark-theme .dropdown-input-wrap input {
     color: var(--text) !important;
 }
 
-/* Dropdown suggestions - from autocomplete */
-body.dark-theme .dropdown-suggestions {
-    background: var(--background-color-darker) !important;
-    border: 1px solid var(--glass-border) !important;
-}
-
-body.dark-theme .dropdown-suggestions li {
+body.dark-theme .dropdown-arrow {
     color: var(--text) !important;
 }
 
-body.dark-theme .dropdown-suggestions li:hover {
-    background: var(--glass-bg) !important;
-}
-
-/* Dashboard calendar */
-body.dark-theme .calendar-section {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-}
-
-/* Calendar header */
-body.dark-theme .sc-header {
-    background: transparent;
-}
-
-body.dark-theme .sc-header button {
-    background: var(--glass-bg-subtle) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--glass-border) !important;
-}
-
-/* Month name text */
-body.dark-theme .sc-month {
-    color: var(--secondary-color-darker) !important;
-}
-
-/* Days of week header */
-body.dark-theme .sc-day-header {
-    background: rgba(0,0,0,0.2) !important;
-    color: var(--secondary-color) !important;
-}
-
-/* Calendar day cells */
-body.dark-theme .sc-day {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
-    color: var(--text) !important;
-}
-
-/* Current day highlight */
-/* Current day highlight (calendar) - class is .sc-today in JS */
-body.dark-theme .sc-today {
-    background: rgba(255,255,255,0.15) !important;
-    color: #ffffff !important;
-}
-
-/* Days with events */
-body.dark-theme .sc-day.has-events {
+/* Badges and success elements */
+body.dark-theme .badge {
     background: var(--accent-color-bg) !important;
-    color: #ffffff !important;
+    color: var(--background-color) !important;
 }
 
-/* Product cards - dark theme */
-body.dark-theme .product-type {
-    background: rgba(255,255,255,0.15) !important;
+body.dark-theme .badge.success {
+    background: var(--success-color) !important;
     color: #fff !important;
 }
-
-/* Reinforce dark theme link colors in navbar across pages (avoid white override) */
-body.dark-theme .custom-navbar .nav-links a {
-    color: var(--text) !important;
-}
-
-/* Make brand color adapt in dark mode */
-body.dark-theme .custom-navbar .nav-brand {
-    color: var(--secondary-color-darker) !important;
-    text-shadow: none !important;
-}
-
-body.dark-theme .product-title,
-body.dark-theme .product-info .name {
-    color: var(--secondary-color-darker) !important;
-}
-
-body.dark-theme .product-info .brand {
-    color: var(--accent-color-lighter) !important;
-}
-
-body.dark-theme .product-info .notes {
-    color: var(--text) !important;
-}
-
-/* Dark themed dashboard welcome */
-body.dark-theme .welcome-text { color: #ffffff !important; }
 
 /* ==========================================================================
    18. RESPONSIVE DESIGN - ALL MEDIA QUERIES
