@@ -128,7 +128,7 @@ Skincare_tracker_SKYN/
 - [Responsive screenshots](documentation/images/screenshots/responsive/)
 - [Lighthouse results](documentation/testing/lighthouse/images/)
 - [Database ER diagram](documentation/database/ER%20diagram.png)
-- [Wireframe](documentation/wireframe/Final%20project.png)
+- [Wireframe](documentation/wireframe/wireframe)
   - Includes: Dashboard, Profile, Form, Product (desktop · iPad · mobile) and extra Mobile Home
 - [Project board snapshot](documentation/images/project-board/Project-Board.png)
 
@@ -396,6 +396,27 @@ HTML templates were validated using the [W3C Markup Validation Service](https://
 
 For detailed information and screenshots of the validation results, see the [HTML validation documentation](documentation/validation/html/README.md).
 
+#### Python Validation
+
+Python code was validated using flake8. Results and screenshots are organized per app (Users, Routines, Products) to mirror the HTML validation style.
+
+- Overview: [Python validation index](documentation/validation/python/README.md)
+- Users app: [Users Python validation](documentation/validation/python/users/README.md)
+- Routines app: [Routines Python validation](documentation/validation/python/routines/README.md)
+- Products app: [Products Python validation](documentation/validation/python/products/README.md)
+
+Add your screenshots into the corresponding `errors/` and `passes/` folders and link them in the tables.
+
+##### Code Cleanup and PEP8 Compliance (Oct 13, 2025)
+
+All Python files were cleaned and formatted to follow PEP8 style guidelines for better readability and maintainability.
+
+- ✅ Line length fixed: All lines were shortened to stay under 79 characters (E501 errors resolved).
+- ✅ Indentation corrected: Adjusted over-indented continuation lines (E127 errors fixed).
+- ✅ Blank lines standardized: Improved spacing for functions and imports.
+- ✅ Consistency ensured: Cleaned up long function calls and improved readability without changing functionality.
+- ✅ Token and syntax issues resolved: Fixed any accidental formatting or token errors during cleanup.
+
 #### CSS Validation
 
 CSS files were validated using the [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/).
@@ -443,12 +464,6 @@ Screenshots:
 - ![JS validation](documentation/validation/js/js-validation.png)
 
 ---
-
-### Other Validators
-
-| Tool | Area | Status |
-|------|------|--------|
-| flake8 | Python code style | ✅ |
 
 ## Performance (Lighthouse)
 
