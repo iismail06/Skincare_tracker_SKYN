@@ -30,6 +30,17 @@ These warnings don't hurt the website and some are needed for features to work.
 - Error screenshots: [See errors folder](images/errors/)
 - Passing validation: [See pass folder](images/pass/)
 
+### Direct links
+
+- style.css (details): [style-css-validation.md](style-css-validation.md)
+- dashboard_style.css (details): [dashboard-style-validation.md](dashboard-style-validation.md)
+
+### Highlights
+
+Dashboard stylesheet passed validation:
+
+![Dashboard style.css passed validation](images/pass/Dashboard_style.css_pass_CSS_validation.png)
+
 ## More Details
 
 For the full story about what I fixed in style.css, see [style-css-validation.md](style-css-validation.md)

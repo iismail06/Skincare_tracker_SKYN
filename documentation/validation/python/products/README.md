@@ -11,7 +11,7 @@ This page collects flake8 validation results for the `products` app, including e
 | Models | products/models.py | See screenshot | [View](errors/Model-product_withouterror.png) |
 | Admin | products/admin.py | See screenshot | [View](errors/Admin-Products_witherror.png) |
 | API URLs | products/api_urls.py | See screenshot | [View](errors/api_urls_witherror.png) |
-| Integration | products/openbeautyfacts.py | See screenshot | [View](errors/OpenBeauty_withouterrors.png) |
+| API | products/openbeautyfacts.py | See screenshot | [View](errors/OpenBeauty_withouterrors.png) |
 
 ## Passes (After Fixes)
 
@@ -24,4 +24,4 @@ This page collects flake8 validation results for the `products` app, including e
 | Views | products/views.py | flake8: clean | [View](passes/View-products.png) |
 | OpenBeautyFacts | products/openbeautyfacts.py | flake8: clean | [View](passes/OpenBeauty.png) |
 | Serializers | products/serializers.py | flake8: clean | [View](passes/Seriailizer.png) |
-| Forms | products/forms.py | flake8: clean | [View](passes/Forms:products.png) |
+| Forms | products/forms.py | flake8: clean | [View](passes/Forms-products.png) |

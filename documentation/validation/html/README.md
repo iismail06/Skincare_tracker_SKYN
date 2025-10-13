@@ -20,13 +20,11 @@ The validation results are organized in two folders:
 
 | Page | Status | Issues Found | Resolution | Screenshot |
 |------|--------|--------------|------------|------------|
-| Base Template | ❌ → ✅ | Missing crossorigin attribute on preconnect links, trailing slashes on void elements | Added crossorigin attribute, fixed void element syntax | [View](errors/base_template_errors.png) |
 | Home Page | ❌ → ✅ | Trailing slashes on img elements, improper attribute values | Removed trailing slashes, corrected attribute values | [View](errors/Homepage_Html_validate_error.png) |
 | Product Form | ❌ → ✅ | Incorrect use of placeholder attribute on date inputs, aria-describedby attributes without targets | Fixed attribute usage, connected aria attributes to proper targets | [View](errors/Product_form_html_errrors.png) |
 | Add Routine | ❌ → ✅ | Value of 'for' attributes not matching ID of form controls, improper label associations | Connected labels to form controls with proper IDs | [View](errors/add_routine_html_errors.png) |
 | Profile Page | ❌ → ✅ | aria-describedby attributes without corresponding elements, incorrect form structure | Added proper help text elements, fixed form structure | [View](errors/Html_error_profile_page.png) |
 | Profile Edit | ❌ → ✅ | Style element in body, misplaced script elements | Moved style to head section, properly placed scripts before closing body tag | [View](errors/HTML_error_profile_edit_page.png) |
-| My Routines | ❌ → ✅ | Possible misuse of aria-label attributes, empty action attributes on forms | Fixed ARIA attributes, added proper action URLs to forms | [View](errors/Dashboard_html_error.png) |
 
 ## Validation Passes
 

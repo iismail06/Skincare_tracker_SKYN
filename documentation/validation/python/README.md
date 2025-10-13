@@ -45,9 +45,9 @@ Add a row per file/module or a grouped row per app. Keep it high-level and link 
 
 | App | File/Module | Status | Issues Found | Resolution | Screenshot |
 |-----|-------------|--------|--------------|------------|------------|
-| Users | users/views.py | ❌ → ✅ | Example: F401 unused import; E302 expected 2 blank lines | Removed unused imports; added required blank lines | [Before](users/errors/example-users-flake8-errors.png) · [After](users/passes/example-users-flake8-pass.png) |
-| Routines | routines/models.py | ❌ → ✅ | Example: E501 line too long; W293 blank line with whitespace | Broke long lines; trimmed trailing whitespace | [Before](routines/errors/example-routines-flake8-errors.png) · [After](routines/passes/example-routines-flake8-pass.png) |
-| Products | products/forms.py | ❌ → ✅ | Example: F841 local variable assigned but never used | Removed unused variable; simplified logic | [Before](products/errors/example-products-flake8-errors.png) · [After](products/passes/example-products-flake8-pass.png) |
+| Users | users/views.py | ❌ → ✅ | Example: F401 unused import; E302 expected 2 blank lines | Removed unused imports; added required blank lines | Before · After |
+| Routines | routines/models.py | ❌ → ✅ | Example: E501 line too long; W293 blank line with whitespace | Broke long lines; trimmed trailing whitespace | Before · After |
+| Products | products/forms.py | ❌ → ✅ | Example: F841 local variable assigned but never used | Removed unused variable; simplified logic | Before · After |
 
 For detailed results and more screenshots, see the per-app pages:
 
@@ -68,9 +68,3 @@ These are common flake8 issues you might encounter and typical fixes. Replace wi
 - E231 missing whitespace after ',', ':': Add spaces where appropriate
 - E722 do not use bare except: Catch specific exceptions
 - W605 invalid escape sequence in string: Use raw strings or escape properly
-
-## Notes
-
-- Store screenshots as PNGs (preferred) under the app’s `errors/` or `passes/` folder, then link them in the tables.
-- Keep entries concise: what the issue was, how it was fixed, and a link to before/after screenshots.
-- If you also use black or isort, you can add short subsections per app to record formatting/import fixes.

@@ -1,5 +1,8 @@
 # SKYN – Skincare Routine Tracker
 
+<!-- Top hero image: place your screenshot as documentation/images/screenshots/home/home-hero.png or .jpg -->
+![SKYN – Homepage](documentation/images/screenshots/home/home-hero.png)
+
 SKYN is a web-based skincare routine tracker built with Django. It lets users build morning/evening routines, manage products, mark completion, and visualize progress over time. It also includes a small REST API and product import from Open Beauty Facts.
 
 - Live Demo: [https://skincare-tracker-skny-97af0ca4b109.herokuapp.com/](https://skincare-tracker-skny-97af0ca4b109.herokuapp.com/)
@@ -156,6 +159,8 @@ All wireframes are consolidated into a single image for quick reference.
 The image includes: Dashboard, Profile, Form, and Product pages in desktop, iPad, and mobile layouts, plus an extra mobile Home screen.
 
 Tool: Wireframes were created with Balsamiq.
+
+[Image](documentation/wireframe/wireframe.png)
 
 ### Color Palette
 
@@ -433,7 +438,7 @@ WhiteNoise serves static files automatically in production.
 | Edit / Delete Routine | Routine updates or removes correctly | ✅ Pass | [View](documentation/images/screenshots/user-stories/us4-dashboard-after-update.png) |
 | Add Product | Product added and linked to routine | ✅ Pass | [View](documentation/images/screenshots/user-stories/us5-add-product-form.png) |
 | Progress Tracking | Progress bar updates dynamically | ✅ Pass | [View](documentation/images/screenshots/user-stories/us7-progress-after-mark-complete.png) |
-| Calendar Integration | Routines appear correctly by date | ✅ Pass | [View](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png) |
+| Calendar API | Routines appear correctly by date | ✅ Pass | [View](documentation/images/screenshots/user-stories/us8-calendar-completed-days.png) |
 | Theme Toggle (Dark/Light) | Theme changes site-wide | ✅ Pass | [View](documentation/images/screenshots/light/theme-dashboard-light-1440x900.png) |
 | Responsive Design | Displays correctly on all devices | ✅ Pass | [View](documentation/images/screenshots/responsive/home-mobile-390x844.png) |
 
@@ -467,6 +472,16 @@ Python code was validated using flake8. Results and screenshots are organized pe
 - Products app: [Products Python validation](documentation/validation/python/products/README.md)
 
 Add your screenshots into the corresponding `errors/` and `passes/` folders and link them in the tables.
+
+##### Validation Results Summary (Python)
+
+High-level pass/fail summary by app/file. See per-app pages above for full details.
+
+| App | File/Module | Status | Issues Found (examples) | Resolution | Screenshot |
+|-----|--------------|--------|-------------------------|------------|------------|
+| Users | users/views.py | ❌ → ✅ | F401 unused import; E302 expected 2 blank lines | Removed unused imports; added required blank lines | Before · After |
+| Routines | routines/models.py | ❌ → ✅ | E501 line too long; W293 blank line with whitespace | Broke long lines; trimmed trailing whitespace | Before · After |
+| Products | products/forms.py | ❌ → ✅ (flake8: clean) | F841 local variable assigned but never used | Removed unused variable; simplified logic | Before · After |
 
 ##### Code Cleanup and PEP8 Compliance (Oct 13, 2025)
 
@@ -597,7 +612,32 @@ Verification:
 - Toggling works via click and keyboard focus
 - State persists on form save
 
-Links: —
+## Known bugs (unresolved)
+
+| Issue | Affected | Workaround | Date | Status |
+|-------|----------|------------|------|--------|
+| Mobile feature image “scrub/scroll” not working on Home page | Mobile browsers (iOS Safari, Android Chrome) | Static feature image shown on mobile; desktop interaction temporarily disabled for parity | Oct 13, 2025 | Deferred |
+
+### Bug: Mobile feature image scrub interaction
+
+- Status: Deferred (won’t fix in this release)
+- Severity: Low (cosmetic/UX)
+- Affected area: Home page hero/feature image
+
+Summary: The interactive “scrub/drag to reveal” effect on the Home page feature image does not respond to touch on mobile devices. During CSS validation cleanup, non‑standard styles and related template hooks used by the scrubbing UI were removed to achieve W3C validation compliance, and the interaction regressed on mobile.
+
+Why we’re deferring:
+
+- Template constraints and recent CSS validation changes conflict with the current implementation.
+- Re‑introducing the interaction in an accessible, validator‑compliant way requires redesign (likely a lightweight, touch‑friendly library and revised markup), which is out of scope for this release.
+
+Current behavior/workaround:
+
+- Mobile shows a static feature image (no scrubbing). Desktop parity is kept simple for now; the effect is disabled until we ship a compliant reimplementation.
+
+Planned follow‑up:
+
+- Replace the custom approach with an accessible, validator‑friendly scrubbing component (or vetted library), with proper touch events and ARIA, and template wiring that passes validation.
 
 ## Known limitations
 
