@@ -338,7 +338,7 @@ HTML templates were validated using the [W3C Markup Validation Service](https://
 
 | Page | Status | Issues Found | Resolution |
 |------|--------|--------------|------------|
-| Base Template | ❌ → ✅ | Missing crossorigin attribute on preconnect links, trailing slashes on void elements | Added crossorigin attribute, fixed void element syntax |
+| Base Template | ❌ → ✅ | Unnecessary resource hints and trailing slashes on void elements | Simplified head (removed hints) and fixed void element syntax |
 | Home Page | ❌ → ✅ | Trailing slashes on img elements, improper attribute values | Removed trailing slashes, corrected attribute values |
 | Product Form | ❌ → ✅ | Incorrect use of placeholder attribute on date inputs, aria-describedby attributes without targets | Fixed attribute usage, connected aria attributes to proper targets |
 | Add Routine | ❌ → ✅ | Value of 'for' attributes not matching ID of form controls, improper label associations | Connected labels to form controls with proper IDs |
@@ -370,11 +370,20 @@ For detailed information about the validation results and our approach to handli
 | flake8 | Python code style | ✅ |
 | JSHint | JavaScript | ✅ |
 
-### Lighthouse Testing
+## Performance (Lighthouse)
 
-Use Google Lighthouse to test Performance, Accessibility, Best Practices, and SEO.
+Simple, predictable loading order with screenshots before/after:
 
-Add your actual scores and screenshots here after running Lighthouse on key pages (Home, Dashboard, Profile).
+- CSS: Bootstrap (CDN) → `static/css/style.css` → optional page CSS
+- JS: `static/js/main.js` → Bootstrap bundle (CDN)
+
+Before (Oct 11, 2025):
+
+![Lighthouse Before](documentation/testing/lighthouse/images/frist_lighthouse_test.png)
+
+After (Oct 12, 2025):
+
+![Lighthouse After](documentation/testing/lighthouse/images/lighthouse_Testing.png)
 
 ### User Story Testing
 
@@ -486,58 +495,11 @@ All features passed testing successfully with no critical issues remaining. The 
 
 ---
 
-## Performance & Security Improvements
+## Performance notes (concise)
 
-### Lighthouse Audit & Enhancements
-
-A Lighthouse audit was conducted in October 2025 to evaluate the application's performance, accessibility, best practices, and SEO. The initial audit identified several opportunities for improvement.
-
-**Before & After Optimization:**
-
-| Category | Before | After | Improvement |
-|----------|--------|-------|-------------|
-| Performance | 65 | 99 | +34 points (+52%) |
-| Accessibility | 83 | 95 | +12 points (+14%) |
-| Best Practices | 100 | 100 | No change (already perfect) |
-| SEO | 90 | 100 | +10 points (+11%) |
-
-*See the [detailed Lighthouse testing documentation](documentation/testing/lighthouse/README.md) for complete results and screenshots.*
-
-#### Key Improvements Implemented
-
-1. **Content Security Policy (CSP)**
-   - Implemented a comprehensive CSP header to protect against XSS attacks
-   - Defined trusted sources for scripts, styles, and other resources
-   - Restricted connections to only necessary third-party domains
-
-2. **HTTP Strict Transport Security (HSTS)**
-   - Enhanced HSTS policy with a 1-year duration (31536000 seconds)
-   - Included subdomains and preload directives for comprehensive protection
-
-3. **Cookie Consent Management**
-   - Added a GDPR-compliant cookie consent banner via middleware injection
-   - Implemented user choice storage using localStorage
-   - Improved transparency regarding third-party cookie usage
-
-4. **Enhanced Static File Handling**
-   - Optimized WhiteNoise configuration for better compression and caching
-   - Set cache lifetimes to 1 year (31536000 seconds) for immutable assets
-   - Added proper MIME type handling for modern image formats including WebP
-
-5. **Frontend Performance Optimizations**
-   - Added preconnect and dns-prefetch directives for external resources
-   - Implemented media="print" onload technique for non-critical CSS
-   - Added appropriate image sizing for favicon and other assets
-   - Optimized script loading with defer attributes
-
-6. **Image Optimization**
-   - Configured Cloudinary transformations for automatic:
-     - Format selection (WebP where supported)
-     - Quality optimization
-     - Responsive sizing
-     - DPR (Device Pixel Ratio) adaptation
-
-These improvements significantly enhanced both the security posture and performance of the application while maintaining full functionality. The security changes were implemented through Django's middleware system for consistent application across all responses, while performance optimizations were applied at both the server configuration and template levels.
+- Static files via WhiteNoise (hashed filenames, gzip/brotli).
+- Images via Cloudinary (f_auto, q_auto).
+- Deterministic order: Bootstrap CSS → app CSS; app JS → Bootstrap JS.
 
 ---
 
