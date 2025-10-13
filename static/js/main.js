@@ -73,7 +73,8 @@ function processToastQueue() {
   // Use requestAnimationFrame for smoother animations
   requestAnimationFrame(() => {
     // Force reflow
-    activeToast.offsetHeight;
+    // Use an explicit read that linters recognize as purposeful
+    void activeToast.getBoundingClientRect();
     activeToast.style.opacity = '1';
   });
   
@@ -1183,8 +1184,7 @@ function initProductSuggestions() {
 function initPageSpecificFunctions() {
   // Dashboard page initialization
   if (document.querySelector('.dashboard-page')) {
-    // Calendar self-initializes via IIFE; guard in case a global init is not present
-    try { if (typeof initCalendar === 'function') { initCalendar(); } } catch (e) { /* no-op */ }
+    // Calendar self-initializes via IIFE; no explicit global init call required
     initRoutines();
   }
   
@@ -1634,9 +1634,24 @@ function initProductSelectsForProfile() {
       const brand = (opt.getAttribute('data-sug-brand') || '').trim();
       const rawType = (opt.getAttribute('data-sug-type') || '').trim() || 'other';
       // Normalize product type to match backend allowed choices and length
-      const allowedTypes = new Set(['cleanser','toner','serum','moisturizer','sunscreen','exfoliant','mask','eye_cream','oil','essence','spot_treatment','retinol','vitamin_c','other']);
+      const allowedTypesMap = {
+        cleanser: true,
+        toner: true,
+        serum: true,
+        moisturizer: true,
+        sunscreen: true,
+        exfoliant: true,
+        mask: true,
+        eye_cream: true,
+        oil: true,
+        essence: true,
+        spot_treatment: true,
+        retinol: true,
+        vitamin_c: true,
+        other: true
+      };
       let product_type = rawType;
-      if (!allowedTypes.has(product_type) || product_type.length > 20) {
+      if (!allowedTypesMap[product_type] || product_type.length > 20) {
         // Heuristics: map common families to closest core type
         if (product_type.includes('vitamin')) product_type = 'vitamin_c';
         else if (product_type.includes('retinol')) product_type = 'retinol';
