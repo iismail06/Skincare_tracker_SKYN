@@ -11,3 +11,5 @@ This folder contains one consolidated wireframe image that includes:
 Current file:
 
 - wireframe.png
+
+Tool used: Balsamiq was used to create these wireframes.

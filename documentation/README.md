@@ -14,8 +14,10 @@ This directory contains comprehensive documentation for the SKYN - Skincare Rout
   - **js/**: JavaScript validation screenshots/reports
   - **python/**: Python code validation results
 
-- **wireframes/**: Project wireframes and design mockups
+- **wireframe/**: Project wireframes and design mockups
   - Place both low and high-fidelity wireframes here
+  - See root README Design section for links and color palette summary
+  - Created with Balsamiq
 
 - **database/**: Database schema documentation
   - Entity-relationship diagrams

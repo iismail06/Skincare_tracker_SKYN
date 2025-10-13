@@ -111,7 +111,7 @@ Skincare_tracker_SKYN/
 │   ├── database/     # Database schema and ER diagrams
 │   ├── testing/      # Test results and reports
 │   ├── validation/   # Code validation results
-│   └── wireframes/   # UI design wireframes
+│   └── wireframe/    # UI design wireframes
 ├── manage.py         # Django management script
 ├── requirements.txt  # Project dependencies
 ├── Procfile          # Heroku deployment configuration
@@ -119,6 +119,44 @@ Skincare_tracker_SKYN/
 ```
 
 ---
+
+## Design
+
+### Wireframes
+
+All wireframes are consolidated into a single image for quick reference.
+
+- Folder: `documentation/wireframe/`
+- Overview: `documentation/wireframe/README.md`
+- Image: `documentation/wireframe/wireframe.png`
+
+The image includes: Dashboard, Profile, Form, and Product pages in desktop, iPad, and mobile layouts, plus an extra mobile Home screen.
+
+Tool: Wireframes were created with Balsamiq.
+
+### Color Palette
+
+This app uses a calm, earthy palette with a green accent, implemented via CSS variables for easy theming and dark-mode support.
+
+- Light theme
+  - Accent (primary): `#536b45`
+  - Accent (hover/lighter): `#687f5c`
+  - Text: `#212121`
+  - Secondary text: `#555` (lighter `#777`, darker `#333`)
+  - Backgrounds: `#ffffff` (base), `#f2f2f2` (darker), `#fafafa` (lighter)
+  - Gray (muted text): `#6c757d`
+  - Feedback: Error `#d32f2f`, Success `#2e7d32`
+
+- Dark theme
+  - Background: `#2a2418` (darker `#1f1b13`)
+  - Text: `#f0e6d2`
+  - Secondary text: `#d4c4a8` (lighter `#f0d3bc`)
+  - Accent (primary): `#35552a` (hover `#4a6b3d`)
+  - Accent text on green: `#e6e8de`
+
+- Dashboard accents (components): `#676B5D` and `#35552a` where noted
+
+For implementation details, see `static/css/style.css` and `static/css/dashboard_style.css`.
 
 ## Documentation & Screenshots
 
@@ -128,7 +166,7 @@ Skincare_tracker_SKYN/
 - [Responsive screenshots](documentation/images/screenshots/responsive/)
 - [Lighthouse results](documentation/testing/lighthouse/images/)
 - [Database ER diagram](documentation/database/ER%20diagram.png)
-- [Wireframe](documentation/wireframe/wireframe)
+- Wireframes: [Overview](documentation/wireframe/README.md) · [Image](documentation/wireframe/wireframe.png)
   - Includes: Dashboard, Profile, Form, Product (desktop · iPad · mobile) and extra Mobile Home
 - [Project board snapshot](documentation/images/project-board/Project-Board.png)
 
