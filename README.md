@@ -657,22 +657,40 @@ All features passed testing successfully with no critical issues remaining. The 
 
 ---
 
+## AI Contribution
+
+AI tools were used selectively to support documentation and development planning.
+Specifically, AI assistance was used to:
+
+- Refine and organize user stories following Agile methodology.
+- Help visualize and structure the ER diagram based on Django models.
+- Provide occasional support during debugging and code review stages.
+
 ## Credits
 
 ### Code Resources
 
-- [Django Documentation](https://docs.djangoproject.com/) – For backend structure and authentication setup
-- [Bootstrap Documentation](https://getbootstrap.com/docs/) – For responsive layout and components
-- [Font Awesome](https://fontawesome.com/) – For icons used across the app
-- [CSS-Tricks Grid Guide](https://css-tricks.com/snippets/css/complete-guide-grid/) – For layout techniques
-- [MDN Web Docs](https://developer.mozilla.org/) – For JavaScript and CSS references
+- [Django Documentation](https://docs.djangoproject.com/) – For authentication setup, model relationships, and deployment configuration  
+- [Django REST Framework Docs](https://www.django-rest-framework.org/) – For API views, serializers, and authentication handling  
+- [Bootstrap Documentation](https://getbootstrap.com/docs/) – For responsive layout, modals, and grid components  
+- [Font Awesome](https://fontawesome.com/) – For icons used across the dashboard and navigation  
+- [CSS-Tricks Grid Guide](https://css-tricks.com/snippets/css/complete-guide-grid/) – For layout and responsive design techniques  
+- [MDN Web Docs](https://developer.mozilla.org/) – For CSS variables, dark mode implementation, and JS event handling  
+- [Open Beauty Facts API](https://wiki.openbeautyfacts.org/API) – For product data integration and API testing examples  
 
 ### Tutorials & Learning Resources
 
-- [YouTube: Django CRUD Tutorial – Dennis Ivy](https://www.youtube.com/watch?v=F5mRW0jo-U4)
-- [YouTube: Django Forms & Validation – Codemy.com](https://www.youtube.com/watch?v=UIpKQ7fSxkY)
-- [YouTube: Bootstrap Modals & JS Events](https://www.youtube.com/watch?v=Jyvffr3aCp0)
-- [Real Python – Django Templates](https://realpython.com/django-templates/)
+- [Dennis Ivy – Django CRUD Tutorial (YouTube)](https://www.youtube.com/watch?v=F5mRW0jo-U4) – Helped structure CRUD logic for products and routines  
+- [Codemy.com – Django Forms & Validation (YouTube)](https://www.youtube.com/watch?v=UIpKQ7fSxkY) – Clarified form handling and field validation  
+- [Pretty Printed – Django REST Framework Basics (YouTube)](https://www.youtube.com/watch?v=c708Nf0cHrs) – Provided a foundation for building and testing REST APIs  
+- [Code With Stein – Django Deployment to Heroku (YouTube)](https://www.youtube.com/watch?v=4B3V60LMY0E) – Used for setting up Heroku, Gunicorn, and static file configuration  
+- [Real Python – Django Templates](https://realpython.com/django-templates/) – For refining template logic and reusability  
+
+### Design & UI Inspiration
+
+- [Dribbble – Dashboard UI Concepts](https://dribbble.com/tags/dashboard_ui) – Inspiration for dashboard layout and progress visuals  
+- [Coolors](https://coolors.co/) – Used to refine the earthy green and beige color palette  
+- [Balsamiq](https://balsamiq.com/) – For creating the wireframes  
 
 ## Future Enhancements
 
