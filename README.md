@@ -129,7 +129,7 @@ Skincare_tracker_SKYN/
 - [Lighthouse results](documentation/testing/lighthouse/images/)
 - [Database ER diagram](documentation/database/ER%20diagram.png)
 - [Wireframe](documentation/wireframe/Final%20project.png)
-    - Includes: Dashboard, Profile, Form, Product (desktop · iPad · mobile) and extra Mobile Home
+  - Includes: Dashboard, Profile, Form, Product (desktop · iPad · mobile) and extra Mobile Home
 - [Project board snapshot](documentation/images/project-board/Project-Board.png)
 
 ---
@@ -285,7 +285,7 @@ Testing Performed:
 Screenshots:
 
 - View theme screenshots:
-    - [Light](documentation/images/screenshots/light/)
+  - [Light](documentation/images/screenshots/light/)
     - [Dark](documentation/images/screenshots/dark/)
 
 ---

@@ -10,4 +10,4 @@ This folder contains one consolidated wireframe image that includes:
 
 Current file:
 
-- wireframe.png 
+- wireframe.png
