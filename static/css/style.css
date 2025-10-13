@@ -1634,8 +1634,8 @@ body.dark-theme {
     --card-bg: rgba(255,255,255,0.015);
     --gray: #bdb6a6;
     /* Fallback to ensure visual dark mode even if custom properties don't resolve on the client */
-    background-color: #2a2418 !important;
-    color: #f0e6d2 !important;
+    background-color: #2a2418;
+    color: #f0e6d2;
 }
 
 
@@ -1673,8 +1673,8 @@ body.dark-theme .custom-navbar .hamburger-line {
 }
 
 body.dark-theme :is(.form-control, input, select, textarea) {
-    background: var(--glass-bg-subtle) !important;
-    border: 1px solid var(--glass-border) !important;
+    background: var(--glass-bg-subtle);
+    border: 1px solid var(--glass-border);
     color: var(--text) !important;
 }
 
@@ -1684,9 +1684,9 @@ body.dark-theme :is(.form-control, input, select, textarea) {
 /* Dark theme: routine page alias */
 body.dark-theme .add-routine-page :is(.form-control, input[type="text"], select, textarea),
 body.dark-theme .form-group :is(input, select) {
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    color: #fff !important;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #fff;
 }
 
 /* Dark theme: questionnaire/auth controls */
@@ -1700,9 +1700,9 @@ body.dark-theme .card,
 body.dark-theme .product-card,
 body.dark-theme .dashboard-section {
     /* Using different values for background and border to ensure contrast */
-    background: var(--glass-bg, rgba(255, 255, 255, 0.15)) !important;
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25)) !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25));
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
 }
 
 
@@ -1732,13 +1732,13 @@ body.dark-theme button {
 
 /* Dark mode: Specific button type adjustments */
 body.dark-theme .btn-primary {
-    background: var(--accent-color-bg) !important;
-    border-color: rgba(0, 0, 0, 0.2) !important; /* Darker border for contrast */
+    background: var(--accent-color-bg);
+    border-color: rgba(0, 0, 0, 0.2); /* Darker border for contrast */
 }
 
 body.dark-theme .btn-secondary {
-    background: var(--glass-bg) !important;
-    border-color: var(--glass-border) !important;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
 }
 
 /*  make danger buttons readable on dark bg */

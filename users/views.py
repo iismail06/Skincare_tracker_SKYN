@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
+from .forms import UserUpdateForm, ProfileDetailsForm
 from .models import UserProfile
 from routines.models import RoutineStep, DailyCompletion
 
@@ -166,5 +167,27 @@ def profile_view(request):
 
 @login_required
 def profile_edit(request):
-    """Temporary placeholder view to satisfy URL mapping; redirects to profile."""
-    return redirect('users:profile')
+    """Allow the user to edit their account and profile details."""
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileDetailsForm(request.POST, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('users:profile')
+        else:
+            # Fall through to render with errors
+            pass
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileDetailsForm(instance=profile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'users/profile_edit.html', context)
