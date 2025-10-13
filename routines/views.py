@@ -3,6 +3,7 @@ import calendar
 import json
 
 from django.contrib import messages
+from django.db import models
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -683,6 +684,83 @@ def get_routine_data(request, pk):
         )
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
+
+
+@login_required
+@require_http_methods(["POST"])
+def add_step(request):
+    """Add a new step to an existing routine.
+
+    Accepts form-encoded or JSON body with:
+    - routine_id (required)
+    - step_name (required)
+    - product_id (optional)
+    - order (optional)
+    Returns JSON.
+    """
+    try:
+        # Parse payload
+        if request.headers.get("Content-Type", "").startswith("application/json"):
+            payload = json.loads(request.body or "{}")
+        else:
+            payload = request.POST
+
+        routine_id = payload.get("routine_id")
+        step_name = (payload.get("step_name") or "").strip()
+        product_id = payload.get("product_id")
+        order = payload.get("order")
+
+        if not routine_id:
+            return JsonResponse({"success": False, "error": "routine_id is required"}, status=400)
+        if not step_name:
+            return JsonResponse({"success": False, "error": "step_name is required"}, status=400)
+
+        routine = get_object_or_404(Routine, id=routine_id, user=request.user)
+
+        product = None
+        if product_id:
+            try:
+                product = Product.objects.get(id=product_id, user=request.user)
+            except Product.DoesNotExist:
+                return JsonResponse({"success": False, "error": "Product not found"}, status=404)
+
+        # Frequency inferred from routine type
+        inferred_freq = routine.routine_type if routine.routine_type in ("weekly", "monthly") else "daily"
+
+        # Determine order, append by default
+        try:
+            order_val = int(order)
+        except (TypeError, ValueError):
+            order_val = 0
+        max_order = routine.steps.aggregate(models.Max("order")).get("order__max") or 0
+        if order_val <= 0 or order_val > (max_order + 1):
+            order_val = max_order + 1
+
+        step = RoutineStep.objects.create(
+            routine=routine,
+            step_name=step_name,
+            order=order_val,
+            product=product,
+            frequency=inferred_freq,
+        )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f'Added "{step.step_name}" to {routine.name}',
+                "step": {
+                    "id": step.id,
+                    "name": step.step_name,
+                    "order": step.order,
+                    "product_id": step.product.id if step.product else None,
+                },
+                "routine": {"id": routine.id, "name": routine.name, "type": routine.routine_type},
+            }
+        )
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "Invalid JSON payload"}, status=400)
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
 @login_required

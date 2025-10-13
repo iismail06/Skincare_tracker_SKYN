@@ -240,7 +240,8 @@ function initTheme() {
 
   const isDark = (currentTheme === 'dark');
   body.classList.toggle('dark-theme', isDark);
-  themeToggle.textContent = isDark ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';
+  // Use literal emoji characters to avoid escaping issues in UI
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
   themeToggle.setAttribute('aria-pressed', String(isDark));
   themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
 
@@ -249,7 +250,7 @@ function initTheme() {
   themeToggle._handler = function() {
     const nowDark = !body.classList.contains('dark-theme');
     body.classList.toggle('dark-theme', nowDark);
-    themeToggle.textContent = nowDark ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';
+    themeToggle.textContent = nowDark ? '☀️' : '🌙';
     themeToggle.setAttribute('aria-pressed', String(nowDark));
     themeToggle.setAttribute('aria-label', nowDark ? 'Switch to light theme' : 'Switch to dark theme');
     try { localStorage.setItem('theme', nowDark ? 'dark' : 'light'); } catch (e) {}
